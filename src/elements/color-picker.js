@@ -94,7 +94,6 @@ export default elementUtils.registerElement("ui-color-picker", {
       this.$hueCtrl.focus();
       let i = this._value[3];
       this._initValue = this._value;
-      this._dragging = true;
       let s = this.$hueCtrl.getBoundingClientRect();
       let l = (t.clientY - s.top) / this.$hueCtrl.clientHeight;
       this.$hueHandle.style.top = `${100 * l}%`;
@@ -108,43 +107,11 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._updateSliders();
       this._updateHexInput();
       this._emitChange();
-
-      domUtils.startDrag(
-        "ns-resize",
-        t,
-        (t) => {
-          let l = (t.clientY - s.top) / this.$hueCtrl.clientHeight;
-          l = mathUtils.clamp(l, 0, 1);
-          this.$hueHandle.style.top = `${100 * l}%`;
-          let n = 360 * (1 - l);
-          let h = chroma(this._value).hsv();
-          this._value = chroma(n, h[1], h[2], "hsv").rgba();
-          this._value[3] = i;
-          this._updateColorDiff();
-          this._updateColor(n);
-          this._updateAlpha();
-          this._updateSliders();
-          this._updateHexInput();
-          this._emitChange();
-        },
-        () => {
-          this._dragging = false;
-          let t = 360 * (1 - parseFloat(this.$hueHandle.style.top) / 100);
-          this._updateColorDiff();
-          this._updateColor(t);
-          this._updateAlpha();
-          this._updateSliders();
-          this._updateHexInput();
-          this._emitConfirm();
-        }
-      );
     });
 
     this.$hueCtrl.addEventListener("keydown", (t) => {
-      if (t.keyCode === 27 && this._dragging) {
+      if (t.keyCode === 27) {
         domUtils.acceptEvent(t);
-        this._dragging = false;
-        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateHue();
@@ -162,7 +129,6 @@ export default elementUtils.registerElement("ui-color-picker", {
       focusMgr._setFocusElement(this);
       this.$alphaCtrl.focus();
       this._initValue = this._value.slice();
-      this._dragging = true;
       let e = this.$alphaCtrl.getBoundingClientRect();
       let i = (t.clientY - e.top) / this.$alphaCtrl.clientHeight;
       this.$alphaHandle.style.top = `${100 * i}%`;
@@ -170,32 +136,11 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._updateColorDiff();
       this._updateSliders();
       this._emitChange();
-
-      domUtils.startDrag(
-        "ns-resize",
-        t,
-        (t) => {
-          let i = (t.clientY - e.top) / this.$hueCtrl.clientHeight;
-          i = mathUtils.clamp(i, 0, 1);
-          this.$alphaHandle.style.top = `${100 * i}%`;
-          this._value[3] = parseFloat((1 - i).toFixed(3));
-          this._updateColorDiff();
-          this._updateSliders();
-          this._emitChange();
-        },
-        () => {
-          this._dragging = false;
-          this._updateSliders();
-          this._emitConfirm();
-        }
-      );
     });
 
     this.$alphaCtrl.addEventListener("keydown", (t) => {
-      if (t.keyCode === 27 && this._dragging) {
+      if (t.keyCode === 27) {
         domUtils.acceptEvent(t);
-        this._dragging = false;
-        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateAlpha();
@@ -212,7 +157,6 @@ export default elementUtils.registerElement("ui-color-picker", {
       let i = 360 * (1 - parseFloat(this.$hueHandle.style.top) / 100);
       let s = this._value[3];
       this._initValue = this._value.slice();
-      this._dragging = true;
       let l = this.$colorCtrl.getBoundingClientRect();
       let n = (t.clientX - l.left) / this.$colorCtrl.clientWidth;
       let d = (t.clientY - l.top) / this.$colorCtrl.clientHeight;
@@ -228,43 +172,11 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._updateSliders();
       this._updateHexInput();
       this._emitChange();
-
-      domUtils.startDrag(
-        "default",
-        t,
-        (t) => {
-          let n = (t.clientX - l.left) / this.$colorCtrl.clientWidth;
-          let h = (t.clientY - l.top) / this.$colorCtrl.clientHeight;
-          n = mathUtils.clamp(n, 0, 1);
-          let o = (h = mathUtils.clamp(h, 0, 1)) * h * (3 - 2 * h);
-          o *= 255;
-          this.$colorHandle.style.left = `${100 * n}%`;
-          this.$colorHandle.style.top = `${100 * h}%`;
-          this.$colorHandle.style.color = chroma(o, o, o).hex();
-          this._value = chroma(i, n, 1 - h, "hsv").rgba();
-          this._value[3] = s;
-          this._updateColorDiff();
-          this._updateAlpha();
-          this._updateSliders();
-          this._updateHexInput();
-          this._emitChange();
-        },
-        () => {
-          this._dragging = false;
-          this._updateColorDiff();
-          this._updateAlpha();
-          this._updateSliders();
-          this._updateHexInput();
-          this._emitConfirm();
-        }
-      );
     });
 
     this.$colorCtrl.addEventListener("keydown", (t) => {
-      if (t.keyCode === 27 && this._dragging) {
+      if (t.keyCode === 27) {
         domUtils.acceptEvent(t);
-        this._dragging = false;
-        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateColor();

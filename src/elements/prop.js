@@ -515,29 +515,6 @@ let m = elementUtils.registerElement("ui-prop", {
         return undefined;
       }
 
-      if (this.slidable) {
-        if (this.readonly) {
-          i.startDrag("ew-resize", t);
-        } else {
-          this._sliding = true;
-          domUtils.fire(this, "slide-start", { bubbles: false });
-
-          i.startDrag(
-            "ew-resize",
-            t,
-            (t) => {
-              domUtils.fire(this, "slide-change", {
-                bubbles: false,
-                detail: { dx: t.movementX, dy: t.movementY },
-              });
-            },
-            () => {
-              domUtils.fire(this, "slide-confirm", { bubbles: false });
-            }
-          );
-        }
-      }
-
       s._setFocusElement(null);
       let e = this._getFirstFocusableElement();
 

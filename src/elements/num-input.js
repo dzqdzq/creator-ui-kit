@@ -1,4 +1,3 @@
-// import t from "vm"; // Node.js 模块，浏览器环境不可用
 // import e from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
 import shareUtils from "../utils/js-utils.js";
@@ -9,15 +8,17 @@ import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import inputStateBehavior from "../behaviors/input-state.js";
-// import o from "../behaviors/droppable"; // 需要创建此文件
-// import _ from "../utils/drag-drop"; // 需要创建此文件
-// import { promisify } from "util"; // Node.js 模块，浏览器环境不可用
 
-// 创建占位符
-const t = null;
+function promisify(fn) {
+  return (...args) => new Promise((resolve, reject) => {
+    fn(...args, (err, result) => {
+      if (err) reject(err);
+      resolve(result);
+    });
+  });
+}
+
 const e = {};
-const o = {};
-const _ = {};
 
 export default elementUtils.registerElement("ui-num-input", {
   get type() {
@@ -183,7 +184,7 @@ export default elementUtils.registerElement("ui-num-input", {
       this[t.replace(/\-(\w)/g, (t, e) => e.toUpperCase())] = i;
     }
   },
-  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior, o],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template:
     '\n    <input></input>\n    <div class="spin-wrapper" tabindex="-1">\n      <div class="spin up">\n        <i class="icon-up-dir"></i>\n      </div>\n      <div class="spin-div"></div>\n      <div class="spin down">\n        <i class="icon-down-dir"></i>\n      </div>\n    </div>\n  ',
   style: getElementStyleSync("num-input"),
@@ -199,11 +200,6 @@ export default elementUtils.registerElement("ui-num-input", {
     }
   },
   ready() {
-    let t = this.getAttribute("droppable");
-
-    if (t) {
-      this.droppable = t;
-    }
 
     if (this.getAttribute("type") === "int") {
       this._type = "int";
@@ -298,10 +294,6 @@ export default elementUtils.registerElement("ui-num-input", {
     this._initReadonly(false);
     this._initInputState(this.$input);
 
-    if (this.droppable) {
-      this._initDroppable(this);
-    }
-
     this.$input.readOnly = this.readonly;
     this._initEvents();
   },
@@ -347,76 +339,12 @@ export default elementUtils.registerElement("ui-num-input", {
       },
       { passive: true }
     );
-
-    if (this.droppable) {
-      this.addEventListener(
-        "drop-area-enter",
-        this._onDropAreaEnter.bind(this)
-      );
-
-      this.addEventListener(
-        "drop-area-leave",
-        this._onDropAreaLeave.bind(this)
-      );
-
-      this.addEventListener(
-        "drop-area-accept",
-        this._onDropAreaAccept.bind(this)
-      );
-
-      this.addEventListener("drop-area-move", this._onDropAreaMove.bind(this));
-    }
   },
   _isTypeValid(t) {
     return (
       t === this.resourceType ||
       cc.js.isChildClassOf(Editor.assets[t], Editor.assets[this.resourceType])
     );
-  },
-  _onDropAreaMove(t) {
-    t.stopPropagation();
-
-    if (this.invalid) {
-      _.updateDropEffect(t.detail.dataTransfer, "none");
-    } else {
-      _.updateDropEffect(t.detail.dataTransfer, "copy");
-    }
-  },
-  async _onDropAreaEnter(t) {
-    t.stopPropagation();
-    let e = t.detail.dragItems;
-
-    if (!this.checking) {
-      this.invalid = !(await this._checkType(e.map((t) => t.id)));
-      this.highlighted = !this.invalid;
-    }
-  },
-  _onDropAreaLeave(t) {
-    t.stopPropagation();
-
-    if (this._requestID) {
-      // IPC functionality removed
-      this._requestID = null;
-    }
-
-    this.highlighted = false;
-    this.invalid = false;
-  },
-  _onDropAreaAccept(t) {
-    t.stopPropagation();
-    this.highlighted = false;
-    this.invalid = false;
-    this._updateValue(t.detail.dragItems);
-  },
-  _updateValue(t) {
-    let e = t.map((t) => t.id);
-    this.$input.value = this._value + e.length;
-    this._value += e.length;
-
-    Editor.UI.fire(this, "confirm", {
-      bubbles: true,
-      detail: { value: this._value, dragItems: t },
-    });
   },
   async _checkType(t) {
     this.checking = true;
@@ -492,10 +420,7 @@ export default elementUtils.registerElement("ui-num-input", {
     if (this.$input.value.trim() === "") {
       return 0;
     }
-    let e = { res: NaN };
-    try {
-      t.runInNewContext(`\n          res = ${this.$input.value};\n        `, e);
-    } catch (t) {}
+    let e = { res: this.$input.value };
     let i = this._parseFn(e.res);
 
     if (isNaN(i)) {

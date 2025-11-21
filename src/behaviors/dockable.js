@@ -27,11 +27,6 @@ class DockableBehavior {
       this.style.maxWidth = "auto";
       this.style.maxHeight = "auto";
     });
-
-    this.addEventListener("dragover", (dragOverEvent) => {
-      dragOverEvent.preventDefault();
-      dockUtils.dragoverDock(this);
-    });
   }
 
   _notifyResize() {

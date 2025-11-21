@@ -147,7 +147,6 @@ export default elementUtils.registerElement("ui-slider", {
     this._step = h !== null ? parseFloat(h) : settings.stepFloat;
     this._snap = true;
     this.multiValues = this.getAttribute("multi-values");
-    this._dragging = false;
     this._updateNubbinAndInput();
     this._initFocusable([this.$wrapper, this.$input], this.$input);
     this._initDisable(false);
@@ -199,7 +198,6 @@ export default elementUtils.registerElement("ui-slider", {
     }
 
     this._initValue = this._value;
-    this._dragging = true;
     let e = this.$track.getBoundingClientRect();
     let i = (t.clientX - e.left) / this.$track.clientWidth;
     let a = this._min + i * (this._max - this._min);
@@ -213,30 +211,6 @@ export default elementUtils.registerElement("ui-slider", {
     this._value = parseFloat(u);
     this._updateNubbin();
     this._emitChange();
-
-      domUtils.startDrag(
-        "ew-resize",
-        t,
-        (t) => {
-          let i = (t.clientX - e.left) / this.$track.clientWidth;
-          i = mathUtilmathUtils.clamp(i, 0, 1);
-        let a = this._min + i * (this._max - this._min);
-
-        if (this._snap) {
-          a = this._snapToStep(a);
-        }
-
-        let n = this._formatValue(a);
-        this.$input.value = n;
-        this._value = parseFloat(n);
-        this._updateNubbin();
-        this._emitChange();
-      },
-      () => {
-        this._dragging = false;
-        this.confirm();
-      }
-    );
   },
   _wrapperKeyDownHandler(t) {
     if (!this.disabled) {
@@ -246,12 +220,6 @@ export default elementUtils.registerElement("ui-slider", {
         this.$input.focus();
         this.$input.select();
       } else if (t.keyCode === 27) {
-        if (this._dragging) {
-          domUtils.acceptEvent(t);
-          this._dragging = false;
-          domUtils.cancelDrag();
-        }
-
         this.cancel();
       } else if (t.keyCode === 37) {
         domUtils.acceptEvent(t);
