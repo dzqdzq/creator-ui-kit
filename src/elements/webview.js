@@ -46,7 +46,7 @@ export default elementUtils.registerElement("ui-webview", {
     });
 
     this.$view.addEventListener("console-message", () => {});
-    this.$view.addEventListener("ipc-message", () => {});
+    // IPC functionality removed
 
     this.$view.addEventListener("did-finish-load", () => {
       this.$loader.hidden = true;

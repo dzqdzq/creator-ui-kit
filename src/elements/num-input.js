@@ -396,7 +396,7 @@ export default elementUtils.registerElement("ui-num-input", {
     t.stopPropagation();
 
     if (this._requestID) {
-      Editor.Ipc.cancelRequest(this._requestID);
+      // IPC functionality removed
       this._requestID = null;
     }
 
@@ -452,17 +452,9 @@ export default elementUtils.registerElement("ui-num-input", {
     return e;
   },
   async _queryNodeInfo(t) {
-    let e = await promisify(Editor.Ipc.sendToPanel)(
-      "scene",
-      "scene:query-node-info",
-      t,
-      this.attrType
-    );
+    // IPC functionality removed
     this.highlighted = true;
-
-    return this.resourceType !== "cc.Node" && e.compID
-      ? Promise.resolve()
-      : Promise.reject();
+    return Promise.reject();
   },
   async _queryAssetInfo(t) {
     let e = await promisify(Editor.assetdb.queryMetaInfoByUuid)(t);

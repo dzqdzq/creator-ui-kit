@@ -1,15 +1,7 @@
-import i from "electron";
 import s from "events";
 import e from "./platform";
-let o;
 let t;
 let r;
-
-if (e.isMainProcess) {
-  o = require("../main/ipc");
-} else {
-  o = require("../renderer/ipc");
-}
 
 class n {
   constructor() {
@@ -171,7 +163,7 @@ class d extends s {
     if (!this._silent) {
       return this._type === "local"
         ? (this.emit("changed", i), undefined)
-        : (o.sendToAll("undo:changed", i), undefined);
+        : undefined;
     }
   }
 }
@@ -182,69 +174,32 @@ if (e.isMainProcess) {
 
 let c = {
   undo() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:perform-undo");
-      return undefined;
-    }
     r.undo();
   },
   redo() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:perform-redo");
-      return undefined;
-    }
     r.redo();
   },
   add(i, s) {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:add", i, s);
-      return undefined;
-    }
     r.add(i, s);
   },
   commit() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:commit");
-      return undefined;
-    }
     r.commit();
   },
   cancel() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:cancel");
-      return undefined;
-    }
     r.cancel();
   },
   collapseTo(i) {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:collapse", i);
-      return undefined;
-    }
     r.collapseTo(i);
   },
   save() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:save");
-      return undefined;
-    }
     r.save();
   },
   clear() {
-    if (e.isRendererProcess) {
-      o.sendToMain("undo:clear");
-      return undefined;
-    }
     r.clear();
   },
-  reset: () =>
-    e.isRendererProcess ? (o.sendToMain("undo:reset"), undefined) : r.reset(),
-  dirty: () =>
-    e.isRendererProcess ? o.sendToMainSync("undo:dirty") : r.dirty(),
-  setCurrentDescription: (i) =>
-    e.isRendererProcess
-      ? o.sendToMainSync("undo:set-desc", i)
-      : r.setCurrentDescription(i),
+  reset: () => r.reset(),
+  dirty: () => r.dirty(),
+  setCurrentDescription: (i) => r.setCurrentDescription(i),
   register(i, s) {
     r.register(i, s);
   },
@@ -267,50 +222,4 @@ let c = {
 };
 export default c;
 
-if (e.isMainProcess) {
-  const i_ipcMain = i.ipcMain;
-
-  i_ipcMain.on("undo:perform-undo", () => {
-    c.undo();
-  });
-
-  i_ipcMain.on("undo:perform-redo", () => {
-    c.redo();
-  });
-
-  i_ipcMain.on("undo:add", (i, s, e) => {
-    c.add(s, e);
-  });
-
-  i_ipcMain.on("undo:commit", () => {
-    c.commit();
-  });
-
-  i_ipcMain.on("undo:cancel", () => {
-    c.cancel();
-  });
-
-  i_ipcMain.on("undo:collapse", (i) => {
-    c.collapseTo(i);
-  });
-
-  i_ipcMain.on("undo:save", () => {
-    c.save();
-  });
-
-  i_ipcMain.on("undo:clear", () => {
-    c.clear();
-  });
-
-  i_ipcMain.on("undo:dirty", (i) => {
-    i.returnValue = c.dirty();
-  });
-
-  i_ipcMain.on("undo:set-desc", (i, s) => {
-    c.setCurrentDescription(s);
-  });
-
-  i_ipcMain.on("undo:reset", () => {
-    c.reset();
-  });
-}
+// IPC functionality removed

@@ -1,14 +1,5 @@
-import e from "electron";
 import t from "lodash";
 import i from "./platform";
-let s;
-let r;
-
-if (i.isMainProcess) {
-  s = require("../main/ipc");
-} else {
-  s = require("../renderer/ipc");
-}
 
 let n = null;
 let l = {};
@@ -30,7 +21,6 @@ let y = {
 
     if (!l[e]) {
       l[e] = new m(e);
-      s.sendToWins("_selection:register", e);
     }
   },
   reset() {
@@ -246,15 +236,7 @@ let y = {
   },
 };
 function g(e, t, ...i) {
-  if (t !== "local") {
-    s.sendToAll.apply(null, [
-      `_${e}`,
-      t,
-      ...i,
-      s.option({ excludeSelf: true }),
-    ]);
-    s.sendToAll.apply(null, [e, t, ...i]);
-  }
+  // IPC functionality removed
 }
 export default y;
 class _ {
@@ -484,183 +466,4 @@ class m extends _ {
     this.confirm();
   }
 }
-let A = null;
-A = i.isMainProcess ? e.ipcMain : e.ipcRenderer;
-
-if (i.isMainProcess) {
-  A.on("selection:get-registers", (e) => {
-    let t = [];
-    for (let e in l) {
-      let l_e = l[e];
-      t.push({
-        type: e,
-        selection: l_e.selection,
-        lastActive: l_e.lastActive,
-        lastHover: l_e.lastHover,
-        context: l_e._context,
-        isLastGlobalActive: l_e === n,
-      });
-    }
-    e.returnValue = t;
-  });
-}
-
-if (i.isRendererProcess) {
-  (() => {
-    let e = s.sendToMainSync("selection:get-registers");
-
-    for (let i of e) {
-      if (l[i.type]) {
-        return;
-      }
-      let s = new m(i.type);
-      s.selection = i.selection.slice();
-      s.lastActive = i.lastActive;
-      s.lastHover = i.lastHover;
-      s._context = i.context;
-      l[i.type] = s;
-
-      if (i.isLastGlobalActive) {
-        n = s;
-      }
-    }
-
-    A.on("_selection:register", (e, t) => {
-      let i = new m(t);
-      l[t] = i;
-    });
-  })();
-}
-
-A.on("_selection:selected", (e, t, i) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-
-  if ((i = i.filter((e) => !l_t.selection.includes(e))).length === 1) {
-    l_t.selection.push(i[0]);
-  } else if (i.length > 1) {
-    l_t.selection = l_t.selection.concat(i);
-  }
-});
-
-A.on("_selection:unselected", (e, t, i) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  l_t.selection = l_t.selection.filter((e) => !i.includes(e));
-});
-
-A.on("_selection:activated", (e, t, i) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  n = l_t;
-  l_t.lastActive = i;
-});
-
-A.on("_selection:deactivated", (e, t, i) => {
-  unused(i);
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-
-  if (n === l_t) {
-    n = null;
-  }
-
-  l_t.lastActive = null;
-});
-
-A.on("_selection:hoverin", (e, t, i) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  l_t.lastHover = i;
-});
-
-A.on("_selection:hoverout", (e, t, i) => {
-  unused(i);
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  l_t.lastHover = null;
-});
-
-A.on("_selection:context", (e, t, i) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  l_t._context = i;
-});
-
-A.on("_selection:patch", (e, t, i, s) => {
-  let l_t = l[t];
-  if (!l_t) {
-    console.error(
-      "Cannot find the type %s for selection. Please register it first.",
-      t
-    );
-
-    return undefined;
-  }
-  let o = l_t.selection.indexOf(i);
-
-  if (-1 !== o) {
-    l_t.selection[o] = s;
-  }
-
-  if (l_t.lastActive === i) {
-    l_t.lastActive = s;
-  }
-
-  if (l_t.lastHover === i) {
-    l_t.lastHover = s;
-  }
-
-  if (l_t._context === i) {
-    l_t._context = s;
-  }
-});
+// IPC functionality removed
