@@ -2,14 +2,6 @@ import highlight from "highlight.js";
 import remarkable from "remarkable";
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-// import l from "../../console"; // 外部依赖，暂时注释
-
-// 创建 console 占位符
-const l = {
-  warn: (...args) => console.warn(...args),
-  error: (...args) => console.error(...args),
-  log: (...args) => console.log(...args),
-};
 
 export default elementUtils.registerElement("ui-markdown", {
   get value() {
@@ -75,13 +67,13 @@ export default elementUtils.registerElement("ui-markdown", {
           try {
             return highlight.highlight(r, t).value;
           } catch (e) {
-            l.error(`Syntax highlight failed: ${e.message}`);
+            console.error(`Syntax highlight failed: ${e.message}`);
           }
         }
         try {
           return highlight.highlightAuto(t).value;
         } catch (e) {
-          l.error(`Syntax highlight failed: ${e.message}`);
+          console.error(`Syntax highlight failed: ${e.message}`);
         }
         return "";
       },

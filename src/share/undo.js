@@ -7,10 +7,8 @@ let r;
 
 if (e.isMainProcess) {
   o = require("../main/ipc");
-  t = require("../main/console");
 } else {
   o = require("../renderer/ipc");
-  t = require("../renderer/console");
 }
 
 class n {
@@ -89,7 +87,7 @@ class d extends s {
   add(i, s) {
     let e = this._id2cmdDef[i];
     if (!e) {
-      t.error(`Cannot find undo command ${i}, please register it first`);
+      console.error(`Cannot find undo command ${i}, please register it first`);
       return undefined;
     }
     this._clearRedo();
@@ -111,7 +109,7 @@ class d extends s {
   }
   collapseTo(i) {
     if (i > this._position || i < 0) {
-      t.warn(`Cannot collapse undos to ${i}`);
+      console.warn(`Cannot collapse undos to ${i}`);
       return undefined;
     }
     if (i === this._position) {
@@ -256,10 +254,10 @@ let c = {
       this.info = i;
     }
     undo() {
-      t.warn('Please implement the "undo" function in your command');
+      console.warn('Please implement the "undo" function in your command');
     }
     redo() {
-      t.warn('Please implement the "redo" function in your command');
+      console.warn('Please implement the "redo" function in your command');
     }
     dirty() {
       return true;

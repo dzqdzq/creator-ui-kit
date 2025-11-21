@@ -1,16 +1,19 @@
-import e from "../utils/dom-utils";
-let t = {
+import domUtils from "../utils/dom-utils";
+
+class ReadonlyBehavior {
   get canBeReadonly() {
     return true;
-  },
+  }
+
   get readonly() {
     return this.getAttribute("is-readonly") !== null;
-  },
-  set readonly(e) {
-    if (e !== this._readonly) {
-      this._readonly = e;
+  }
 
-      if (e) {
+  set readonly(readonlyValue) {
+    if (readonlyValue !== this._readonly) {
+      this._readonly = readonlyValue;
+
+      if (readonlyValue) {
         this.setAttribute("readonly", "");
         this._setIsReadonlyAttribute(true);
 
@@ -18,7 +21,7 @@ let t = {
           return;
         }
 
-        this._propgateReadonly();
+        this._propagateReadonly();
       } else {
         this.removeAttribute("readonly");
 
@@ -29,54 +32,80 @@ let t = {
             return;
           }
 
-          this._propgateReadonly();
+          this._propagateReadonly();
         }
       }
     }
-  },
-  _initReadonly(e) {
+  }
+
+  _initReadonly(enableNested) {
     this._readonly = this.getAttribute("readonly") !== null;
 
     if (this._readonly) {
       this._setIsReadonlyAttribute(true);
     }
 
-    this._readonlyNested = e;
-  },
-  _propgateReadonly() {
-    e.walk(
+    this._readonlyNested = enableNested;
+  }
+
+  _propagateReadonly() {
+    domUtils.walk(
       this,
       { excludeSelf: true },
-      (e) =>
-        !!e.canBeReadonly &&
-        (!!e._readonly ||
-          (e._setIsReadonlyAttribute(this._readonly), !e._readonlyNested))
+      (childElement) =>
+        !!childElement.canBeReadonly &&
+        (!!childElement._readonly ||
+          (childElement._setIsReadonlyAttribute(this._readonly),
+          !childElement._readonlyNested))
     );
-  },
-  _isReadonlyInHierarchy(e) {
-    if (!e && this.readonly) {
+  }
+
+  _isReadonlyInHierarchy(excludeSelf) {
+    if (!excludeSelf && this.readonly) {
       return true;
     }
-    let t = this.parentNode;
+    let parentNode = this.parentNode;
 
-    while (t) {
-      if (t.readonly) {
+    while (parentNode) {
+      if (parentNode.readonly) {
         return true;
       }
-      t = t.parentNode;
+      parentNode = parentNode.parentNode;
     }
 
     return false;
-  },
+  }
+
   _isReadonlySelf() {
     return this._readonly;
-  },
-  _setIsReadonlyAttribute(e) {
-    if (e) {
+  }
+
+  _setIsReadonlyAttribute(isReadonly) {
+    if (isReadonly) {
       this.setAttribute("is-readonly", "");
     } else {
       this.removeAttribute("is-readonly");
     }
+  }
+}
+
+// 导出类的实例方法和属性描述符，以便混入到元素原型
+const behaviorPrototype = ReadonlyBehavior.prototype;
+export default {
+  get canBeReadonly() {
+    return behaviorPrototype.canBeReadonly.get.call(this);
   },
+  get readonly() {
+    return behaviorPrototype.readonly.get.call(this);
+  },
+  set readonly(value) {
+    behaviorPrototype.readonly.set.call(this, value);
+  },
+  _initReadonly: behaviorPrototype._initReadonly,
+  _propagateReadonly: behaviorPrototype._propagateReadonly,
+  // 向后兼容：保留旧的拼写错误的方法名
+  _propgateReadonly: behaviorPrototype._propagateReadonly,
+  _isReadonlyInHierarchy: behaviorPrototype._isReadonlyInHierarchy,
+  _isReadonlySelf: behaviorPrototype._isReadonlySelf,
+  _setIsReadonlyAttribute: behaviorPrototype._setIsReadonlyAttribute,
 };
-export default t;

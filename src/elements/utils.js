@@ -1,15 +1,7 @@
 import r from "chroma-js";
-// import s from "../../console"; // 外部依赖，暂时注释
 // import n from "../../../share/js-utils"; // 外部依赖，暂时注释
 import o from "../utils/dom-utils.js";
 import n from "../utils/js-utils.js";
-
-// 创建 console 的占位符
-const s = {
-  warn: (...args) => console.warn(...args),
-  error: (...args) => console.error(...args),
-  log: (...args) => console.log(...args),
-};
 let e = {};
 export default e;
 let t = {};
@@ -82,8 +74,8 @@ function l(e, t, r) {
     r.id = "custom-style";
     e.shadowRoot.insertBefore(r, e.shadowRoot.firstChild);
   }
-  e._propgateDisable();
-  e._propgateReadonly();
+  e._propagateDisable();
+  e._propagateReadonly();
 
   if (e.ready) {
     e.ready(s);
@@ -130,14 +122,14 @@ e.registerElement = (e, t) => {
           t.textContent = style;
           e.insertBefore(t, e.firstChild);
         } else {
-          s.warn("Can not use style in light DOM");
+          console.warn("Can not use style in light DOM");
         }
       }
 
       if ($) {
         for (let t in $) {
           if (this[`$${t}`]) {
-            s.warn(`Failed to assign selector $${t}, already used`);
+            console.warn(`Failed to assign selector $${t}, already used`);
           } else {
             this[`$${t}`] = e.querySelector($[t]);
           }
@@ -205,7 +197,7 @@ e.getProperty = (e) => t[e];
 e.regenProperty = (e, r) => {
   let n = t[e._type];
   if (!n) {
-    s.warn(`Failed to regen property ${e._type}: type not registered.`);
+    console.warn(`Failed to regen property ${e._type}: type not registered.`);
     return undefined;
   }
   if (typeof n == "string") {
@@ -215,7 +207,7 @@ e.regenProperty = (e, r) => {
         try {
           l(e, t, r);
         } catch (e) {
-          s.error(e.stack);
+          console.error(e.stack);
 
           if (r) {
             r(e);
@@ -223,7 +215,7 @@ e.regenProperty = (e, r) => {
         }
       })
       .catch((e) => {
-        s.error(e.stack);
+        console.error(e.stack);
 
         if (r) {
           r(e);
@@ -235,7 +227,7 @@ e.regenProperty = (e, r) => {
   try {
     l(e, n, r);
   } catch (e) {
-    s.error(e.stack);
+    console.error(e.stack);
 
     if (r) {
       r(e);

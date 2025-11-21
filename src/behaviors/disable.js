@@ -1,16 +1,19 @@
-import e from "../utils/dom-utils";
-let t = {
+import domUtils from "../utils/dom-utils";
+
+class DisableBehavior {
   get canBeDisable() {
     return true;
-  },
+  }
+
   get disabled() {
     return this.getAttribute("is-disabled") !== null;
-  },
-  set disabled(e) {
-    if (e !== this._disabled) {
-      this._disabled = e;
+  }
 
-      if (e) {
+  set disabled(disabledValue) {
+    if (disabledValue !== this._disabled) {
+      this._disabled = disabledValue;
+
+      if (disabledValue) {
         this.setAttribute("disabled", "");
         this._setIsDisabledAttribute(true);
 
@@ -18,7 +21,7 @@ let t = {
           return;
         }
 
-        this._propgateDisable();
+        this._propagateDisable();
       } else {
         this.removeAttribute("disabled");
 
@@ -29,54 +32,80 @@ let t = {
             return;
           }
 
-          this._propgateDisable();
+          this._propagateDisable();
         }
       }
     }
-  },
-  _initDisable(e) {
+  }
+
+  _initDisable(enableNested) {
     this._disabled = this.getAttribute("disabled") !== null;
 
     if (this._disabled) {
       this._setIsDisabledAttribute(true);
     }
 
-    this._disabledNested = e;
-  },
-  _propgateDisable() {
-    e.walk(
+    this._disabledNested = enableNested;
+  }
+
+  _propagateDisable() {
+    domUtils.walk(
       this,
       { excludeSelf: true },
-      (e) =>
-        !!e.canBeDisable &&
-        (!!e._disabled ||
-          (e._setIsDisabledAttribute(this._disabled), !e._disabledNested))
+      (childElement) =>
+        !!childElement.canBeDisable &&
+        (!!childElement._disabled ||
+          (childElement._setIsDisabledAttribute(this._disabled),
+          !childElement._disabledNested))
     );
-  },
-  _isDisabledInHierarchy(e) {
-    if (!e && this.disabled) {
+  }
+
+  _isDisabledInHierarchy(excludeSelf) {
+    if (!excludeSelf && this.disabled) {
       return true;
     }
-    let t = this.parentNode;
+    let parentNode = this.parentNode;
 
-    while (t) {
-      if (t.disabled) {
+    while (parentNode) {
+      if (parentNode.disabled) {
         return true;
       }
-      t = t.parentNode;
+      parentNode = parentNode.parentNode;
     }
 
     return false;
-  },
+  }
+
   _isDisabledSelf() {
     return this._disabled;
-  },
-  _setIsDisabledAttribute(e) {
-    if (e) {
+  }
+
+  _setIsDisabledAttribute(isDisabled) {
+    if (isDisabled) {
       this.setAttribute("is-disabled", "");
     } else {
       this.removeAttribute("is-disabled");
     }
+  }
+}
+
+// 导出类的实例方法和属性描述符，以便混入到元素原型
+const behaviorPrototype = DisableBehavior.prototype;
+export default {
+  get canBeDisable() {
+    return behaviorPrototype.canBeDisable.get.call(this);
   },
+  get disabled() {
+    return behaviorPrototype.disabled.get.call(this);
+  },
+  set disabled(value) {
+    behaviorPrototype.disabled.set.call(this, value);
+  },
+  _initDisable: behaviorPrototype._initDisable,
+  _propagateDisable: behaviorPrototype._propagateDisable,
+  // 向后兼容：保留旧的拼写错误的方法名
+  _propgateDisable: behaviorPrototype._propagateDisable,
+  _isDisabledInHierarchy: behaviorPrototype._isDisabledInHierarchy,
+  _isDisabledSelf: behaviorPrototype._isDisabledSelf,
+  _setIsDisabledAttribute: behaviorPrototype._setIsDisabledAttribute,
 };
-export default t;

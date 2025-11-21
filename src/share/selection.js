@@ -6,10 +6,8 @@ let r;
 
 if (i.isMainProcess) {
   s = require("../main/ipc");
-  r = require("../main/console");
 } else {
   s = require("../renderer/ipc");
-  r = require("../renderer/console");
 }
 
 let n = null;
@@ -26,7 +24,7 @@ const p = "selection:patch";
 let y = {
   register(e) {
     if (!i.isMainProcess) {
-      r.warn("Editor.Selection.register can only be called in core level.");
+      console.warn("Editor.Selection.register can only be called in core level.");
       return undefined;
     }
 
@@ -56,7 +54,7 @@ let y = {
     let l_e = l[e];
     return l_e
       ? l_e.confirmed
-      : (r.error(
+      : (console.error(
           "Cannot find the type %s for selection. Please register it first.",
           e
         ),
@@ -67,7 +65,7 @@ let y = {
 
     if (l_e) {
       if (t && typeof t != "string" && !Array.isArray(t)) {
-        r.error(
+        console.error(
           "The 2nd argument for `Editor.Selection.select` must be a string or array"
         );
 
@@ -78,7 +76,7 @@ let y = {
       return undefined;
     }
 
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       e
     );
@@ -90,7 +88,7 @@ let y = {
 
     if (l_e) {
       if (t && typeof t != "string" && !Array.isArray(t)) {
-        r.error(
+        console.error(
           "The 2nd argument for `Editor.Selection.select` must be a string or array"
         );
 
@@ -101,7 +99,7 @@ let y = {
       return undefined;
     }
 
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       e
     );
@@ -111,7 +109,7 @@ let y = {
   hover(e, t) {
     let l_e = l[e];
     if (!l_e) {
-      r.error(
+      console.error(
         "Cannot find the type %s for selection. Please register it first.",
         e
       );
@@ -125,7 +123,7 @@ let y = {
 
     if (l_e) {
       if (t && typeof t != "string") {
-        r.error(
+        console.error(
           "The 2nd argument for `Editor.Selection.setContext` must be a string"
         );
 
@@ -136,7 +134,7 @@ let y = {
       return undefined;
     }
 
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       e
     );
@@ -146,7 +144,7 @@ let y = {
   patch(e, t, i) {
     let l_e = l[e];
     if (!l_e) {
-      r.error(
+      console.error(
         "Cannot find the type %s for selection. Please register it first",
         e
       );
@@ -158,7 +156,7 @@ let y = {
   clear(e) {
     let l_e = l[e];
     if (!l_e) {
-      r.error(
+      console.error(
         "Cannot find the type %s for selection. Please register it first",
         e
       );
@@ -171,7 +169,7 @@ let y = {
     let l_e = l[e];
     return l_e
       ? l_e.lastHover
-      : (r.error(
+      : (console.error(
           "Cannot find the type %s for selection. Please register it first",
           e
         ),
@@ -181,7 +179,7 @@ let y = {
     let l_e = l[e];
     return l_e
       ? l_e.contexts
-      : (r.error(
+      : (console.error(
           "Cannot find the type %s for selection. Please register it first.",
           e
         ),
@@ -191,7 +189,7 @@ let y = {
     let l_e = l[e];
     return l_e
       ? l_e.lastActive
-      : (r.error(
+      : (console.error(
           "Cannot find the type %s for selection. Please register it first.",
           e
         ),
@@ -202,7 +200,7 @@ let y = {
     let l_e = l[e];
     return l_e
       ? l_e.selection.slice()
-      : (r.error(
+      : (console.error(
           "Cannot find the type %s for selection. Please register it first.",
           e
         ),
@@ -537,7 +535,7 @@ if (i.isRendererProcess) {
 A.on("_selection:selected", (e, t, i) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -555,7 +553,7 @@ A.on("_selection:selected", (e, t, i) => {
 A.on("_selection:unselected", (e, t, i) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -568,7 +566,7 @@ A.on("_selection:unselected", (e, t, i) => {
 A.on("_selection:activated", (e, t, i) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -583,7 +581,7 @@ A.on("_selection:deactivated", (e, t, i) => {
   unused(i);
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -601,7 +599,7 @@ A.on("_selection:deactivated", (e, t, i) => {
 A.on("_selection:hoverin", (e, t, i) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -615,7 +613,7 @@ A.on("_selection:hoverout", (e, t, i) => {
   unused(i);
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -628,7 +626,7 @@ A.on("_selection:hoverout", (e, t, i) => {
 A.on("_selection:context", (e, t, i) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );
@@ -641,7 +639,7 @@ A.on("_selection:context", (e, t, i) => {
 A.on("_selection:patch", (e, t, i, s) => {
   let l_t = l[t];
   if (!l_t) {
-    r.error(
+    console.error(
       "Cannot find the type %s for selection. Please register it first.",
       t
     );

@@ -12,9 +12,6 @@ function r(e, t, r) {
   Object.defineProperty(r, e, n);
 }
 
-t = e.isMainProcess
-  ? require("../main/console")
-  : require("../renderer/console");
 
 export default {
   copyprop: r,
@@ -23,10 +20,10 @@ export default {
 
     for (let l of n) {
       if (l) {
-        if (typeof l != "object") {
-          t.error("JS.assign called on non-object:", l);
-          continue;
-        }
+      if (typeof l != "object") {
+        console.error("JS.assign called on non-object:", l);
+        continue;
+      }
         for (let t in l) {
           r(t, l, e);
         }
@@ -39,7 +36,7 @@ export default {
     e = e || {};
 
     if (typeof n != "object") {
-      t.error("JS.assignExcept called on non-object:", n);
+      console.error("JS.assignExcept called on non-object:", n);
       return null;
     }
 
@@ -76,11 +73,11 @@ export default {
   },
   extend(e, r) {
     if (!r) {
-      t.error("The base class to extend from must be non-nil");
+      console.error("The base class to extend from must be non-nil");
       return undefined;
     }
     if (!e) {
-      t.error("The class to extend must be non-nil");
+      console.error("The class to extend must be non-nil");
       return undefined;
     }
     for (const n in r) {
