@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -50,7 +50,7 @@ export default elementUtils.registerElement("ui-checkbox", {
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, buttonStateBehavior],
   template:
     '\n    <div class="box">\n      <i class="checker icon-ok"></i>\n    </div>\n    <span class="label">\n      <slot></slot>\n    </span>\n  ',
-  style: resourceMgr.getResource("theme://elements/checkbox.css"),
+  style: getElementStyleSync("checkbox"),
   factoryImpl(e, t) {
     if (t) {
       this.innerText = t;

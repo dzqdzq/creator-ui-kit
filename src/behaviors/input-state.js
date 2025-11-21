@@ -1,8 +1,7 @@
-import domUtils from "../utils/dom-utils.js";
-import focusMgr from "../utils/focus-mgr.js";
-
-export default {
-  _initInputState(input) {
+import e from "../utils/dom-utils";
+import t from "../utils/focus-mgr";
+let n = {
+  _initInputState(n) {
     if (!this._onInputConfirm) {
       throw new Error(
         "Failed to init input-state: please implement _onInputConfirm"
@@ -18,78 +17,76 @@ export default {
         "Failed to init input-state: please implement _onInputChange"
       );
     }
+    let s = n instanceof HTMLTextAreaElement;
+    n._initValue = n.value;
+    n._focused = false;
+    n._selectAllWhenMouseUp = false;
+    n._mouseStartX = -1;
 
-    const isTextArea = input instanceof HTMLTextAreaElement;
-    input._initValue = input.value;
-    input._focused = false;
-    input._selectAllWhenMouseUp = false;
-    input._mouseStartX = -1;
+    n.addEventListener("focus", () => {
+      n._focused = true;
+      n._initValue = n.value;
 
-    input.addEventListener("focus", () => {
-      input._focused = true;
-      input._initValue = input.value;
-      if (input._selectAllWhenMouseUp === false) {
-        input.select();
+      if (n._selectAllWhenMouseUp === false) {
+        n.select();
       }
     });
 
-    input.addEventListener("blur", () => {
-      input._focused = false;
+    n.addEventListener("blur", () => {
+      n._focused = false;
     });
 
-    input.addEventListener("change", (e) => {
-      domUtils.acceptEvent(e);
-      this._onInputConfirm(input);
+    n.addEventListener("change", (t) => {
+      e.acceptEvent(t);
+      this._onInputConfirm(n);
     });
 
-    input.addEventListener("input", (e) => {
-      domUtils.acceptEvent(e);
-      this._onInputChange(input);
+    n.addEventListener("input", (t) => {
+      e.acceptEvent(t);
+      this._onInputChange(n);
     });
 
-    input.addEventListener("keydown", (e) => {
+    n.addEventListener("keydown", (t) => {
       if (!this.disabled) {
-        e.stopPropagation();
-        if (e.keyCode === 13) {
-          if (!isTextArea || e.ctrlKey || e.metaKey) {
-            domUtils.acceptEvent(e);
-            this._onInputConfirm(input, true);
-          }
-        } else if (e.keyCode === 27) {
-          domUtils.acceptEvent(e);
-          this._onInputCancel(input, true);
-        }
+        t.stopPropagation();
+
+        t.keyCode === 13
+          ? (!s || t.ctrlKey || t.ctrlKey || t.metaKey) &&
+            (e.acceptEvent(t), this._onInputConfirm(n, true))
+          : t.keyCode === 27 &&
+            (e.acceptEvent(t), this._onInputCancel(n, true));
       }
     });
 
-    input.addEventListener("keyup", (e) => {
+    n.addEventListener("keyup", (e) => {
       e.stopPropagation();
     });
 
-    input.addEventListener("keypress", (e) => {
+    n.addEventListener("keypress", (e) => {
       e.stopPropagation();
     });
 
-    input.addEventListener("mousedown", (e) => {
+    n.addEventListener("mousedown", (e) => {
       e.stopPropagation();
-      focusMgr._setFocusElement(this);
-      input._mouseStartX = e.clientX;
-      if (!input._focused) {
-        input._selectAllWhenMouseUp = true;
+      t._setFocusElement(this);
+      n._mouseStartX = e.clientX;
+
+      if (!n._focused) {
+        n._selectAllWhenMouseUp = true;
       }
     });
 
-    input.addEventListener("mouseup", (e) => {
+    n.addEventListener("mouseup", (e) => {
       e.stopPropagation();
-      if (input._selectAllWhenMouseUp) {
-        input._selectAllWhenMouseUp = false;
-        if (Math.abs(e.clientX - input._mouseStartX) < 4) {
-          input.select();
-        }
+
+      if (n._selectAllWhenMouseUp) {
+        n._selectAllWhenMouseUp = false;
+        Math.abs(e.clientX - n._mouseStartX) < 4 && n.select();
       }
     });
   },
-  _unselect(input) {
-    input.selectionStart = input.selectionEnd = -1;
+  _unselect(e) {
+    e.selectionStart = e.selectionEnd = -1;
   },
 };
+export default n;

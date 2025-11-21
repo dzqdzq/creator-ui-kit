@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 
 export default elementUtils.registerElement("ui-loader", {
   get inline() {
@@ -26,7 +26,7 @@ export default elementUtils.registerElement("ui-loader", {
   },
   template:
     '\n    <div class="animate"></div>\n    <div class="label">\n      <slot></slot>\n    </div>\n  ',
-  style: resourceMgr.getResource("theme://elements/loader.css"),
+  style: getElementStyleSync("loader"),
   factoryImpl(e) {
     if (e) {
       this.innerText = e;

@@ -1,25 +1,24 @@
 // UI-Kit 入口文件
-import resourceMgr from "./utils/resource-mgr.js";
-import { loadElementStyle, preloadStyles } from "./utils/theme-loader.js";
+import { preloadElementStyles } from "./utils/css-loader.js";
 
 // 使用 themes 目录下的样式
 async function initStyles() {
   try {
-    // 预加载所有元素的样式
-    await preloadStyles(['button', 'checkbox', 'input', 'select', 'progress'], 'default');
+    // 预加载所有元素的样式（包括已导入和未导入的元素）
+    const allElements = [
+      'button', 'checkbox', 'input', 'select', 'progress',
+      'box-container', 'color', 'color-picker', 'hint', 'loader',
+      'markdown', 'num-input', 'prop', 'prop-table', 'section',
+      'slider', 'splitter', 'text-area'
+    ];
+    await preloadElementStyles(allElements, 'default');
     
-    // 注册样式
-    resourceMgr.registerStyle("button", await loadElementStyle('button', 'default'));
-    resourceMgr.registerStyle("checkbox", await loadElementStyle('checkbox', 'default'));
-    resourceMgr.registerStyle("input", await loadElementStyle('input', 'default'));
-    resourceMgr.registerStyle("select", await loadElementStyle('select', 'default'));
-    resourceMgr.registerStyle("progress", await loadElementStyle('progress', 'default'));
-    
-    // 调试：检查样式是否已注册
+    // 调试：检查样式是否已加载
     if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      console.log('样式已注册:', {
-        button: !!resourceMgr.getResource("theme://elements/button.css"),
-        checkbox: !!resourceMgr.getResource("theme://elements/checkbox.css"),
+      const { getElementStyleSync } = await import("./utils/css-loader.js");
+      console.log('样式已预加载:', {
+        button: !!getElementStyleSync('button'),
+        checkbox: !!getElementStyleSync('checkbox'),
       });
     }
   } catch (error) {
@@ -39,6 +38,6 @@ import "./elements/progress.js";
 
 // 导出主要 API
 export { default as utils } from "./utils/utils.js";
-export { default as resourceMgr } from "./utils/resource-mgr.js";
 export { default as domUtils } from "./utils/dom-utils.js";
 export { default as focusMgr } from "./utils/focus-mgr.js";
+export { default as cssLoader } from "./utils/css-loader.js";

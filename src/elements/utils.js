@@ -1,7 +1,6 @@
 import r from "chroma-js";
 // import s from "../../console"; // 外部依赖，暂时注释
 // import n from "../../../share/js-utils"; // 外部依赖，暂时注释
-import i from "../utils/resource-mgr.js";
 import o from "../utils/dom-utils.js";
 import n from "../utils/js-utils.js";
 
@@ -210,8 +209,9 @@ e.regenProperty = (e, r) => {
     return undefined;
   }
   if (typeof n == "string") {
-    i.importScript(n)
-      .then((t) => {
+    import(n)
+      .then((module) => {
+        const t = module.default || module;
         try {
           l(e, t, r);
         } catch (e) {

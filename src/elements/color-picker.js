@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
 import mathUtils from "../share/math";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -32,7 +32,7 @@ export default elementUtils.registerElement("ui-color-picker", {
   behaviors: [focusableBehavior],
   template:
     '\n    <div class="hbox">\n      <div class="hue ctrl" tabindex="-1">\n        <div class="hue-handle">\n          <i class="icon-right-dir"></i>\n        </div>\n      </div>\n      <div class="color ctrl" tabindex="-1">\n        <div class="color-handle">\n          <i class="icon-circle-empty"></i>\n        </div>\n      </div>\n      <div class="alpha ctrl" tabindex="-1">\n        <div class="alpha-handle">\n          <i class="icon-left-dir"></i>\n        </div>\n      </div>\n    </div>\n\n    <div class="vbox">\n      <div class="prop">\n        <span class="red tag">R</span>\n        <ui-slider id="r-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="green">G</span>\n        <ui-slider id="g-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="blue">B</span>\n        <ui-slider id="b-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="gray">A</span>\n        <ui-slider id="a-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="hex-field">\n        <div class="color-block old">\n          <div id="old-color" class="color-inner"></div>\n        </div>\n        <div class="color-block new">\n          <div id="new-color" class="color-inner"></div>\n        </div>\n        <span class="space"></span>\n        <div class="label">Hex Color</div>\n        <ui-input id="hex-input"></ui-input>\n      </div>\n\n      <div class="title">\n        <div>Presets</div>\n          <ui-button id="btn-add" class="transparent tiny">\n            <i class="icon-plus"></i>\n          </ui-button>\n        </div>\n      <div class="hbox palette"></div>\n    </div>\n  ',
-  style: resourceMgr.getResource("theme://elements/color-picker.css"),
+  style: getElementStyleSync("color-picker"),
   $: {
     hueHandle: ".hue-handle",
     colorHandle: ".color-handle",

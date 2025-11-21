@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UI-Kit 示例</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "./node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <!-- 使用构建后的 UI-Kit -->
+  <!-- 开发时可以使用: import './src/index.js' -->
+  <!-- 生产时使用: import './dist/ui-kit.js' -->
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -51,8 +61,9 @@
     }
   </style>
   <script type="module">
-    // 导入 UI-Kit
-    import './src/index.js';
+    // 导入 UI-Kit（使用构建后的文件）
+    // 如果 dist 目录不存在，请先运行: pnpm run build
+    import './dist/ui-kit.js';
     
     // 等待自定义元素注册完成
     await customElements.whenDefined('ui-button');

@@ -1,69 +1,82 @@
-import domUtils from "../utils/dom-utils.js";
-
-export default {
+import e from "../utils/dom-utils";
+let t = {
   get canBeReadonly() {
     return true;
   },
   get readonly() {
     return this.getAttribute("is-readonly") !== null;
   },
-  set readonly(value) {
-    if (value !== this._readonly) {
-      this._readonly = value;
-      if (value) {
+  set readonly(e) {
+    if (e !== this._readonly) {
+      this._readonly = e;
+
+      if (e) {
         this.setAttribute("readonly", "");
         this._setIsReadonlyAttribute(true);
+
         if (!this._readonlyNested) {
           return;
         }
+
         this._propgateReadonly();
       } else {
         this.removeAttribute("readonly");
+
         if (!this._isReadonlyInHierarchy(true)) {
           this._setIsReadonlyAttribute(false);
+
           if (!this._readonlyNested) {
             return;
           }
+
           this._propgateReadonly();
         }
       }
     }
   },
-  _initReadonly(nested) {
+  _initReadonly(e) {
     this._readonly = this.getAttribute("readonly") !== null;
+
     if (this._readonly) {
       this._setIsReadonlyAttribute(true);
     }
-    this._readonlyNested = nested;
+
+    this._readonlyNested = e;
   },
   _propgateReadonly() {
-    domUtils.walk(
+    e.walk(
       this,
       { excludeSelf: true },
-      (el) =>
-        !!el.canBeReadonly &&
-        (!!el._readonly ||
-          (el._setIsReadonlyAttribute(this._readonly), !el._readonlyNested))
+      (e) =>
+        !!e.canBeReadonly &&
+        (!!e._readonly ||
+          (e._setIsReadonlyAttribute(this._readonly), !e._readonlyNested))
     );
   },
-  _isReadonlyInHierarchy(excludeSelf) {
-    if (!excludeSelf && this.readonly) {
+  _isReadonlyInHierarchy(e) {
+    if (!e && this.readonly) {
       return true;
     }
-    let parent = this.parentNode;
-    while (parent) {
-      if (parent.readonly) {
+    let t = this.parentNode;
+
+    while (t) {
+      if (t.readonly) {
         return true;
       }
-      parent = parent.parentNode;
+      t = t.parentNode;
     }
+
     return false;
   },
-  _setIsReadonlyAttribute(value) {
-    if (value) {
+  _isReadonlySelf() {
+    return this._readonly;
+  },
+  _setIsReadonlyAttribute(e) {
+    if (e) {
       this.setAttribute("is-readonly", "");
     } else {
       this.removeAttribute("is-readonly");
     }
   },
 };
+export default t;

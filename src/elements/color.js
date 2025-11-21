@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -70,7 +70,7 @@ export default elementUtils.registerElement("ui-color", {
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template:
     '\n    <div class="inner">\n      <div class="rgb"></div>\n      <div class="alpha"></div>\n    </div>\n    <div class="mask"></div>\n  ',
-  style: resourceMgr.getResource("theme://elements/color.css"),
+  style: getElementStyleSync("color"),
   $: { rgb: ".rgb", alpha: ".alpha" },
   factoryImpl(e) {
     if (e) {

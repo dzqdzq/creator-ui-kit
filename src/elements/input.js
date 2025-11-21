@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -92,7 +92,7 @@ export default elementUtils.registerElement("ui-input", {
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template: "\n    <input></input>\n  ",
-  style: resourceMgr.getResource("theme://elements/input.css"),
+  style: getElementStyleSync("input"),
   $: { input: "input" },
   factoryImpl(t) {
     if (t) {

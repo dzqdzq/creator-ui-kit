@@ -5,7 +5,8 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "build": "echo 'Build script - use a bundler like Vite, Webpack, or Rollup'"
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "web-components",
@@ -13,5 +14,12 @@
     "custom-elements"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "chroma-js": "^3.1.2"
+  },
+  "devDependencies": {
+    "glob": "^13.0.0",
+    "vite": "^5.0.0"
+  }
 }

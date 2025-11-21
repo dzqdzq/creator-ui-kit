@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -75,7 +75,7 @@ export default elementUtils.registerElement("ui-select", {
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template: "\n    <select></select>\n  ",
-  style: resourceMgr.getResource("theme://elements/select.css"),
+  style: getElementStyleSync("select"),
   $: { select: "select" },
   factoryImpl(e) {
     if (!isNaN(e)) {

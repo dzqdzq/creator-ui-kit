@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -259,7 +259,7 @@ let m = elementUtils.registerElement("ui-prop", {
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template:
     '\n    <div class="wrapper">\n      <div class="label">\n        <i class="move icon-braille"></i>\n        <i class="fold icon-fold-up"></i>\n        <span class="text"></span>\n        <div class="resizer">\n            <i class="resizer-icon"></i>\n        </div>\n        <div class="lock">\n          <i class="icon-lock"></i>\n        </div>\n      </div>\n      <div class="wrapper-content">\n        <slot></slot>\n      </div>\n      <div class="remove">\n        <i class="icon-trash-empty"></i>\n      </div>\n    </div>\n    <slot name="child"></slot>\n  ',
-  style: resourceMgr.getResource("theme://elements/prop.css"),
+  style: getElementStyleSync("prop"),
   $: {
     label: ".label",
     moveIcon: ".move",

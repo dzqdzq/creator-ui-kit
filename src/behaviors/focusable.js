@@ -1,6 +1,5 @@
-import domUtils from "../utils/dom-utils.js";
-
-export default {
+import s from "../utils/dom-utils";
+let t = {
   get focusable() {
     return true;
   },
@@ -10,29 +9,29 @@ export default {
   get unnavigable() {
     return this.getAttribute("unnavigable") !== null;
   },
-  set unnavigable(value) {
-    if (value) {
+  set unnavigable(s) {
+    if (s) {
       this.setAttribute("unnavigable", "");
     } else {
       this.removeAttribute("unnavigable");
     }
   },
-  _initFocusable(focusEls, navEls) {
-    if (focusEls) {
-      if (Array.isArray(focusEls)) {
-        this._focusELs = focusEls;
+  _initFocusable(s, t) {
+    if (s) {
+      if (Array.isArray(s)) {
+        this._focusELs = s;
       } else {
-        this._focusELs = [focusEls];
+        this._focusELs = [s];
       }
     } else {
       this._focusELs = [];
     }
 
-    if (navEls) {
-      if (Array.isArray(navEls)) {
-        this._navELs = navEls;
+    if (t) {
+      if (Array.isArray(t)) {
+        this._navELs = t;
       } else {
-        this._navELs = [navEls];
+        this._navELs = [t];
       }
     } else {
       this._navELs = this._focusELs;
@@ -40,10 +39,12 @@ export default {
 
     requestAnimationFrame(() => {
       this.tabIndex = -1;
-      for (const el of this._focusELs) {
-        el.tabIndex = -1;
-        el.addEventListener("focus", () => {
-          this._curFocus = el;
+
+      for (let t of this._focusELs) {
+        t.tabIndex = -1;
+
+        t.addEventListener("focus", () => {
+          this._curFocus = t;
         });
       }
     });
@@ -51,32 +52,36 @@ export default {
   _getFirstFocusableElement() {
     return this._focusELs.length > 0 ? this._focusELs[0] : null;
   },
-  _setFocused(value) {
-    if (this.focused !== value) {
-      if (value) {
+  _setFocused(t) {
+    if (this.focused !== t) {
+      if (t) {
         this.setAttribute("focused", "");
+
         if (this._focusELs.length > 0) {
-          const el = this._focusELs[0];
-          if (el === this) {
-            el.focus();
-          } else if (el.focusable) {
-            el._setFocused(true);
+          let s = this._focusELs[0];
+
+          if (s === this) {
+            s.focus();
+          } else if (s.focusable) {
+            s._setFocused(true);
           } else {
-            el.focus();
+            s.focus();
           }
         }
       } else {
         this.removeAttribute("focused");
-        this._focusELs.forEach((el) => {
-          if (el.focusable && el.focused) {
-            el._setFocused(false);
+
+        this._focusELs.forEach((s) => {
+          if (s.focusable && s.focused) {
+            s._setFocused(false);
           }
         });
       }
-      domUtils.fire(this, "focus-changed", {
+      s.fire(this, "focus-changed", {
         bubbles: true,
         detail: { focused: this.focused },
       });
     }
   },
 };
+export default t;

@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import hintElement from "./hint.js";
@@ -16,7 +16,7 @@ function u(e) {
 }
 
 export default elementUtils.registerElement("ui-prop-table", {
-  style: resourceMgr.getResource("theme://elements/prop-table.css"),
+  style: getElementStyleSync("prop-table"),
   template: "\n    <table></table>\n  ",
   $: { table: "table" },
   ready() {

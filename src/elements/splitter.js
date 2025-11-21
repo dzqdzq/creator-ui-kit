@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 // import i from "../behaviors/resizable"; // 需要创建此文件
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 
 // 临时占位符
 const resizableBehavior = {};
@@ -8,7 +8,7 @@ const resizableBehavior = {};
 export default elementUtils.registerElement("ui-splitter", {
   behaviors: [resizableBehavior],
   template: '\n    <div class="content">\n      <slot></slot>\n    </div>\n  ',
-  style: resourceMgr.getResource("theme://elements/splitter.css"),
+  style: getElementStyleSync("splitter"),
   ready() {
     this._initResizable();
     this._needEvaluateSize = this.children.length !== 0;

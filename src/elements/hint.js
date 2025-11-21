@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 
 export default elementUtils.registerElement("ui-hint", {
   get position() {
@@ -23,7 +23,7 @@ export default elementUtils.registerElement("ui-hint", {
   template:
     '\n    <div class="box">\n      <slot></slot>\n      <div class="arrow"></div>\n    </div>\n  ',
   $: { arrow: ".arrow" },
-  style: resourceMgr.getResource("theme://elements/hint.css"),
+  style: getElementStyleSync("hint"),
   factoryImpl(t) {
     if (t) {
       this.innerText = t;

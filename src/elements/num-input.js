@@ -2,7 +2,7 @@
 // import e from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
 // import s from "../../../share/utils"; // 外部依赖，暂时注释
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -187,7 +187,7 @@ export default elementUtils.registerElement("ui-num-input", {
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior, o],
   template:
     '\n    <input></input>\n    <div class="spin-wrapper" tabindex="-1">\n      <div class="spin up">\n        <i class="icon-up-dir"></i>\n      </div>\n      <div class="spin-div"></div>\n      <div class="spin down">\n        <i class="icon-down-dir"></i>\n      </div>\n    </div>\n  ',
-  style: resourceMgr.getResource("theme://elements/num-input.css"),
+  style: getElementStyleSync("num-input"),
   $: {
     input: "input",
     spinWrapper: ".spin-wrapper",

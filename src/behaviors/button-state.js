@@ -1,88 +1,94 @@
-import domUtils from "../utils/dom-utils.js";
-import focusMgr from "../utils/focus-mgr.js";
-
-function isPressed(el) {
-  return el.getAttribute("pressed") !== null;
+import e from "../utils/dom-utils";
+import t from "../utils/focus-mgr";
+function s(e) {
+  return e.getAttribute("pressed") !== null;
 }
+let i = {
+  _initButtonState(i) {
+    e.installDownUpEvent(i);
 
-export default {
-  _initButtonState(target) {
-    domUtils.installDownUpEvent(target);
-
-    target.addEventListener("keydown", (e) => {
+    i.addEventListener("keydown", (t) => {
       if (!this.disabled) {
-        if (e.keyCode === 32) {
-          domUtils.acceptEvent(e);
-          this._setPressed(target, true);
+        if (t.keyCode === 32) {
+          e.acceptEvent(t);
+          this._setPressed(i, true);
           this._canceledByEsc = false;
-        } else if (e.keyCode === 13) {
-          domUtils.acceptEvent(e);
+        } else if (t.keyCode === 13) {
+          e.acceptEvent(t);
+
           if (this._enterTimeoutID) {
             return;
           }
-          this._setPressed(target, true);
+
+          this._setPressed(i, true);
           this._canceledByEsc = false;
+
           this._enterTimeoutID = setTimeout(() => {
             this._enterTimeoutID = null;
-            this._setPressed(target, false);
-            target.click();
+            this._setPressed(i, false);
+            i.click();
           }, 100);
-        } else if (e.keyCode === 27) {
-          domUtils.acceptEvent(e);
-          if (isPressed(target)) {
-            domUtils.fire(target, "cancel", { bubbles: true });
-            this._canceledByEsc = true;
+        } else {
+          if (t.keyCode === 27) {
+            e.acceptEvent(t);
+
+            s(i) &&
+              (e.fire(i, "cancel", { bubbles: true }),
+              (this._canceledByEsc = true));
+
+            this._setPressed(i, false);
           }
-          this._setPressed(target, false);
         }
       }
     });
 
-    target.addEventListener("keyup", (e) => {
-      if (e.keyCode === 32) {
-        domUtils.acceptEvent(e);
-        if (isPressed(target)) {
+    i.addEventListener("keyup", (t) => {
+      if (t.keyCode === 32) {
+        e.acceptEvent(t);
+
+        s(i) &&
           setTimeout(() => {
-            target.click();
+            i.click();
           }, 1);
-        }
-        this._setPressed(target, false);
+
+        this._setPressed(i, false);
       }
     });
 
-    target.addEventListener("down", (e) => {
-      domUtils.acceptEvent(e);
-      focusMgr._setFocusElement(this);
-      this._setPressed(target, true);
+    i.addEventListener("down", (s) => {
+      e.acceptEvent(s);
+      t._setFocusElement(this);
+      this._setPressed(i, true);
       this._canceledByEsc = false;
     });
 
-    target.addEventListener("up", (e) => {
-      domUtils.acceptEvent(e);
-      this._setPressed(target, false);
+    i.addEventListener("up", (t) => {
+      e.acceptEvent(t);
+      this._setPressed(i, false);
     });
 
-    target.addEventListener("click", (e) => {
-      this._onButtonClick(target, e);
+    i.addEventListener("click", (t) => {
+      this._onButtonClick(i, t);
+
       if (!this.readonly) {
-        if (this._canceledByEsc) {
-          this._canceledByEsc = false;
-          domUtils.acceptEvent(e);
-        }
+        return this._canceledByEsc
+          ? ((this._canceledByEsc = false), e.acceptEvent(t), undefined)
+          : undefined;
       }
     });
 
-    target.addEventListener("focus-changed", () => {
+    i.addEventListener("focus-changed", () => {
       if (!this.focused) {
-        this._setPressed(target, false);
+        this._setPressed(i, false);
       }
     });
   },
-  _setPressed(el, value) {
-    if (value) {
-      el.setAttribute("pressed", "");
+  _setPressed(e, t) {
+    if (t) {
+      e.setAttribute("pressed", "");
     } else {
-      el.removeAttribute("pressed");
+      e.removeAttribute("pressed");
     }
   },
 };
+export default i;

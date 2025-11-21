@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 // import t from "../../../share/math"; // 外部依赖，暂时注释
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 
 // 创建 math 占位符
 const mathUtils = {
@@ -25,7 +25,7 @@ export default elementUtils.registerElement("ui-progress", {
   },
   template:
     '\n    <div class="bar">\n      <div class="label"></div>\n    </div>\n  ',
-  style: resourceMgr.getResource("theme://elements/progress.css"),
+  style: getElementStyleSync("progress"),
   $: { bar: ".bar", label: ".label" },
   factoryImpl(e) {
     if (e) {

@@ -56,6 +56,94 @@ button.addEventListener('confirm', (e) => {
 });
 ```
 
+## CSS 加载方式
+
+本项目支持两种 CSS 加载方式：
+
+### 1. 运行时加载（默认）
+
+CSS 文件在运行时通过 `fetch` API 动态加载。这种方式适合开发环境或直接使用源码的场景。
+
+### 2. 编译时注入（推荐用于生产环境）
+
+使用构建工具（如 Vite、Webpack）在编译时将 CSS 内容直接注入到 JavaScript 中，可以：
+- 减少运行时请求
+- 提高性能
+- 支持代码分割和 tree-shaking
+
+#### 使用 Vite 进行编译时注入
+
+创建 `vite.config.js`：
+
+```javascript
+import { defineConfig } from 'vite';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+export default defineConfig({
+  plugins: [
+    {
+      name: 'css-inject',
+      transform(code, id) {
+        // 将 CSS 文件导入转换为字符串
+        if (id.endsWith('.css')) {
+          const cssContent = readFileSync(id, 'utf-8');
+          return `export default ${JSON.stringify(cssContent)};`;
+        }
+      },
+      resolveId(id) {
+        // 处理 theme:// 协议的导入
+        if (id.startsWith('theme://')) {
+          const path = id.replace('theme://elements/', 'src/themes/default/elements/');
+          return resolve(path + '.css');
+        }
+      }
+    }
+  ]
+});
+```
+
+然后修改 `src/utils/css-loader.js`，在构建时直接导入 CSS：
+
+```javascript
+// 编译时导入（如果使用构建工具）
+let compiledStyles = {};
+try {
+  // 构建工具会将这些替换为实际的 CSS 内容
+  compiledStyles.button = import('../../themes/default/elements/button.css?raw');
+  compiledStyles.checkbox = import('../../themes/default/elements/checkbox.css?raw');
+  // ... 其他样式
+} catch (e) {
+  // 运行时回退
+}
+
+export function getElementStyleSync(elementName, themeName = 'default') {
+  // 优先使用编译时的样式
+  if (compiledStyles[elementName]) {
+    return compiledStyles[elementName];
+  }
+  // 回退到运行时加载
+  return styleCache.get(`${themeName}/${elementName}`) || '';
+}
+```
+
+#### 使用 Webpack 进行编译时注入
+
+在 `webpack.config.js` 中使用 `raw-loader` 或 `css-loader`：
+
+```javascript
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['raw-loader'] // 将 CSS 作为字符串导入
+      }
+    ]
+  }
+};
+```
+
 ## 构建
 
 使用现代打包工具（如 Vite、Webpack、Rollup）进行构建：

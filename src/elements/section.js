@@ -1,7 +1,7 @@
 import elementUtils from "./utils.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 
@@ -19,7 +19,7 @@ export default elementUtils.registerElement("ui-section", {
   behaviors: [focusableBehavior, disableBehavior],
   template:
     '\n    <div class="wrapper">\n      <i class="fold icon-fold-up"></i>\n      <slot name="header"></slot>\n    </div>\n    <slot class="content"></slot>\n  ',
-  style: resourceMgr.getResource("theme://elements/section.css"),
+  style: getElementStyleSync("section"),
   $: { wrapper: ".wrapper", foldIcon: ".fold" },
   factoryImpl(e) {
     let t = document.createElement("span");

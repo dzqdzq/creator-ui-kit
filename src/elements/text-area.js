@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 // import t from "../../../share/platform"; // 外部依赖，暂时注释
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -103,7 +103,7 @@ export default elementUtils.registerElement("ui-text-area", {
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template: `\n    <div class="back">\n      <span>${r}</span>\n    </div>\n    <textarea></textarea>\n  `,
-  style: resourceMgr.getResource("theme://elements/text-area.css"),
+  style: getElementStyleSync("text-area"),
   $: { input: "textarea", span: "span" },
   factoryImpl(e) {
     if (e) {

@@ -1,7 +1,7 @@
 import highlight from "highlight.js";
 import remarkable from "remarkable";
 import elementUtils from "./utils.js";
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 // import l from "../../console"; // 外部依赖，暂时注释
 
 // 创建 console 占位符
@@ -56,7 +56,7 @@ export default elementUtils.registerElement("ui-markdown", {
     }
   },
   template: '\n    <div class="container"></div>\n  ',
-  style: resourceMgr.getResource("theme://elements/markdown.css"),
+  style: getElementStyleSync("markdown"),
   $: { container: ".container" },
   factoryImpl(e) {
     if (e) {

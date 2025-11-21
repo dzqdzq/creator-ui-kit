@@ -2,7 +2,7 @@
 import elementUtils from "./utils.js";
 // import i from "../../../share/utils"; // 外部依赖，暂时注释
 // import s from "../../../share/math"; // 外部依赖，暂时注释
-import resourceMgr from "../utils/resource-mgr.js";
+import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -123,7 +123,7 @@ export default elementUtils.registerElement("ui-slider", {
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template:
     '\n    <div class="wrapper">\n      <div class="track"></div>\n      <div class="nubbin"></div>\n    </div>\n    <input></input>\n  ',
-  style: resourceMgr.getResource("theme://elements/slider.css"),
+  style: getElementStyleSync("slider"),
   $: {
     wrapper: ".wrapper",
     track: ".track",
