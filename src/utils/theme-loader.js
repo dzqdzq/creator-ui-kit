@@ -1,7 +1,6 @@
-// 主题样式加载器 - 从 themes 目录加载 CSS 文件
 const loadedStyles = {};
+const loadedResources = {};
 
-// 加载 CSS 文件内容
 async function loadCssFile(url) {
   try {
     const response = await fetch(url);
@@ -15,7 +14,6 @@ async function loadCssFile(url) {
   }
 }
 
-// 获取基础 URL
 function getBaseUrl() {
   const scripts = document.getElementsByTagName('script');
   for (let script of scripts) {
@@ -27,7 +25,70 @@ function getBaseUrl() {
   return window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
 }
 
-// 加载元素样式
+function resolveThemeUrl(themeUrl, themeName, baseUrl) {
+  const path = themeUrl.replace(/^theme:\/\//, '');
+  return `${baseUrl}/src/themes/${themeName}/${path}`;
+}
+
+async function processImports(css, themeName, baseUrl) {
+  const importRegex = /@import\s+url\(['"]?(theme:\/\/[^'"]+)['"]?\);?/g;
+  const imports = [];
+  let match;
+  
+  while ((match = importRegex.exec(css)) !== null) {
+    const themeUrl = match[1];
+    if (!imports.includes(themeUrl)) {
+      imports.push(themeUrl);
+    }
+  }
+  
+  for (const themeUrl of imports) {
+    try {
+      const actualUrl = resolveThemeUrl(themeUrl, themeName, baseUrl);
+      const resourceKey = `${themeName}/${themeUrl}`;
+      
+      if (!loadedResources[resourceKey]) {
+        const importedCss = await loadCssFile(actualUrl);
+        const processedCss = await processThemeUrls(importedCss, themeName, baseUrl);
+        loadedResources[resourceKey] = processedCss;
+      }
+      
+      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?`, 'g');
+      css = css.replace(importPattern, loadedResources[resourceKey]);
+    } catch (error) {
+      console.warn(`Failed to load imported resource: ${themeUrl}`, error);
+      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?\\s*`, 'g');
+      css = css.replace(importPattern, '');
+    }
+  }
+  
+  return css;
+}
+
+async function processThemeUrls(css, themeName, baseUrl) {
+  const urlRegex = /url\(['"]?(theme:\/\/[^'"]+)['"]?\)/g;
+  const urls = [];
+  let match;
+  
+  while ((match = urlRegex.exec(css)) !== null) {
+    const beforeMatch = css.substring(Math.max(0, match.index - 50), match.index);
+    if (!beforeMatch.match(/@import\s+url\s*$/)) {
+      const themeUrl = match[1];
+      if (!urls.includes(themeUrl)) {
+        urls.push(themeUrl);
+      }
+    }
+  }
+  
+  for (const themeUrl of urls) {
+    const actualUrl = resolveThemeUrl(themeUrl, themeName, baseUrl);
+    const urlPattern = new RegExp(`url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\)`, 'g');
+    css = css.replace(urlPattern, `url('${actualUrl}')`);
+  }
+  
+  return css;
+}
+
 export async function loadElementStyle(elementName, themeName = 'default') {
   const cacheKey = `${themeName}/${elementName}`;
   if (loadedStyles[cacheKey]) {
@@ -39,12 +100,8 @@ export async function loadElementStyle(elementName, themeName = 'default') {
     const cssUrl = `${baseUrl}/src/themes/${themeName}/elements/${elementName}.css`;
     let css = await loadCssFile(cssUrl);
     
-    // 处理 checkbox.css 中的 @import url(theme://globals/fontello.css)
-    if (elementName === 'checkbox' && css.includes('theme://globals/fontello.css')) {
-      const fontelloUrl = `${baseUrl}/src/themes/${themeName}/globals/fontello.css`;
-      const fontelloCss = await loadCssFile(fontelloUrl);
-      css = css.replace(/@import\s+url\(['"]theme:\/\/globals\/fontello\.css['"]\);?/g, fontelloCss);
-    }
+    css = await processImports(css, themeName, baseUrl);
+    css = await processThemeUrls(css, themeName, baseUrl);
     
     loadedStyles[cacheKey] = css;
     return css;
@@ -54,7 +111,6 @@ export async function loadElementStyle(elementName, themeName = 'default') {
   }
 }
 
-// 预加载多个样式
 export async function preloadStyles(elementNames, themeName = 'default') {
   const promises = elementNames.map(name => loadElementStyle(name, themeName));
   await Promise.all(promises);

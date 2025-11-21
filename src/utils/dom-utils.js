@@ -1,4 +1,3 @@
-// DOM 工具函数
 let dragCancelHandler = null;
 let dragGhost = null;
 

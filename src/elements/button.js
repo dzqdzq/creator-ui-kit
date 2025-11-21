@@ -9,9 +9,9 @@ export default elementUtils.registerElement("ui-button", {
   behaviors: [focusableBehavior, disableBehavior, buttonStateBehavior],
   template: '\n    <div class="inner">\n      <slot></slot>\n    </div>\n  ',
   style: getElementStyleSync("button"),
-  factoryImpl(e) {
-    if (e) {
-      this.innerText = e;
+  factoryImpl(text) {
+    if (text) {
+      this.innerText = text;
     }
   },
   ready() {

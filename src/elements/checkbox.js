@@ -10,8 +10,8 @@ export default elementUtils.registerElement("ui-checkbox", {
   get checked() {
     return this.getAttribute("checked") !== null;
   },
-  set checked(e) {
-    if (e || e === "" || e === "" || e === 0) {
+  set checked(value) {
+    if (value || value === "" || value === 0) {
       this.setAttribute("checked", "");
     } else {
       this.removeAttribute("checked");
@@ -20,43 +20,45 @@ export default elementUtils.registerElement("ui-checkbox", {
   get value() {
     return this.checked;
   },
-  set value(e) {
-    this.checked = e;
+  set value(value) {
+    this.checked = value;
   },
   get values() {
     return this._values;
   },
-  set values(e) {
-    this._values = e;
+  set values(values) {
+    this._values = values;
     this._updateMultiValue();
   },
   get multiValues() {
     return this._multiValues;
   },
-  set multiValues(e) {
-    if ((e = !(e == null || e === false)) !== this._multiValues) {
-      this._multiValues = e;
+  set multiValues(value) {
+    const boolValue = !(value == null || value === false);
+    if (boolValue !== this._multiValues) {
+      this._multiValues = boolValue;
       this._updateMultiValue();
     }
   },
   get observedAttributes() {
     return ["checked", "multi-values"];
   },
-  attributeChangedCallback(e, t, i) {
-    if (t !== i && (e === "checked" || e === "multi-values")) {
-      this[e.replace(/\-(\w)/g, (e, t) => t.toUpperCase())] = i;
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue && (name === "checked" || name === "multi-values")) {
+      const propertyName = name.replace(/\-(\w)/g, (match, letter) => letter.toUpperCase());
+      this[propertyName] = newValue;
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, buttonStateBehavior],
   template:
     '\n    <div class="box">\n      <i class="checker icon-ok"></i>\n    </div>\n    <span class="label">\n      <slot></slot>\n    </span>\n  ',
   style: getElementStyleSync("checkbox"),
-  factoryImpl(e, t) {
-    if (t) {
-      this.innerText = t;
+  factoryImpl(checked, label) {
+    if (label) {
+      this.innerText = label;
     }
 
-    this.checked = e;
+    this.checked = checked;
   },
   ready() {
     this.multiValues = this.getAttribute("multi-values");
@@ -65,9 +67,9 @@ export default elementUtils.registerElement("ui-checkbox", {
     this._initReadonly(false);
     this._initButtonState(this);
   },
-  _onButtonClick(e, t) {
+  _onButtonClick(element, event) {
     if (!this.readonly) {
-      t.stopPropagation();
+      event.stopPropagation();
       this.checked = !this.checked;
       this.multiValues = false;
       domUtils.fire(this, "change", {
@@ -85,13 +87,12 @@ export default elementUtils.registerElement("ui-checkbox", {
     if (
       !this.multiValues ||
       !this._values ||
-      !this._values ||
       this.values.length <= 1
     ) {
       return this.removeAttribute("multi-values");
     }
 
-    if (this._values.every((e, t) => t === 0 || e === this._values[t - 1])) {
+    if (this._values.every((value, index) => index === 0 || value === this._values[index - 1])) {
       this.removeAttribute("multi-values");
     } else {
       this.setAttribute("multi-values", "");

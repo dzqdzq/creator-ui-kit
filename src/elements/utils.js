@@ -1,26 +1,30 @@
-import r from "chroma-js";
-import o from "../utils/dom-utils.js";
-import n from "../utils/js-utils.js";
-let e = {};
-export default e;
-let t = {};
-function l(e, t, r) {
-  let s;
-  if (t.hasUserContent) {
-    let t = e.querySelector(".user-content");
+import chroma from "chroma-js";
+import domUtils from "../utils/dom-utils.js";
+import jsUtils from "../utils/js-utils.js";
 
-    if ((t = t || e).children.length) {
-      s = Array.prototype.slice.call(t.children, 0);
+const elementUtils = {};
+const propertyRegistry = {};
+
+function regeneratePropertyElement(element, config, callback) {
+  let savedChildren;
+  
+  if (config.hasUserContent) {
+    let userContentContainer = element.querySelector(".user-content");
+    userContentContainer = userContentContainer || element;
+    
+    if (userContentContainer.children.length) {
+      savedChildren = Array.prototype.slice.call(userContentContainer.children, 0);
     }
   }
-  o.clear(e);
-  let i = e.shadowRoot.getElementById("custom-style");
+  
+  domUtils.clear(element);
+  const customStyleElement = element.shadowRoot.getElementById("custom-style");
 
-  if (i) {
-    i.remove();
+  if (customStyleElement) {
+    customStyleElement.remove();
   }
 
-  n.assignExcept(e, t, [
+  jsUtils.assignExcept(element, config, [
     "template",
     "style",
     "attrs",
@@ -28,126 +32,134 @@ function l(e, t, r) {
     "hasUserContent",
   ]);
 
-  if (t.attrs) {
-    let r = e._attrs || {};
-    for (let s in t.attrs) {
-      let n = e.getAttribute(s);
-      if (n !== null) {
-        let e = t.attrs[s];
-        r[s] = e(n);
+  if (config.attrs) {
+    const parsedAttrs = element._attrs || {};
+    for (const attrName in config.attrs) {
+      const attrValue = element.getAttribute(attrName);
+      if (attrValue !== null) {
+        const parser = config.attrs[attrName];
+        parsedAttrs[attrName] = parser(attrValue);
       }
     }
-    e._attrs = r;
+    element._attrs = parsedAttrs;
   }
 
-  if (e._value === undefined) {
-    let r = e.getAttribute("value");
-
-    if (r !== null) {
-      e._value = t.value(r);
+  if (element._value === undefined) {
+    const valueAttr = element.getAttribute("value");
+    if (valueAttr !== null) {
+      element._value = config.value(valueAttr);
     }
   }
-  if (t.template) {
-    let r = typeof t.template;
-
-    if (r === "string") {
-      e.innerHTML = t.template;
-    } else if (r === "function") {
-      e.innerHTML = t.template(e._attrs);
+  
+  if (config.template) {
+    const templateType = typeof config.template;
+    if (templateType === "string") {
+      element.innerHTML = config.template;
+    } else if (templateType === "function") {
+      element.innerHTML = config.template(element._attrs);
     }
   }
-  if (t.hasUserContent && s) {
-    let t = document.createElement("div");
-    t.classList = ["user-content"];
+  
+  if (config.hasUserContent && savedChildren) {
+    const userContentDiv = document.createElement("div");
+    userContentDiv.classList = ["user-content"];
 
-    s.forEach((e) => {
-      t.appendChild(e.cloneNode(true));
+    savedChildren.forEach((child) => {
+      userContentDiv.appendChild(child.cloneNode(true));
     });
 
-    e.insertBefore(t, e.firstChild);
+    element.insertBefore(userContentDiv, element.firstChild);
   }
-  if (t.style) {
-    let r = document.createElement("style");
-    r.type = "text/css";
-    r.textContent = t.style;
-    r.id = "custom-style";
-    e.shadowRoot.insertBefore(r, e.shadowRoot.firstChild);
+  
+  if (config.style) {
+    const styleElement = document.createElement("style");
+    styleElement.type = "text/css";
+    styleElement.textContent = config.style;
+    styleElement.id = "custom-style";
+    element.shadowRoot.insertBefore(styleElement, element.shadowRoot.firstChild);
   }
-  e._propagateDisable();
-  e._propagateReadonly();
+  
+  element._propagateDisable();
+  element._propagateReadonly();
 
-  if (e.ready) {
-    e.ready(s);
+  if (element.ready) {
+    element.ready(savedChildren);
   }
 
-  if (r) {
-    r();
+  if (callback) {
+    callback();
   }
 }
 
-e.registerElement = (e, t) => {
-  let { template, style, listeners, behaviors, $, factoryImpl } = t;
+elementUtils.registerElement = (tagName, config) => {
+  const {
+    template,
+    style,
+    listeners,
+    behaviors,
+    $,
+    factoryImpl,
+  } = config;
 
-  let u = t.observedAttributes || [];
-  let d = true;
+  const observedAttributes = config.observedAttributes || [];
+  const useShadowDOM = config.shadowDOM !== undefined ? !!config.shadowDOM : true;
 
-  if (t.shadowDOM !== undefined) {
-    d = !!t.shadowDOM;
-  }
-
-  class p extends HTMLElement {
+  class CustomElement extends HTMLElement {
     static tagName() {
-      return e.toUpperCase();
+      return tagName.toUpperCase();
     }
+    
     static get observedAttributes() {
-      return u;
+      return observedAttributes;
     }
+    
     constructor(...args) {
       super();
-      let e = this;
+      let root = this;
 
-      if (d) {
-        e = this.attachShadow({ mode: "open" });
+      if (useShadowDOM) {
+        root = this.attachShadow({ mode: "open" });
       }
 
       if (template) {
-        e.innerHTML = template;
+        root.innerHTML = template;
       }
 
       if (style) {
-        if (d) {
-          let t = document.createElement("style");
-          t.type = "text/css";
-          t.textContent = style;
-          e.insertBefore(t, e.firstChild);
+        if (useShadowDOM) {
+          const styleElement = document.createElement("style");
+          styleElement.type = "text/css";
+          styleElement.textContent = style;
+          root.insertBefore(styleElement, root.firstChild);
         } else {
           console.warn("Can not use style in light DOM");
         }
       }
 
       if ($) {
-        for (let t in $) {
-          if (this[`$${t}`]) {
-            console.warn(`Failed to assign selector $${t}, already used`);
+        for (const selectorName in $) {
+          if (this[`$${selectorName}`]) {
+            console.warn(`Failed to assign selector $${selectorName}, already used`);
           } else {
-            this[`$${t}`] = e.querySelector($[t]);
+            this[`$${selectorName}`] = root.querySelector($[selectorName]);
           }
         }
       }
+      
       if (listeners) {
-        for (let t in listeners) {
-          if (e) {
-            e.addEventListener(
-              t,
-              listeners[t].bind(this),
-              t === "mousewheel" ? { passive: true } : {}
+        for (const eventName in listeners) {
+          if (root) {
+            root.addEventListener(
+              eventName,
+              listeners[eventName].bind(this),
+              eventName === "mousewheel" ? { passive: true } : {}
             );
           }
 
           this.addEventListener(
-            t,
-            listeners[t].bind(this),
-            t === "mousewheel" ? { passive: true } : {}
+            eventName,
+            listeners[eventName].bind(this),
+            eventName === "mousewheel" ? { passive: true } : {}
           );
         }
       }
@@ -162,7 +174,7 @@ e.registerElement = (e, t) => {
     }
   }
 
-  n.assignExcept(p.prototype, t, [
+  jsUtils.assignExcept(CustomElement.prototype, config, [
     "shadowDOM",
     "dependencies",
     "factoryImpl",
@@ -174,72 +186,73 @@ e.registerElement = (e, t) => {
   ]);
 
   if (behaviors) {
-    behaviors.forEach((e) => {
-      n.addon(p.prototype, e);
+    behaviors.forEach((behavior) => {
+      jsUtils.addon(CustomElement.prototype, behavior);
     });
   }
 
-  window.customElements.define(e, p);
-  return p;
+  window.customElements.define(tagName, CustomElement);
+  return CustomElement;
 };
 
-e.registerProperty = (e, r) => {
-  t[e] = r;
+elementUtils.registerProperty = (type, config) => {
+  propertyRegistry[type] = config;
 };
 
-e.unregisterProperty = (e) => {
-  delete t[e];
+elementUtils.unregisterProperty = (type) => {
+  delete propertyRegistry[type];
 };
 
-e.getProperty = (e) => t[e];
+elementUtils.getProperty = (type) => propertyRegistry[type];
 
-e.regenProperty = (e, r) => {
-  let n = t[e._type];
-  if (!n) {
-    console.warn(`Failed to regen property ${e._type}: type not registered.`);
+elementUtils.regenProperty = (element, callback) => {
+  const propertyConfig = propertyRegistry[element._type];
+  if (!propertyConfig) {
+    console.warn(`Failed to regen property ${element._type}: type not registered.`);
     return undefined;
   }
-  if (typeof n == "string") {
-    import(n)
+  
+  if (typeof propertyConfig == "string") {
+    import(propertyConfig)
       .then((module) => {
-        const t = module.default || module;
+        const config = module.default || module;
         try {
-          l(e, t, r);
-        } catch (e) {
-          console.error(e.stack);
-
-          if (r) {
-            r(e);
+          regeneratePropertyElement(element, config, callback);
+        } catch (error) {
+          console.error(error.stack);
+          if (callback) {
+            callback(error);
           }
         }
       })
-      .catch((e) => {
-        console.error(e.stack);
-
-        if (r) {
-          r(e);
+      .catch((error) => {
+        console.error(error.stack);
+        if (callback) {
+          callback(error);
         }
       });
 
     return undefined;
   }
+  
   try {
-    l(e, n, r);
-  } catch (e) {
-    console.error(e.stack);
-
-    if (r) {
-      r(e);
+    regeneratePropertyElement(element, propertyConfig, callback);
+  } catch (error) {
+    console.error(error.stack);
+    if (callback) {
+      callback(error);
     }
   }
 };
 
-e.parseString = (e) => e;
+elementUtils.parseString = (value) => value;
 
-e.parseBoolean = (e) => e !== "false" && e !== null;
+elementUtils.parseBoolean = (value) => value !== "false" && value !== null;
 
-e.parseColor = (e) => r(e).rgba();
+elementUtils.parseColor = (value) => chroma(value).rgba();
 
-e.parseArray = (e) => JSON.parse(e);
+elementUtils.parseArray = (value) => JSON.parse(value);
 
-e.parseObject = (e) => JSON.parse(e);
+elementUtils.parseObject = (value) => JSON.parse(value);
+
+export default elementUtils;

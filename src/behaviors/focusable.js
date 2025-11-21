@@ -92,7 +92,6 @@ class FocusableBehavior {
   }
 }
 
-// 导出类的实例方法和属性，以便混入到元素原型
 const behaviorPrototype = FocusableBehavior.prototype;
 export default {
   get focusable() {

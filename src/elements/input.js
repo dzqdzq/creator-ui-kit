@@ -11,27 +11,27 @@ export default elementUtils.registerElement("ui-input", {
   get value() {
     return this.$input.value;
   },
-  set value(t) {
-    if (t === null || t === undefined) {
-      t = "";
+  set value(value) {
+    if (value === null || value === undefined) {
+      value = "";
     }
 
-    t += "";
-    this._value = t;
+    value += "";
+    this._value = value;
 
     if (!this.multiValues) {
       if (this._maxLength !== null) {
-        this.$input.value = t.substr(0, this._maxLength);
+        this.$input.value = value.substr(0, this._maxLength);
       } else {
-        this.$input.value = t;
+        this.$input.value = value;
       }
     }
   },
   get values() {
     return this._values;
   },
-  set values(t) {
-    this._values = t;
+  set values(values) {
+    this._values = values;
 
     if (this.multiValues) {
       this._updateMultiValue();
@@ -40,63 +40,65 @@ export default elementUtils.registerElement("ui-input", {
   get placeholder() {
     return this.$input.placeholder;
   },
-  set placeholder(t) {
-    this.$input.placeholder = t;
+  set placeholder(placeholder) {
+    this.$input.placeholder = placeholder;
   },
   get password() {
     return this.$input.type === "password";
   },
-  set password(t) {
-    this.$input.type = t === true ? "password" : "";
+  set password(isPassword) {
+    this.$input.type = isPassword === true ? "password" : "";
   },
   get maxLength() {
     return this._maxLength;
   },
-  set maxLength(t) {
-    if (t !== null) {
-      t -= 0;
+  set maxLength(length) {
+    let numLength = length;
+    if (numLength !== null) {
+      numLength -= 0;
     }
 
-    if (isNaN(t)) {
-      t = null;
+    if (isNaN(numLength)) {
+      numLength = null;
     }
 
-    this._maxLength = t;
+    this._maxLength = numLength;
 
-    if (t) {
+    if (numLength) {
       this.$input.value = this._value.substr(0, this._maxLength);
     }
   },
   get multiValues() {
     return this._multiValues;
   },
-  set multiValues(t) {
-    if ((t = !(t == null || t === false)) !== this._multiValues) {
-      this._multiValues = t;
+  set multiValues(value) {
+    const boolValue = !(value == null || value === false);
+    if (boolValue !== this._multiValues) {
+      this._multiValues = boolValue;
       this._updateMultiValue();
     }
   },
   get observedAttributes() {
     return ["placeholder", "password", "multi-values"];
   },
-  attributeChangedCallback(t, e, i) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (
-      e !== i &&
-      (t === "placeholder" ||
-        t === "password" ||
-        t === "password" ||
-        t === "multi-values")
+      oldValue !== newValue &&
+      (name === "placeholder" ||
+        name === "password" ||
+        name === "multi-values")
     ) {
-      this[t.replace(/\-(\w)/g, (t, e) => e.toUpperCase())] = i;
+      const propertyName = name.replace(/\-(\w)/g, (match, letter) => letter.toUpperCase());
+      this[propertyName] = newValue;
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template: "\n    <input></input>\n  ",
   style: getElementStyleSync("input"),
   $: { input: "input" },
-  factoryImpl(t) {
-    if (t) {
-      this.value = t;
+  factoryImpl(value) {
+    if (value) {
+      this.value = value;
     }
   },
   ready() {
@@ -124,80 +126,81 @@ export default elementUtils.registerElement("ui-input", {
   cancel() {
     this._onInputCancel(this.$input);
   },
-  _setIsReadonlyAttribute(t) {
-    if (t) {
+  _setIsReadonlyAttribute(isReadonly) {
+    if (isReadonly) {
       this.setAttribute("is-readonly", "");
     } else {
       this.removeAttribute("is-readonly");
     }
 
-    this.$input.readOnly = t;
+    this.$input.readOnly = isReadonly;
   },
   _initEvents() {
     this.addEventListener("mousedown", this._mouseDownHandler);
     this.addEventListener("keydown", this._keyDownHandler);
     this.addEventListener("focus-changed", this._focusChangedHandler);
   },
-  _onInputConfirm(t, e) {
+  _onInputConfirm(input, confirmByEnter) {
     if (!this.readonly) {
       if (this._changed) {
         this._changed = false;
-        t._initValue = t.value;
-        this._value = t.value;
+        input._initValue = input.value;
+        this._value = input.value;
         this.multiValues = false;
 
         domUtils.fire(this, "confirm", {
           bubbles: true,
-          detail: { value: t.value, confirmByEnter: e },
+          detail: { value: input.value, confirmByEnter },
         });
       }
     }
 
-    if (e) {
+    if (confirmByEnter) {
       this.focus();
     }
   },
-  _onInputCancel(t, e) {
+  _onInputCancel(input, cancelByEsc) {
     if (!this.readonly) {
       if (this._changed) {
         this._changed = false;
 
-        t._initValue !== t.value &&
-          ((t.value = t._initValue),
-          (this._value = t._initValue),
+        if (input._initValue !== input.value) {
+          input.value = input._initValue;
+          this._value = input._initValue;
           domUtils.fire(this, "change", {
             bubbles: true,
-            detail: { value: t.value },
-          }));
+            detail: { value: input.value },
+          });
+        }
 
         domUtils.fire(this, "cancel", {
           bubbles: true,
-          detail: { value: t.value, cancelByEsc: e },
+          detail: { value: input.value, cancelByEsc },
         });
       }
     }
 
-    if (e) {
-      t.blur();
+    if (cancelByEsc) {
+      input.blur();
       this.focus();
     }
   },
-  _onInputChange(t) {
+  _onInputChange(input) {
     this._changed = true;
 
-    if (this._maxLength && t.value.length > this._maxLength) {
-      t.value = t.value.substr(0, this._maxLength);
+    if (this._maxLength && input.value.length > this._maxLength) {
+      input.value = input.value.substr(0, this._maxLength);
     }
 
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: t.value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: input.value } });
   },
-  _mouseDownHandler(t) {
-    t.stopPropagation();
+  _mouseDownHandler(event) {
+    event.stopPropagation();
     focusMgr._setFocusElement(this);
   },
-  _keyDownHandler(t) {
-    if (!this.disabled && (t.keyCode === 13 || t.keyCode === 32)) {
-      domUtils.acceptEvent(t);
+  _keyDownHandler(event) {
+    if (!this.disabled && (event.keyCode === 13 || event.keyCode === 32)) {
+      domUtils.acceptEvent(event);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();
@@ -214,14 +217,13 @@ export default elementUtils.registerElement("ui-input", {
     if (
       !this.multiValues ||
       !this._values ||
-      !this._values ||
       this.values.length <= 1
     ) {
       this.$input.value = this._value;
       return this.$input.removeAttribute("multi-values");
     }
 
-    if (this._values.every((t, e) => e === 0 || t === this._values[e - 1])) {
+    if (this._values.every((value, index) => index === 0 || value === this._values[index - 1])) {
       this.$input.removeAttribute("multi-values");
     } else {
       this.$input.value = "-";

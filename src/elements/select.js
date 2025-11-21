@@ -10,27 +10,27 @@ export default elementUtils.registerElement("ui-select", {
   get value() {
     return this._value;
   },
-  set value(e) {
-    const t = this._value;
-    this._value = e;
+  set value(value) {
+    const oldValue = this._value;
+    this._value = value;
 
     if (this.valueChanged) {
-      this.valueChanged(t, e);
+      this.valueChanged(oldValue, value);
     }
 
     if (!this.multiValues) {
-      this.$select.value = e;
+      this.$select.value = value;
     }
   },
   get values() {
     return this._values;
   },
-  set values(e) {
-    const t = this._values;
-    this._values = e;
+  set values(values) {
+    const oldValues = this._values;
+    this._values = values;
 
     if (this.valuesChanged) {
-      this.valuesChanged(t, e);
+      this.valuesChanged(oldValues, values);
     }
 
     if (this.multiValues) {
@@ -40,8 +40,8 @@ export default elementUtils.registerElement("ui-select", {
   get selectedIndex() {
     return this.$select.selectedIndex;
   },
-  set selectedIndex(e) {
-    this.$select.selectedIndex = e;
+  set selectedIndex(index) {
+    this.$select.selectedIndex = index;
   },
   get selectedText() {
     return this.$select.item(this.$select.selectedIndex).text;
@@ -49,58 +49,61 @@ export default elementUtils.registerElement("ui-select", {
   get multiValues() {
     return this._multiValues;
   },
-  set multiValues(e) {
-    if ((e = !(e == null || e === false)) !== this._multiValues) {
-      e
-        ? ((this.$select.value = ""), this.setAttribute("multi-values", ""))
-        : ((this.$select.value = this._value),
-          this.removeAttribute("multi-values"));
+  set multiValues(value) {
+    const boolValue = !(value == null || value === false);
+    if (boolValue !== this._multiValues) {
+      if (boolValue) {
+        this.$select.value = "";
+        this.setAttribute("multi-values", "");
+      } else {
+        this.$select.value = this._value;
+        this.removeAttribute("multi-values");
+      }
 
-      this._multiValues = e;
+      this._multiValues = boolValue;
     }
   },
   get observedAttributes() {
     return ["selectedIndex", "selectedText", "multi-values"];
   },
-  attributeChangedCallback(e, t, s) {
+  attributeChangedCallback(name, oldValue, newValue) {
     if (
-      t !== s &&
-      (e == "selectedIndex" ||
-        e == "selectedText" ||
-        e == "selectedText" ||
-        e == "multi-values")
+      oldValue !== newValue &&
+      (name == "selectedIndex" ||
+        name == "selectedText" ||
+        name == "multi-values")
     ) {
-      this[e.replace(/\-(\w)/g, (e, t) => t.toUpperCase())] = s;
+      const propertyName = name.replace(/\-(\w)/g, (match, letter) => letter.toUpperCase());
+      this[propertyName] = newValue;
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template: "\n    <select></select>\n  ",
   style: getElementStyleSync("select"),
   $: { select: "select" },
-  factoryImpl(e) {
-    if (!isNaN(e)) {
-      this.value = e;
+  factoryImpl(value) {
+    if (!isNaN(value)) {
+      this.value = value;
     }
   },
   ready() {
-    this._observer = new MutationObserver((e) => {
-      unused(e);
+    this._observer = new MutationObserver(() => {
       this._updateItems();
     });
 
     this._observer.observe(this, { childList: true });
-    for (let e = 0; e < this.children.length; ++e) {
-      let t = this.children[e];
-      if (t instanceof HTMLOptionElement || t instanceof HTMLOptGroupElement) {
-        let e = t.cloneNode(true);
-        this.$select.add(e, null);
+    for (let i = 0; i < this.children.length; ++i) {
+      const child = this.children[i];
+      if (child instanceof HTMLOptionElement || child instanceof HTMLOptGroupElement) {
+        const cloned = child.cloneNode(true);
+        this.$select.add(cloned, null);
       }
     }
-    let e = this.getAttribute("value");
+    const valueAttr = this.getAttribute("value");
 
-    if (e !== null) {
-      this._value = e;
-      this.$select.value = e;
+    if (valueAttr !== null) {
+      this._value = valueAttr;
+      this.$select.value = valueAttr;
     } else {
       this._value = this.$select.value;
     }
@@ -111,24 +114,21 @@ export default elementUtils.registerElement("ui-select", {
     this._initReadonly(false);
     this.addEventListener("mousedown", this._mouseDownHandler);
 
-    this.$select.addEventListener("keydown", (e) =>
+    this.$select.addEventListener("keydown", (event) =>
       this.disabled
-        ? (e.preventDefault(), undefined)
+        ? (event.preventDefault(), undefined)
         : this.readonly
-        ? (e.preventDefault(), undefined)
-        : ((e.keyCode !== 38 && e.keyCode !== 40) || e.preventDefault(),
-          e.keyCode === 32 ||
-            e.ctrlKey ||
-            e.ctrlKey ||
-            e.metaKey ||
-            e.ctrlKey ||
-            e.metaKey ||
-            e.preventDefault(),
+        ? (event.preventDefault(), undefined)
+        : ((event.keyCode !== 38 && event.keyCode !== 40) || event.preventDefault(),
+          event.keyCode === 32 ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.preventDefault(),
           undefined)
     );
 
-    this.$select.addEventListener("change", (e) => {
-      domUtils.acceptEvent(e);
+    this.$select.addEventListener("change", (event) => {
+      domUtils.acceptEvent(event);
       this._value = this.$select.value;
       this.multiValues = false;
 
@@ -151,9 +151,9 @@ export default elementUtils.registerElement("ui-select", {
       });
     });
   },
-  _mouseDownHandler(e) {
-    e.stopPropagation();
-    this._mouseStartX = e.clientX;
+  _mouseDownHandler(event) {
+    event.stopPropagation();
+    this._mouseStartX = event.clientX;
 
     if (!this._inputFocused) {
       this._selectAllWhenMouseUp = true;
@@ -162,47 +162,47 @@ export default elementUtils.registerElement("ui-select", {
     focusMgr._setFocusElement(this);
 
     if (this.readonly) {
-      domUtils.acceptEvent(e);
+      domUtils.acceptEvent(event);
       return undefined;
     }
   },
   _updateItems() {
     domUtils.clear(this.$select);
-    for (let e = 0; e < this.children.length; ++e) {
-      let t = this.children[e];
-      if (t instanceof HTMLOptionElement || t instanceof HTMLOptGroupElement) {
-        let e = t.cloneNode(true);
-        this.$select.add(e, null);
+    for (let i = 0; i < this.children.length; ++i) {
+      const child = this.children[i];
+      if (child instanceof HTMLOptionElement || child instanceof HTMLOptGroupElement) {
+        const cloned = child.cloneNode(true);
+        this.$select.add(cloned, null);
       }
     }
     this.$select.value = this._value;
   },
-  addItem(e, t, s) {
-    let l = document.createElement("option");
-    l.value = e;
-    l.text = t;
-    this.addElement(l, s);
+  addItem(value, text, index) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    this.addElement(option, index);
     this._value = this.$select.value;
   },
-  addElement(e, t) {
-    if (!(e instanceof HTMLOptionElement || e instanceof HTMLOptGroupElement)) {
+  addElement(element, index) {
+    if (!(element instanceof HTMLOptionElement || element instanceof HTMLOptGroupElement)) {
       return;
     }
-    let s;
+    let beforeElement;
     this._observer.disconnect();
 
-    if (t !== undefined) {
-      this.insertBefore(e, this.children[t]);
+    if (index !== undefined) {
+      this.insertBefore(element, this.children[index]);
     } else {
-      this.appendChild(e);
+      this.appendChild(element);
     }
 
-    s = t !== undefined ? this.$select.item(t) : null;
-    this.$select.add(e.cloneNode(true), s);
+    beforeElement = index !== undefined ? this.$select.item(index) : null;
+    this.$select.add(element.cloneNode(true), beforeElement);
     this._observer.observe(this, { childList: true });
   },
-  removeItem(e) {
-    this.$select.remove(e);
+  removeItem(index) {
+    this.$select.remove(index);
   },
   clear() {
     domUtils.clear(this.$select);

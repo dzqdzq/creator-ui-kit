@@ -12,12 +12,10 @@ class ButtonStateBehavior {
     buttonElement.addEventListener("keydown", (keyboardEvent) => {
       if (!this.disabled) {
         if (keyboardEvent.keyCode === 32) {
-          // Space key
           domUtils.acceptEvent(keyboardEvent);
           this._setPressed(buttonElement, true);
           this._canceledByEsc = false;
         } else if (keyboardEvent.keyCode === 13) {
-          // Enter key
           domUtils.acceptEvent(keyboardEvent);
 
           if (this._enterTimeoutID) {
@@ -34,7 +32,6 @@ class ButtonStateBehavior {
           }, 100);
         } else {
           if (keyboardEvent.keyCode === 27) {
-            // Escape key
             domUtils.acceptEvent(keyboardEvent);
 
             if (isPressed(buttonElement)) {
@@ -50,7 +47,6 @@ class ButtonStateBehavior {
 
     buttonElement.addEventListener("keyup", (keyboardEvent) => {
       if (keyboardEvent.keyCode === 32) {
-        // Space key
         domUtils.acceptEvent(keyboardEvent);
 
         if (isPressed(buttonElement)) {
@@ -104,7 +100,6 @@ class ButtonStateBehavior {
   }
 }
 
-// 导出类的实例方法作为对象，以便混入到元素原型
 const behaviorPrototype = ButtonStateBehavior.prototype;
 export default {
   _initButtonState: behaviorPrototype._initButtonState,

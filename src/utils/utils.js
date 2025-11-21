@@ -1,4 +1,3 @@
-// 元素注册工具
 import jsUtils from "./js-utils.js";
 
 const elementUtils = {};
@@ -38,7 +37,6 @@ elementUtils.registerElement = (tagName, config) => {
           const styleEl = document.createElement("style");
           styleEl.type = "text/css";
           styleEl.textContent = style;
-          // 确保样式插入到最前面
           if (root.firstChild) {
             root.insertBefore(styleEl, root.firstChild);
           } else {
@@ -87,7 +85,6 @@ elementUtils.registerElement = (tagName, config) => {
     }
   }
 
-  // 将配置中的其他属性复制到原型
   jsUtils.assignExcept(
     CustomElement.prototype,
     config,
@@ -103,14 +100,12 @@ elementUtils.registerElement = (tagName, config) => {
     ]
   );
 
-  // 应用 behaviors
   if (behaviors) {
     behaviors.forEach((behavior) => {
       jsUtils.assign(CustomElement.prototype, behavior);
     });
   }
 
-  // 注册自定义元素
   window.customElements.define(tagName, CustomElement);
   return CustomElement;
 };

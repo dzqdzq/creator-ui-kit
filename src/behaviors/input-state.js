@@ -52,7 +52,6 @@ class InputStateBehavior {
         keyboardEvent.stopPropagation();
 
         if (keyboardEvent.keyCode === 13) {
-          // Enter key
           if (
             !isTextArea ||
             keyboardEvent.ctrlKey ||
@@ -62,7 +61,6 @@ class InputStateBehavior {
             this._onInputConfirm(inputElement, true);
           }
         } else if (keyboardEvent.keyCode === 27) {
-          // Escape key
           domUtils.acceptEvent(keyboardEvent);
           this._onInputCancel(inputElement, true);
         }
@@ -104,7 +102,6 @@ class InputStateBehavior {
   }
 }
 
-// 导出类的实例方法，以便混入到元素原型
 const behaviorPrototype = InputStateBehavior.prototype;
 export default {
   _initInputState: behaviorPrototype._initInputState,

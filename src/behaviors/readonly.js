@@ -89,7 +89,6 @@ class ReadonlyBehavior {
   }
 }
 
-// 导出类的实例方法和属性描述符，以便混入到元素原型
 const behaviorPrototype = ReadonlyBehavior.prototype;
 export default {
   get canBeReadonly() {
@@ -103,7 +102,6 @@ export default {
   },
   _initReadonly: behaviorPrototype._initReadonly,
   _propagateReadonly: behaviorPrototype._propagateReadonly,
-  // 向后兼容：保留旧的拼写错误的方法名
   _propgateReadonly: behaviorPrototype._propagateReadonly,
   _isReadonlyInHierarchy: behaviorPrototype._isReadonlyInHierarchy,
   _isReadonlySelf: behaviorPrototype._isReadonlySelf,

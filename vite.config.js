@@ -3,22 +3,73 @@ import { resolve } from 'path';
 import { readFileSync } from 'fs';
 import { globSync } from 'glob';
 
-// Vite 插件：在构建时注入 CSS 内容到 css-loader.js
+function resolveThemeUrlBuild(themeUrl, themeName) {
+  const path = themeUrl.replace(/^theme:\/\//, '');
+  return resolve(__dirname, `src/themes/${themeName}/${path}`);
+}
+
+function processImportsBuild(css, themeName) {
+  const importRegex = /@import\s+url\(['"]?(theme:\/\/[^'"]+)['"]?\);?/g;
+  const imports = [];
+  let match;
+  
+  while ((match = importRegex.exec(css)) !== null) {
+    const themeUrl = match[1];
+    if (!imports.includes(themeUrl)) {
+      imports.push(themeUrl);
+    }
+  }
+  
+  for (const themeUrl of imports) {
+    try {
+      const filePath = resolveThemeUrlBuild(themeUrl, themeName);
+      const importedCss = readFileSync(filePath, 'utf-8');
+      const processedCss = processThemeUrlsBuild(importedCss, themeName);
+      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?`, 'g');
+      css = css.replace(importPattern, processedCss);
+    } catch (error) {
+      console.warn(`Failed to load imported resource: ${themeUrl}`, error);
+      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?\\s*`, 'g');
+      css = css.replace(importPattern, '');
+    }
+  }
+  
+  return css;
+}
+
+function processThemeUrlsBuild(css, themeName) {
+  const urlRegex = /url\(['"]?(theme:\/\/[^'"]+)['"]?\)/g;
+  let match;
+  const urls = [];
+  
+  while ((match = urlRegex.exec(css)) !== null) {
+    const beforeMatch = css.substring(Math.max(0, match.index - 50), match.index);
+    if (!beforeMatch.match(/@import\s+url\s*$/)) {
+      const themeUrl = match[1];
+      if (!urls.includes(themeUrl)) {
+        urls.push(themeUrl);
+      }
+    }
+  }
+  
+  return css;
+}
+
 function cssInjectPlugin() {
   return {
     name: 'css-inject',
     transform(code, id) {
-      // 只处理 css-loader.js 文件
       if (id.endsWith('css-loader.js')) {
-        // 获取所有 CSS 文件
         const cssFiles = globSync('src/themes/default/elements/*.css');
         const cssMap = {};
+        const themeName = 'default';
         
         cssFiles.forEach(file => {
           const elementName = file.match(/elements\/(.+)\.css$/)?.[1];
           if (elementName) {
             try {
-              const cssContent = readFileSync(file, 'utf-8');
+              let cssContent = readFileSync(file, 'utf-8');
+              cssContent = processImportsBuild(cssContent, themeName);
               cssMap[elementName] = cssContent;
             } catch (e) {
               console.warn(`Failed to read CSS file: ${file}`, e);
@@ -26,9 +77,7 @@ function cssInjectPlugin() {
           }
         });
         
-        // 在文件开头注入编译时的样式
-        const injectedCode = `// 编译时注入的样式（由 Vite 插件生成）
-const __COMPILED_STYLES__ = ${JSON.stringify(cssMap, null, 2)};
+        const injectedCode = `const __COMPILED_STYLES__ = ${JSON.stringify(cssMap, null, 2)};
 ${code}`;
         
         return {
@@ -49,22 +98,17 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
-      // 将 chroma-js 设为外部依赖，不打包进库中
       external: ['chroma-js'],
       output: {
-        // 为外部依赖提供全局变量名（虽然我们使用 ES 模块，但保留此配置）
         globals: {
           'chroma-js': 'chroma'
         },
-        // 内联所有依赖，确保所有代码在一个文件中
         inlineDynamicImports: true
       }
     },
     outDir: 'dist',
     emptyOutDir: true,
-    // 确保 CSS 文件被正确处理
     cssCodeSplit: false,
-    // 支持 top-level await
     target: 'es2022'
   },
   resolve: {

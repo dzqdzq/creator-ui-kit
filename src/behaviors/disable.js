@@ -89,7 +89,6 @@ class DisableBehavior {
   }
 }
 
-// 导出类的实例方法和属性描述符，以便混入到元素原型
 const behaviorPrototype = DisableBehavior.prototype;
 export default {
   get canBeDisable() {
@@ -103,7 +102,6 @@ export default {
   },
   _initDisable: behaviorPrototype._initDisable,
   _propagateDisable: behaviorPrototype._propagateDisable,
-  // 向后兼容：保留旧的拼写错误的方法名
   _propgateDisable: behaviorPrototype._propagateDisable,
   _isDisabledInHierarchy: behaviorPrototype._isDisabledInHierarchy,
   _isDisabledSelf: behaviorPrototype._isDisabledSelf,

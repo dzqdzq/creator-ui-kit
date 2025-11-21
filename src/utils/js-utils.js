@@ -1,4 +1,3 @@
-// 简化的 JS 工具函数
 function copyprop(name, source, target) {
   const descriptor = getPropertyDescriptor(source, name);
   if (descriptor) {
@@ -16,9 +15,10 @@ function getPropertyDescriptor(obj, name) {
   );
 }
 
-function padLeft(e, t, r) {
-  t -= (e = e.toString()).length;
-  return t > 0 ? new Array(t + 1).join(r) + e : e;
+function padLeft(value, length, padChar) {
+  const str = value.toString();
+  length -= str.length;
+  return length > 0 ? new Array(length + 1).join(padChar) + str : str;
 }
 
 export default {
@@ -72,33 +72,32 @@ export default {
     return target;
   },
   padLeft,
-  toFixed(e, t, r) {
-    let o = 10 ** t;
-    let l = (Math.round(e * o) / o).toFixed(t);
-    if (r) {
-      let e = new RegExp(`0{1,${r}}$`);
-      l = l.replace(e, "");
+  toFixed(value, decimals, trimZeros) {
+    const multiplier = 10 ** decimals;
+    let result = (Math.round(value * multiplier) / multiplier).toFixed(decimals);
+    if (trimZeros) {
+      const zeroPattern = new RegExp(`0{1,${trimZeros}}$`);
+      result = result.replace(zeroPattern, "");
 
-      if (r >= t && l[l.length - 1] === ".") {
-        l = l.slice(0, -1);
+      if (trimZeros >= decimals && result[result.length - 1] === ".") {
+        result = result.slice(0, -1);
       }
     }
-    return l;
+    return result;
   },
-  formatFrame(t, r) {
-    let o = Math.floor(Math.log10(r)) + 1;
-    let l = "";
+  formatFrame(frame, frameRate) {
+    const digitCount = Math.floor(Math.log10(frameRate)) + 1;
+    let sign = "";
 
-    if (t < 0) {
-      l = "-";
-      t = -t;
+    if (frame < 0) {
+      sign = "-";
+      frame = -frame;
     }
 
-    return `${l + Math.floor(t / r)}:${padLeft(t % r, o, "0")}`;
+    return `${sign + Math.floor(frame / frameRate)}:${padLeft(frame % frameRate, digitCount, "0")}`;
   },
-  smoothScale(e, t) {
-    let r = e;
-    return (r = 2 ** (0.002 * t) * r);
+  smoothScale(value, delta) {
+    return 2 ** (0.002 * delta) * value;
   },
   wrapError(e) {
     return {
@@ -110,78 +109,82 @@ export default {
       syscall: e.syscall,
     };
   },
-  arrayCmpFilter(e, t) {
-    let r = [];
-    for (let o = 0; o < e.length; ++o) {
-      let e_o = e[o];
-      let a = true;
-      for (let e = 0; e < r.length; ++e) {
-        let r_e = r[e];
-        if (e_o === r_e) {
-          a = false;
+  arrayCmpFilter(array, compareFn) {
+    const result = [];
+    for (let i = 0; i < array.length; ++i) {
+      const item = array[i];
+      let shouldAdd = true;
+      for (let j = 0; j < result.length; ++j) {
+        const resultItem = result[j];
+        if (item === resultItem) {
+          shouldAdd = false;
           break;
         }
-        let n = t(r_e, e_o);
-        if (n > 0) {
-          a = false;
+        const cmp = compareFn(resultItem, item);
+        if (cmp > 0) {
+          shouldAdd = false;
           break;
         }
 
-        if (n < 0) {
-          r.splice(e, 1);
-          --e;
+        if (cmp < 0) {
+          result.splice(j, 1);
+          --j;
         }
       }
 
-      if (a) {
-        r.push(e_o);
+      if (shouldAdd) {
+        result.push(item);
       }
     }
-    return r;
+    return result;
   },
-  fitSize(e, t, r, o) {
-    let l;
-    let a;
+  fitSize(width, height, maxWidth, maxHeight) {
+    let finalWidth;
+    let finalHeight;
 
-    if (e > r && t > o) {
-      l = r;
-      (a = (t * r) / e) > o && ((a = o), (l = (e * o) / t));
-    } else if (e > r) {
-      l = r;
-      a = (t * r) / e;
-    } else if (t > o) {
-      l = (e * o) / t;
-      a = o;
+    if (width > maxWidth && height > maxHeight) {
+      finalWidth = maxWidth;
+      finalHeight = (height * maxWidth) / width;
+      if (finalHeight > maxHeight) {
+        finalHeight = maxHeight;
+        finalWidth = (width * maxHeight) / height;
+      }
+    } else if (width > maxWidth) {
+      finalWidth = maxWidth;
+      finalHeight = (height * maxWidth) / width;
+    } else if (height > maxHeight) {
+      finalWidth = (width * maxHeight) / height;
+      finalHeight = maxHeight;
     } else {
-      l = e;
-      a = t;
+      finalWidth = width;
+      finalHeight = height;
     }
 
-    return [l, a];
+    return [finalWidth, finalHeight];
   },
-  prettyBytes(e) {
-    if (typeof e != "number" || Number.isNaN(e)) {
-      throw new TypeError(`Expected a number, got ${typeof e}`);
+  prettyBytes(bytes) {
+    if (typeof bytes != "number" || Number.isNaN(bytes)) {
+      throw new TypeError(`Expected a number, got ${typeof bytes}`);
     }
-    let t = e < 0;
-    let r = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    const isNegative = bytes < 0;
+    const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
 
-    if (t) {
-      e = -e;
-    }
-
-    if (e < 1) {
-      return `${(t ? "-" : "") + e} B`;
+    if (isNegative) {
+      bytes = -bytes;
     }
 
-    let o = Math.min(
-      Math.floor(Math.log(e) / Math.log(1000 /* 1e3 */)),
-      r.length - 1
+    if (bytes < 1) {
+      return `${(isNegative ? "-" : "") + bytes} B`;
+    }
+
+    const unitIndex = Math.min(
+      Math.floor(Math.log(bytes) / Math.log(1000)),
+      units.length - 1
     );
-    e = Number((e / 1000 /* 1e3 */ ** o).toFixed(2));
-    return `${t ? "-" : ""}${e} ${r[o]}`;
+    const value = Number((bytes / 1000 ** unitIndex).toFixed(2));
+    return `${isNegative ? "-" : ""}${value} ${units[unitIndex]}`;
   },
-  run(e, ...t) {
-    (0, require("child_process").spawn)(e, t, { detached: true }).unref();
+  run(command, ...args) {
+    (0, require("child_process").spawn)(command, args, { detached: true }).unref();
   },
 };
