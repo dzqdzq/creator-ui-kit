@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
-import mathUtils from "../share/math";
+import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";

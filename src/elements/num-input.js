@@ -1,7 +1,7 @@
 // import t from "vm"; // Node.js 模块，浏览器环境不可用
 // import e from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
-// import s from "../../../share/utils"; // 外部依赖，暂时注释
+import shareUtils from "../utils/js-utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
@@ -16,7 +16,6 @@ import inputStateBehavior from "../behaviors/input-state.js";
 // 创建占位符
 const t = null;
 const e = {};
-const s = {};
 const o = {};
 const _ = {};
 
@@ -474,10 +473,10 @@ export default elementUtils.registerElement("ui-num-input", {
     return t === null || t === ""
       ? ""
       : this._type === "int"
-      ? s.toFixed(t, 0)
+      ? shareUtils.toFixed(t, 0)
       : this._precision === 0
-      ? s.toFixed(t, this._precision)
-      : s.toFixed(t, this._precision, this._precision);
+      ? shareUtils.toFixed(t, this._precision)
+      : shareUtils.toFixed(t, this._precision, this._precision);
   },
   _clampValue(t) {
     Math.max(this._min, t);

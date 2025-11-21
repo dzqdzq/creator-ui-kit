@@ -1,7 +1,7 @@
 // import t from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
-// import i from "../../../share/utils"; // 外部依赖，暂时注释
-// import s from "../../../share/math"; // 外部依赖，暂时注释
+import shareUtils from "../utils/js-utils.js";
+import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
@@ -12,10 +12,6 @@ import inputStateBehavior from "../behaviors/input-state.js";
 
 // 创建占位符
 const settings = {};
-const shareUtils = {};
-const mathUtils = {
-  clamp: (value, min, max) => Math.min(Math.max(value, min), max),
-};
 
 export default elementUtils.registerElement("ui-slider", {
   get value() {

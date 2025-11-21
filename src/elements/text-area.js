@@ -1,5 +1,4 @@
 import elementUtils from "./utils.js";
-// import t from "../../../share/platform"; // 外部依赖，暂时注释
 import { getElementStyleSync } from "../utils/css-loader.js";
 import domUtils from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
@@ -7,18 +6,6 @@ import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import inputStateBehavior from "../behaviors/input-state.js";
-
-// 创建 platform 占位符
-const t = {
-  isMac: navigator.platform.toUpperCase().indexOf('MAC') >= 0,
-  isWindows: navigator.platform.toUpperCase().indexOf('WIN') >= 0,
-  isLinux: navigator.platform.toUpperCase().indexOf('LINUX') >= 0,
-};
-let r = "⌘ + enter";
-
-if (t.isWin32) {
-  r = "ctrl + enter";
-}
 
 export default elementUtils.registerElement("ui-text-area", {
   get value() {
@@ -138,9 +125,7 @@ export default elementUtils.registerElement("ui-text-area", {
   },
   _initEvents() {
     this.addEventListener("mousedown", this._mouseDownHandler);
-    this.addEventListener("keydown", this._keyDownHandler);
     this.addEventListener("focus-changed", this._focusChangedHandler);
-
     this.$input.addEventListener("focus", () => {
       this.$span.style.display = "inline-block";
     });
@@ -205,14 +190,6 @@ export default elementUtils.registerElement("ui-text-area", {
   _mouseDownHandler(e) {
     e.stopPropagation();
     focusMgr._setFocusElement(this);
-  },
-  _keyDownHandler(e) {
-    if (!this.disabled && (e.keyCode === 13 || e.keyCode === 32)) {
-      domUtils.acceptEvent(e);
-      this.$input._initValue = this.$input.value;
-      this.$input.focus();
-      this.$input.select();
-    }
   },
   _focusChangedHandler() {
     if (this.focused) {

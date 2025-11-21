@@ -1,11 +1,6 @@
 import elementUtils from "./utils.js";
-// import t from "../../../share/math"; // 外部依赖，暂时注释
+import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-
-// 创建 math 占位符
-const mathUtils = {
-  clamp: (value, min, max) => Math.min(Math.max(value, min), max),
-};
 
 export default elementUtils.registerElement("ui-progress", {
   get value() {
