@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+- 禁止修改 /Users/dzq/source/public/creator-ui-kit/src/themes/default目录下的所有文件

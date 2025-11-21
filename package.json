@@ -1,0 +1,17 @@
+{
+  "name": "ui-kit",
+  "version": "1.0.0",
+  "description": "UI Kit extracted from Cocos Creator Editor",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "echo 'Build script - use a bundler like Vite, Webpack, or Rollup'"
+  },
+  "keywords": [
+    "web-components",
+    "ui",
+    "custom-elements"
+  ],
+  "author": "",
+  "license": "MIT"
+}
