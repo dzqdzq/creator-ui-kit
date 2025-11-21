@@ -6,7 +6,26 @@ class ReadonlyBehavior {
   }
 
   get readonly() {
-    return this.getAttribute("is-readonly") !== null;
+    // 添加调试日志
+    if (!this || typeof this.getAttribute !== "function") {
+      const thisValue = this;
+      console.error("[ReadonlyBehavior.readonly getter] Invalid this context:", {
+        thisValue,
+        type: typeof thisValue,
+        isHTMLElement: thisValue instanceof HTMLElement,
+        hasGetAttribute: typeof thisValue?.getAttribute,
+        constructor: thisValue?.constructor?.name,
+        prototype: Object.getPrototypeOf(thisValue)?.constructor?.name,
+        stack: new Error().stack,
+      });
+      throw new TypeError("this.getAttribute is not a function in ReadonlyBehavior.readonly getter. this is not a valid HTMLElement.");
+    }
+    try {
+      return this.getAttribute("is-readonly") !== null;
+    } catch (error) {
+      console.error("[ReadonlyBehavior.readonly getter] Error calling getAttribute:", error, "this:", this);
+      throw error;
+    }
   }
 
   set readonly(readonlyValue) {
@@ -39,13 +58,32 @@ class ReadonlyBehavior {
   }
 
   _initReadonly(enableNested) {
-    this._readonly = this.getAttribute("readonly") !== null;
-
-    if (this._readonly) {
-      this._setIsReadonlyAttribute(true);
+    // 添加调试日志
+    if (!this || typeof this.getAttribute !== "function") {
+      const thisValue = this;
+      console.error("[ReadonlyBehavior._initReadonly] Invalid this context:", {
+        thisValue,
+        type: typeof thisValue,
+        isHTMLElement: thisValue instanceof HTMLElement,
+        hasGetAttribute: typeof thisValue?.getAttribute,
+        constructor: thisValue?.constructor?.name,
+        enableNested,
+        stack: new Error().stack,
+      });
+      throw new TypeError("this.getAttribute is not a function in _initReadonly. this is not a valid HTMLElement.");
     }
+    try {
+      this._readonly = this.getAttribute("readonly") !== null;
 
-    this._readonlyNested = enableNested;
+      if (this._readonly) {
+        this._setIsReadonlyAttribute(true);
+      }
+
+      this._readonlyNested = enableNested;
+    } catch (error) {
+      console.error("[ReadonlyBehavior._initReadonly] Error:", error, "this:", this);
+      throw error;
+    }
   }
 
   _propagateReadonly() {
@@ -61,19 +99,24 @@ class ReadonlyBehavior {
   }
 
   _isReadonlyInHierarchy(excludeSelf) {
-    if (!excludeSelf && this.readonly) {
-      return true;
-    }
-    let parentNode = this.parentNode;
-
-    while (parentNode) {
-      if (parentNode.readonly) {
+    try {
+      if (!excludeSelf && this.readonly) {
         return true;
       }
-      parentNode = parentNode.parentNode;
-    }
+      let parentNode = this.parentNode;
 
-    return false;
+      while (parentNode) {
+        if (parentNode.readonly) {
+          return true;
+        }
+        parentNode = parentNode.parentNode;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("[ReadonlyBehavior._isReadonlyInHierarchy] Error:", error, "this:", this, "excludeSelf:", excludeSelf);
+      throw error;
+    }
   }
 
   _isReadonlySelf() {
@@ -90,15 +133,89 @@ class ReadonlyBehavior {
 }
 
 const behaviorPrototype = ReadonlyBehavior.prototype;
+
+// 获取 getter 描述符的辅助函数
+function getGetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.get) {
+    return descriptor.get;
+  }
+  console.warn(`[readonly] getter '${name}' not found in prototype`);
+  return null;
+}
+
+function getSetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.set) {
+    return descriptor.set;
+  }
+  console.warn(`[readonly] setter '${name}' not found in prototype`);
+  return null;
+}
+
 export default {
   get canBeReadonly() {
-    return behaviorPrototype.canBeReadonly.get.call(this);
+    const getter = getGetter(behaviorPrototype, "canBeReadonly");
+    if (!getter) {
+      console.error("[readonly] canBeReadonly getter not found, this:", this, "type:", typeof this);
+      return true; // 默认值
+    }
+    try {
+      return getter.call(this);
+    } catch (error) {
+      console.error("[readonly] Error calling canBeReadonly getter:", error, "this:", this, "has getAttribute:", typeof this?.getAttribute);
+      throw error;
+    }
   },
   get readonly() {
-    return behaviorPrototype.readonly.get.call(this);
+    const getter = getGetter(behaviorPrototype, "readonly");
+    if (!getter) {
+      console.error("[readonly] readonly getter not found, this:", this, "type:", typeof this);
+      return false; // 默认值
+    }
+    try {
+      if (!this || typeof this.getAttribute !== "function") {
+        const thisValue = this;
+        console.error("[readonly] Invalid this context in readonly getter:", {
+          thisValue,
+          type: typeof thisValue,
+          isHTMLElement: thisValue instanceof HTMLElement,
+          hasGetAttribute: typeof thisValue?.getAttribute,
+          hasSetAttribute: typeof thisValue?.setAttribute,
+          constructor: thisValue?.constructor?.name,
+          prototype: Object.getPrototypeOf(thisValue)?.constructor?.name,
+          prototypeChain: (() => {
+            const chain = [];
+            let proto = thisValue;
+            while (proto) {
+              chain.push(proto.constructor?.name || "Unknown");
+              proto = Object.getPrototypeOf(proto);
+            }
+            return chain;
+          })(),
+          stack: new Error().stack,
+        });
+        throw new TypeError("this.getAttribute is not a function. this is not a valid HTMLElement.");
+      }
+      return getter.call(this);
+    } catch (error) {
+      console.error("[readonly] Error calling readonly getter:", error, "this:", this, "has getAttribute:", typeof this?.getAttribute, "stack:", error.stack);
+      throw error;
+    }
   },
   set readonly(value) {
-    behaviorPrototype.readonly.set.call(this, value);
+    console.log("[readonly] set readonly() called, value:", value, "this:", this);
+    const setter = getSetter(behaviorPrototype, "readonly");
+    if (!setter) {
+      console.error("[readonly] readonly setter not found, this:", this, "type:", typeof this);
+      return;
+    }
+    try {
+      setter.call(this, value);
+    } catch (error) {
+      console.error("[readonly] Error calling readonly setter:", error, "this:", this, "value:", value, "stack:", error.stack);
+      throw error;
+    }
   },
   _initReadonly: behaviorPrototype._initReadonly,
   _propagateReadonly: behaviorPrototype._propagateReadonly,

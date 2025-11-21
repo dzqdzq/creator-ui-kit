@@ -90,15 +90,74 @@ class DisableBehavior {
 }
 
 const behaviorPrototype = DisableBehavior.prototype;
+
+// 获取 getter 描述符的辅助函数
+function getGetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.get) {
+    return descriptor.get;
+  }
+  console.warn(`[disable] getter '${name}' not found in prototype`);
+  return null;
+}
+
+function getSetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.set) {
+    return descriptor.set;
+  }
+  console.warn(`[disable] setter '${name}' not found in prototype`);
+  return null;
+}
+
 export default {
   get canBeDisable() {
-    return behaviorPrototype.canBeDisable.get.call(this);
+    const getter = getGetter(behaviorPrototype, "canBeDisable");
+    if (!getter) {
+      console.error("[disable] canBeDisable getter not found, this:", this, "type:", typeof this);
+      return true; // 默认值
+    }
+    try {
+      return getter.call(this);
+    } catch (error) {
+      console.error("[disable] Error calling canBeDisable getter:", error, "this:", this);
+      throw error;
+    }
   },
   get disabled() {
-    return behaviorPrototype.disabled.get.call(this);
+    const getter = getGetter(behaviorPrototype, "disabled");
+    if (!getter) {
+      console.error("[disable] disabled getter not found, this:", this, "type:", typeof this);
+      return false; // 默认值
+    }
+    try {
+      if (!this || typeof this.getAttribute !== "function") {
+        console.error("[disable] Invalid this context in disabled getter:", {
+          this,
+          type: typeof this,
+          isHTMLElement: this instanceof HTMLElement,
+          hasGetAttribute: typeof this?.getAttribute,
+        });
+        throw new TypeError("this.getAttribute is not a function in disabled getter.");
+      }
+      return getter.call(this);
+    } catch (error) {
+      console.error("[disable] Error calling disabled getter:", error, "this:", this);
+      throw error;
+    }
   },
   set disabled(value) {
-    behaviorPrototype.disabled.set.call(this, value);
+    const setter = getSetter(behaviorPrototype, "disabled");
+    if (!setter) {
+      console.error("[disable] disabled setter not found, this:", this);
+      return;
+    }
+    try {
+      setter.call(this, value);
+    } catch (error) {
+      console.error("[disable] Error calling disabled setter:", error, "this:", this);
+      throw error;
+    }
   },
   _initDisable: behaviorPrototype._initDisable,
   _propagateDisable: behaviorPrototype._propagateDisable,

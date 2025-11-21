@@ -6,14 +6,45 @@ let lastFocusedElement = null;
 
 const focusMgr = {
   _setFocusElement(el) {
+    // 添加调试日志
+    if (el && (typeof el.getAttribute !== "function" || !(el instanceof HTMLElement))) {
+      console.error("[focus-mgr._setFocusElement] Invalid element:", {
+        el,
+        type: typeof el,
+        isHTMLElement: el instanceof HTMLElement,
+        hasGetAttribute: typeof el?.getAttribute,
+        hasSetFocused: typeof el?._setFocused,
+        constructor: el?.constructor?.name,
+        prototype: Object.getPrototypeOf(el)?.constructor?.name,
+        currentFocusedElement: focusedElement,
+      });
+    }
+
     if (focusedElement !== el) {
       if (focusedElement) {
-        focusedElement._setFocused(false);
+        try {
+          if (typeof focusedElement._setFocused === "function") {
+            focusedElement._setFocused(false);
+          } else {
+            console.warn("[focus-mgr._setFocusElement] focusedElement._setFocused is not a function:", focusedElement);
+          }
+        } catch (error) {
+          console.error("[focus-mgr._setFocusElement] Error calling _setFocused(false) on focusedElement:", error, "focusedElement:", focusedElement);
+        }
       }
       lastFocusedElement = focusedElement;
       focusedElement = el;
       if (el) {
-        el._setFocused(true);
+        try {
+          if (typeof el._setFocused === "function") {
+            el._setFocused(true);
+          } else {
+            console.warn("[focus-mgr._setFocusElement] el._setFocused is not a function:", el);
+          }
+        } catch (error) {
+          console.error("[focus-mgr._setFocusElement] Error calling _setFocused(true) on el:", error, "el:", el);
+          throw error;
+        }
       }
     }
   },

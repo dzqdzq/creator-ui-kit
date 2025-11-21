@@ -31,12 +31,13 @@ function resolveThemeUrl(themeUrl, themeName, baseUrl) {
 }
 
 async function processImports(css, themeName, baseUrl) {
-  const importRegex = /@import\s+url\(['"]?(theme:\/\/[^'"]+)['"]?\);?/g;
+  // 修复正则表达式：正确处理带引号和不带引号的 URL
+  const importRegex = /@import\s+url\((['"]?)(theme:\/\/[^'")]+)\1\);?/g;
   const imports = [];
   let match;
   
   while ((match = importRegex.exec(css)) !== null) {
-    const themeUrl = match[1];
+    const themeUrl = match[2];
     if (!imports.includes(themeUrl)) {
       imports.push(themeUrl);
     }
@@ -53,11 +54,14 @@ async function processImports(css, themeName, baseUrl) {
         loadedResources[resourceKey] = processedCss;
       }
       
-      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?`, 'g');
+      // 匹配带引号或不带引号的 URL
+      const escapedUrl = themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const importPattern = new RegExp(`@import\\s+url\\((['"]?)${escapedUrl}\\1\\);?`, 'g');
       css = css.replace(importPattern, loadedResources[resourceKey]);
     } catch (error) {
       console.warn(`Failed to load imported resource: ${themeUrl}`, error);
-      const importPattern = new RegExp(`@import\\s+url\\(['"]?${themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]?\\);?\\s*`, 'g');
+      const escapedUrl = themeUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const importPattern = new RegExp(`@import\\s+url\\((['"]?)${escapedUrl}\\1\\);?\\s*`, 'g');
       css = css.replace(importPattern, '');
     }
   }

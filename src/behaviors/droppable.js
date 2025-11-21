@@ -157,21 +157,89 @@ class DroppableBehavior {
 
 // 导出类的实例方法和属性，以便混入到元素原型
 const behaviorPrototype = DroppableBehavior.prototype;
+
+// 获取 getter 描述符的辅助函数
+function getGetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.get) {
+    return descriptor.get;
+  }
+  return null;
+}
+
+function getSetter(prototype, name) {
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
+  if (descriptor && descriptor.set) {
+    return descriptor.set;
+  }
+  return null;
+}
+
 export default {
   get droppable() {
-    return behaviorPrototype.droppable.get.call(this);
+    const getter = getGetter(behaviorPrototype, "droppable");
+    if (!getter) {
+      console.error("[droppable] droppable getter not found");
+      return null;
+    }
+    try {
+      return getter.call(this);
+    } catch (error) {
+      console.error("[droppable] Error calling droppable getter:", error, "this:", this);
+      throw error;
+    }
   },
   set droppable(value) {
-    behaviorPrototype.droppable.set.call(this, value);
+    const setter = getSetter(behaviorPrototype, "droppable");
+    if (!setter) {
+      console.error("[droppable] droppable setter not found");
+      return;
+    }
+    try {
+      setter.call(this, value);
+    } catch (error) {
+      console.error("[droppable] Error calling droppable setter:", error, "this:", this);
+      throw error;
+    }
   },
   get multi() {
-    return behaviorPrototype.multi.get.call(this);
+    const getter = getGetter(behaviorPrototype, "multi");
+    if (!getter) {
+      console.error("[droppable] multi getter not found");
+      return false;
+    }
+    try {
+      return getter.call(this);
+    } catch (error) {
+      console.error("[droppable] Error calling multi getter:", error, "this:", this);
+      throw error;
+    }
   },
   set multi(value) {
-    behaviorPrototype.multi.set.call(this, value);
+    const setter = getSetter(behaviorPrototype, "multi");
+    if (!setter) {
+      console.error("[droppable] multi setter not found");
+      return;
+    }
+    try {
+      setter.call(this, value);
+    } catch (error) {
+      console.error("[droppable] Error calling multi setter:", error, "this:", this);
+      throw error;
+    }
   },
   get canDrop() {
-    return behaviorPrototype.canDrop.get.call(this);
+    const getter = getGetter(behaviorPrototype, "canDrop");
+    if (!getter) {
+      console.error("[droppable] canDrop getter not found");
+      return false;
+    }
+    try {
+      return getter.call(this);
+    } catch (error) {
+      console.error("[droppable] Error calling canDrop getter:", error, "this:", this);
+      throw error;
+    }
   },
   _initDroppable: behaviorPrototype._initDroppable,
 };

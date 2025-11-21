@@ -10,14 +10,6 @@ const ELEMENT_NAMES = [
 async function initStyles() {
   try {
     await preloadElementStyles(ELEMENT_NAMES, 'default');
-    
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      const { getElementStyleSync } = await import("./utils/css-loader.js");
-      console.log('样式已预加载:', {
-        button: !!getElementStyleSync('button'),
-        checkbox: !!getElementStyleSync('checkbox'),
-      });
-    }
   } catch (error) {
     console.error('Failed to load theme styles:', error);
   }
