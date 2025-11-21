@@ -1,23 +1,23 @@
 // import t from "../settings"; // 外部依赖，暂时注释
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import i from "../../../share/utils"; // 外部依赖，暂时注释
 // import s from "../../../share/math"; // 外部依赖，暂时注释
-import a from "../utils/resource-mgr.js";
-import n from "../utils/dom-utils.js";
-import h from "../utils/focus-mgr.js";
-import u from "../behaviors/focusable.js";
-import l from "../behaviors/disable.js";
-import r from "../behaviors/readonly.js";
-import _ from "../behaviors/input-state.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import inputStateBehavior from "../behaviors/input-state.js";
 
 // 创建占位符
-const t = {};
-const i = {};
-const s = {
+const settings = {};
+const shareUtils = {};
+const mathUtils = {
   clamp: (value, min, max) => Math.min(Math.max(value, min), max),
 };
 
-export default e.registerElement("ui-slider", {
+export default elementUtils.registerElement("ui-slider", {
   get value() {
     return this._value;
   },
@@ -26,7 +26,7 @@ export default e.registerElement("ui-slider", {
       t = 0;
     }
 
-    t = s.clamp(t, this._min, this._max);
+    t = mathUtils.clamp(t, this._min, this._max);
     this._value = t;
     this._updateNubbinAndInput();
   },
@@ -76,7 +76,7 @@ export default e.registerElement("ui-slider", {
   set step(e) {
     if (e !== undefined && e !== null && this._step !== e) {
       this._step = parseFloat(e);
-      this._step = this._step === 0 ? t.stepFloat : this._step;
+      this._step = this._step === 0 ? settings.stepFloat : this._step;
     }
   },
   get snap() {
@@ -120,10 +120,10 @@ export default e.registerElement("ui-slider", {
       }
     }
   },
-  behaviors: [u, l, r, _],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template:
     '\n    <div class="wrapper">\n      <div class="track"></div>\n      <div class="nubbin"></div>\n    </div>\n    <input></input>\n  ',
-  style: a.getResource("theme://elements/slider.css"),
+  style: resourceMgr.getResource("theme://elements/slider.css"),
   $: {
     wrapper: ".wrapper",
     track: ".track",
@@ -145,10 +145,10 @@ export default e.registerElement("ui-slider", {
     let n = this.getAttribute("value");
     this._value = n !== null ? parseFloat(n) : 0;
 
-    this._value = this._initValue = s.clamp(this._value, this._min, this._max);
+    this._value = this._initValue = mathUtilmathUtils.clamp(this._value, this._min, this._max);
 
     let h = this.getAttribute("step");
-    this._step = h !== null ? parseFloat(h) : t.stepFloat;
+    this._step = h !== null ? parseFloat(h) : settings.stepFloat;
     this._snap = true;
     this.multiValues = this.getAttribute("multi-values");
     this._dragging = false;
@@ -181,21 +181,21 @@ export default e.registerElement("ui-slider", {
 
     this.$input.addEventListener("keydown", (t) => {
       if (t.keyCode === 38) {
-        n.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.readonly || this._stepUp(t);
       } else if (t.keyCode === 40) {
-        n.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.readonly || this._stepDown(t);
       }
     });
   },
   _mouseDownHandler(t) {
-    n.acceptEvent(t);
-    h._setFocusElement(this);
+    domUtils.acceptEvent(t);
+    focusMgr._setFocusElement(this);
   },
   _wrapperMouseDownHandler(t) {
-    n.acceptEvent(t);
-    h._setFocusElement(this);
+    domUtils.acceptEvent(t);
+    focusMgr._setFocusElement(this);
     this.$wrapper.focus();
 
     if (this.readonly) {
@@ -218,12 +218,12 @@ export default e.registerElement("ui-slider", {
     this._updateNubbin();
     this._emitChange();
 
-    n.startDrag(
-      "ew-resize",
-      t,
-      (t) => {
-        let i = (t.clientX - e.left) / this.$track.clientWidth;
-        i = s.clamp(i, 0, 1);
+      domUtils.startDrag(
+        "ew-resize",
+        t,
+        (t) => {
+          let i = (t.clientX - e.left) / this.$track.clientWidth;
+          i = mathUtilmathUtils.clamp(i, 0, 1);
         let a = this._min + i * (this._max - this._min);
 
         if (this._snap) {
@@ -245,20 +245,20 @@ export default e.registerElement("ui-slider", {
   _wrapperKeyDownHandler(t) {
     if (!this.disabled) {
       if (t.keyCode === 13 || t.keyCode === 32) {
-        n.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.$input._initValue = this.$input.value;
         this.$input.focus();
         this.$input.select();
       } else if (t.keyCode === 27) {
         if (this._dragging) {
-          n.acceptEvent(t);
+          domUtils.acceptEvent(t);
           this._dragging = false;
-          n.cancelDrag();
+          domUtils.cancelDrag();
         }
 
         this.cancel();
       } else if (t.keyCode === 37) {
-        n.acceptEvent(t);
+        domUtils.acceptEvent(t);
 
         if (this.readonly) {
           return;
@@ -266,7 +266,7 @@ export default e.registerElement("ui-slider", {
 
         this._stepDown(t);
       } else if (t.keyCode === 39) {
-        n.acceptEvent(t);
+        domUtils.acceptEvent(t);
 
         if (this.readonly) {
           return;
@@ -280,10 +280,10 @@ export default e.registerElement("ui-slider", {
     let i = this._step;
 
     if (e.shiftKey) {
-      i *= t.shiftStep;
+      i *= settings.shiftStep;
     }
 
-    this._value = s.clamp(this._value + i, this._min, this._max);
+    this._value = mathUtilmathUtils.clamp(this._value + i, this._min, this._max);
     this._updateNubbinAndInput();
     this._emitChange();
   },
@@ -291,16 +291,16 @@ export default e.registerElement("ui-slider", {
     let i = this._step;
 
     if (e.shiftKey) {
-      i *= t.shiftStep;
+      i *= settings.shiftStep;
     }
 
-    this._value = s.clamp(this._value - i, this._min, this._max);
+    this._value = mathUtilmathUtils.clamp(this._value - i, this._min, this._max);
     this._updateNubbinAndInput();
     this._emitChange();
   },
   _wrapperKeyUpHandler(t) {
     if (t.keyCode === 37 || t.keyCode === 39) {
-      n.acceptEvent(t);
+      domUtils.acceptEvent(t);
 
       if (this.readonly) {
         return;
@@ -325,7 +325,7 @@ export default e.registerElement("ui-slider", {
       t = parseFloat(this._formatValue(t));
     }
 
-    t = s.clamp(t, this._min, this._max);
+    t = mathUtils.clamp(t, this._min, this._max);
     return t;
   },
   _updateNubbin() {
@@ -342,7 +342,7 @@ export default e.registerElement("ui-slider", {
       this._changed = false;
       this._initValue = this._value;
       this._updateNubbinAndInput();
-      n.fire(this, "confirm", {
+      domUtils.fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -355,12 +355,12 @@ export default e.registerElement("ui-slider", {
       this._value !== this._initValue &&
         ((this._value = this._initValue),
         this._updateNubbinAndInput(),
-        n.fire(this, "change", {
+        domUtils.fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         }));
 
-      n.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+      domUtils.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
     }
   },
   _onInputConfirm(t, e) {
@@ -373,7 +373,7 @@ export default e.registerElement("ui-slider", {
       this._initValue = i;
       this._updateNubbin();
 
-      n.fire(this, "confirm", {
+      domUtils.fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value, confirmByEnter: e },
       });
@@ -395,13 +395,13 @@ export default e.registerElement("ui-slider", {
         this._initValue = e;
         this._updateNubbin();
 
-        n.fire(this, "change", {
+        domUtils.fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      n.fire(this, "cancel", {
+      domUtils.fire(this, "cancel", {
         bubbles: true,
         detail: { value: this._value, cancelByEsc: e },
       });
@@ -424,18 +424,18 @@ export default e.registerElement("ui-slider", {
   },
   _emitChange() {
     this._changed = true;
-    n.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
   _snapToStep(t) {
     let e = Math.round((t - this._value) / this._step);
     t = this._value + this._step * e;
-    return s.clamp(t, this.min, this.max);
+    return mathUtilmathUtils.clamp(t, this.min, this.max);
   },
   _formatValue(t) {
     return t === null || t === ""
       ? ""
       : this._precision === 0
-      ? i.toFixed(t, this._precision)
-      : i.toFixed(t, this._precision, this._precision);
+      ? shareUtils.toFixed(t, this._precision)
+      : shareUtils.toFixed(t, this._precision, this._precision);
   },
 });

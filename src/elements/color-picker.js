@@ -1,26 +1,22 @@
-// import t from "@electron/remote"; // Electron 特定，浏览器环境不可用
-import e from "chroma-js";
-import l from "./utils.js";
-// import a from "../../../share/math"; // 外部依赖，暂时注释
-import n from "../utils/resource-mgr.js";
-import h from "../utils/dom-utils.js";
-import o from "../utils/focus-mgr.js";
-import d from "../behaviors/focusable.js";
+import chroma from "chroma-js";
+import elementUtils from "./utils.js";
+import mathUtils from "../share/math";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
 
 // 创建占位符
 const t = null; // Electron remote 在浏览器中不可用
-const a = {
-  clamp: (value, min, max) => Math.min(Math.max(value, min), max),
-};
 
 const { Menu, MenuItem } = t;
 
-export default l.registerElement("ui-color-picker", {
+export default elementUtils.registerElement("ui-color-picker", {
   get value() {
     return this._value;
   },
   set value(t) {
-    let i = e(t).rgba();
+    let i = chroma(t).rgba();
 
     if (i !== this._value) {
       this._value = i;
@@ -33,10 +29,10 @@ export default l.registerElement("ui-color-picker", {
       this._updateHexInput();
     }
   },
-  behaviors: [d],
+  behaviors: [focusableBehavior],
   template:
     '\n    <div class="hbox">\n      <div class="hue ctrl" tabindex="-1">\n        <div class="hue-handle">\n          <i class="icon-right-dir"></i>\n        </div>\n      </div>\n      <div class="color ctrl" tabindex="-1">\n        <div class="color-handle">\n          <i class="icon-circle-empty"></i>\n        </div>\n      </div>\n      <div class="alpha ctrl" tabindex="-1">\n        <div class="alpha-handle">\n          <i class="icon-left-dir"></i>\n        </div>\n      </div>\n    </div>\n\n    <div class="vbox">\n      <div class="prop">\n        <span class="red tag">R</span>\n        <ui-slider id="r-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="green">G</span>\n        <ui-slider id="g-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="blue">B</span>\n        <ui-slider id="b-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="gray">A</span>\n        <ui-slider id="a-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="hex-field">\n        <div class="color-block old">\n          <div id="old-color" class="color-inner"></div>\n        </div>\n        <div class="color-block new">\n          <div id="new-color" class="color-inner"></div>\n        </div>\n        <span class="space"></span>\n        <div class="label">Hex Color</div>\n        <ui-input id="hex-input"></ui-input>\n      </div>\n\n      <div class="title">\n        <div>Presets</div>\n          <ui-button id="btn-add" class="transparent tiny">\n            <i class="icon-plus"></i>\n          </ui-button>\n        </div>\n      <div class="hbox palette"></div>\n    </div>\n  ',
-  style: n.getResource("theme://elements/color-picker.css"),
+  style: resourceMgr.getResource("theme://elements/color-picker.css"),
   $: {
     hueHandle: ".hue-handle",
     colorHandle: ".color-handle",
@@ -62,7 +58,7 @@ export default l.registerElement("ui-color-picker", {
   },
   ready() {
     let t = this.getAttribute("value");
-    this._value = t !== null ? e(t).rgba() : [255, 255, 255, 1];
+    this._value = t !== null ? chroma(t).rgba() : [255, 255, 255, 1];
     this._lastAssigned = this._value.slice(0);
     let i = Editor.Profile.load("global://settings.json").get(
       "ui-color-picker"
@@ -79,22 +75,22 @@ export default l.registerElement("ui-color-picker", {
     this._initEvents();
   },
   hide(t) {
-    h.fire(this, "hide", { bubbles: false, detail: { confirm: t } });
+    domUtils.fire(this, "hide", { bubbles: false, detail: { confirm: t } });
   },
   _initEvents() {
     this.addEventListener("keydown", (t) => {
       if (t.keyCode === 13 || t.keyCode === 32) {
-        h.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.hide(true);
       } else if (t.keyCode === 27) {
-        h.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.hide(false);
       }
     });
 
     this.$hueCtrl.addEventListener("mousedown", (t) => {
-      h.acceptEvent(t);
-      o._setFocusElement(this);
+      domUtils.acceptEvent(t);
+      focusMgr._setFocusElement(this);
       this.$hueCtrl.focus();
       let i = this._value[3];
       this._initValue = this._value;
@@ -103,8 +99,8 @@ export default l.registerElement("ui-color-picker", {
       let l = (t.clientY - s.top) / this.$hueCtrl.clientHeight;
       this.$hueHandle.style.top = `${100 * l}%`;
       let n = 360 * (1 - l);
-      let d = e(this._value).hsv();
-      this._value = e(n, d[1], d[2], "hsv").rgba();
+      let d = chroma(this._value).hsv();
+      this._value = chroma(n, d[1], d[2], "hsv").rgba();
       this._value[3] = i;
       this._updateColorDiff();
       this._updateColor(n);
@@ -113,16 +109,16 @@ export default l.registerElement("ui-color-picker", {
       this._updateHexInput();
       this._emitChange();
 
-      h.startDrag(
+      domUtils.startDrag(
         "ns-resize",
         t,
         (t) => {
           let l = (t.clientY - s.top) / this.$hueCtrl.clientHeight;
-          l = a.clamp(l, 0, 1);
+          l = mathUtils.clamp(l, 0, 1);
           this.$hueHandle.style.top = `${100 * l}%`;
           let n = 360 * (1 - l);
-          let h = e(this._value).hsv();
-          this._value = e(n, h[1], h[2], "hsv").rgba();
+          let h = chroma(this._value).hsv();
+          this._value = chroma(n, h[1], h[2], "hsv").rgba();
           this._value[3] = i;
           this._updateColorDiff();
           this._updateColor(n);
@@ -146,9 +142,9 @@ export default l.registerElement("ui-color-picker", {
 
     this.$hueCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27 && this._dragging) {
-        h.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this._dragging = false;
-        h.cancelDrag();
+        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateHue();
@@ -162,8 +158,8 @@ export default l.registerElement("ui-color-picker", {
     });
 
     this.$alphaCtrl.addEventListener("mousedown", (t) => {
-      h.acceptEvent(t);
-      o._setFocusElement(this);
+      domUtils.acceptEvent(t);
+      focusMgr._setFocusElement(this);
       this.$alphaCtrl.focus();
       this._initValue = this._value.slice();
       this._dragging = true;
@@ -175,12 +171,12 @@ export default l.registerElement("ui-color-picker", {
       this._updateSliders();
       this._emitChange();
 
-      h.startDrag(
+      domUtils.startDrag(
         "ns-resize",
         t,
         (t) => {
           let i = (t.clientY - e.top) / this.$hueCtrl.clientHeight;
-          i = a.clamp(i, 0, 1);
+          i = mathUtils.clamp(i, 0, 1);
           this.$alphaHandle.style.top = `${100 * i}%`;
           this._value[3] = parseFloat((1 - i).toFixed(3));
           this._updateColorDiff();
@@ -197,9 +193,9 @@ export default l.registerElement("ui-color-picker", {
 
     this.$alphaCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27 && this._dragging) {
-        h.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this._dragging = false;
-        h.cancelDrag();
+        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateAlpha();
@@ -210,8 +206,8 @@ export default l.registerElement("ui-color-picker", {
     });
 
     this.$colorCtrl.addEventListener("mousedown", (t) => {
-      h.acceptEvent(t);
-      o._setFocusElement(this);
+      domUtils.acceptEvent(t);
+      focusMgr._setFocusElement(this);
       this.$colorCtrl.focus();
       let i = 360 * (1 - parseFloat(this.$hueHandle.style.top) / 100);
       let s = this._value[3];
@@ -224,8 +220,8 @@ export default l.registerElement("ui-color-picker", {
       r *= 255;
       this.$colorHandle.style.left = `${100 * n}%`;
       this.$colorHandle.style.top = `${100 * d}%`;
-      this.$colorHandle.style.color = e(r, r, r).hex();
-      this._value = e(i, n, 1 - d, "hsv").rgba();
+      this.$colorHandle.style.color = chroma(r, r, r).hex();
+      this._value = chroma(i, n, 1 - d, "hsv").rgba();
       this._value[3] = s;
       this._updateColorDiff();
       this._updateAlpha();
@@ -233,19 +229,19 @@ export default l.registerElement("ui-color-picker", {
       this._updateHexInput();
       this._emitChange();
 
-      h.startDrag(
+      domUtils.startDrag(
         "default",
         t,
         (t) => {
           let n = (t.clientX - l.left) / this.$colorCtrl.clientWidth;
           let h = (t.clientY - l.top) / this.$colorCtrl.clientHeight;
-          n = a.clamp(n, 0, 1);
-          let o = (h = a.clamp(h, 0, 1)) * h * (3 - 2 * h);
+          n = mathUtils.clamp(n, 0, 1);
+          let o = (h = mathUtils.clamp(h, 0, 1)) * h * (3 - 2 * h);
           o *= 255;
           this.$colorHandle.style.left = `${100 * n}%`;
           this.$colorHandle.style.top = `${100 * h}%`;
-          this.$colorHandle.style.color = e(o, o, o).hex();
-          this._value = e(i, n, 1 - h, "hsv").rgba();
+          this.$colorHandle.style.color = chroma(o, o, o).hex();
+          this._value = chroma(i, n, 1 - h, "hsv").rgba();
           this._value[3] = s;
           this._updateColorDiff();
           this._updateAlpha();
@@ -266,9 +262,9 @@ export default l.registerElement("ui-color-picker", {
 
     this.$colorCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27 && this._dragging) {
-        h.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this._dragging = false;
-        h.cancelDrag();
+        domUtils.cancelDrag();
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateColor();
@@ -372,7 +368,7 @@ export default l.registerElement("ui-color-picker", {
     this.$hexInput.addEventListener("confirm", (t) => {
       t.stopPropagation();
       let i = this._value[3];
-      this._value = e(t.detail.value).rgba();
+      this._value = chroma(t.detail.value).rgba();
       this._value[3] = i;
       this._updateColorDiff();
       this._updateHue();
@@ -386,7 +382,7 @@ export default l.registerElement("ui-color-picker", {
 
     this.$btnAdd.addEventListener("confirm", (t) => {
       t.stopPropagation();
-      let i = e(this._value).css();
+      let i = chroma(this._value).css();
       let s = this._newColorBox(i);
       this.$palette.appendChild(s);
       this._settings.colors.push(i);
@@ -415,8 +411,8 @@ export default l.registerElement("ui-color-picker", {
         new MenuItem({
           label: "Replace",
           click: () => {
-            let t = h.index(a);
-            let i = e(this._value).css();
+            let t = domUtils.index(a);
+            let i = chroma(this._value).css();
             n.style.backgroundColor = i;
             this._settings.colors[t] = i;
             this._saveSettings();
@@ -428,7 +424,7 @@ export default l.registerElement("ui-color-picker", {
         new MenuItem({
           label: "Delete",
           click: () => {
-            let t = h.index(a);
+            let t = domUtils.index(a);
             a.remove();
             this._settings.colors.splice(t, 1);
             this._saveSettings();
@@ -443,7 +439,7 @@ export default l.registerElement("ui-color-picker", {
       t.stopPropagation();
 
       if (t.button === 0) {
-        this._value = e(n.style.backgroundColor).rgba();
+        this._value = chroma(n.style.backgroundColor).rgba();
         this._updateColorDiff();
         this._updateHue();
         this._updateColor();
@@ -464,11 +460,11 @@ export default l.registerElement("ui-color-picker", {
     t.save();
   },
   _updateColorDiff() {
-    this.$oldColor.style.backgroundColor = e(this._lastAssigned).css();
-    this.$newColor.style.backgroundColor = e(this._value).css();
+    this.$oldColor.style.backgroundColor = chroma(this._lastAssigned).css();
+    this.$newColor.style.backgroundColor = chroma(this._value).css();
   },
   _updateHue() {
-    let t = e(this._value).hsv();
+    let t = chroma(this._value).hsv();
 
     if (isNaN(t[0])) {
       t[0] = 360;
@@ -477,7 +473,7 @@ export default l.registerElement("ui-color-picker", {
     this.$hueHandle.style.top = `${100 * (1 - t[0] / 360)}%`;
   },
   _updateColor(t) {
-    let i = e(this._value).hsv();
+    let i = chroma(this._value).hsv();
 
     if (isNaN(i[0])) {
       i[0] = 360;
@@ -488,13 +484,13 @@ export default l.registerElement("ui-color-picker", {
     let n = 1 - a;
     n = n * n * (3 - 2 * n);
     n *= 255;
-    this.$colorCtrl.style.backgroundColor = e(s, 1, 1, "hsv").hex();
+    this.$colorCtrl.style.backgroundColor = chroma(s, 1, 1, "hsv").hex();
     this.$colorHandle.style.left = `${100 * l}%`;
     this.$colorHandle.style.top = `${100 * (1 - a)}%`;
-    this.$colorHandle.style.color = e(n, n, n).hex();
+    this.$colorHandle.style.color = chroma(n, n, n).hex();
   },
   _updateAlpha() {
-    this.$alphaCtrl.style.backgroundColor = e(
+    this.$alphaCtrl.style.backgroundColor = chroma(
       this._value[0],
       this._value[1],
       this._value[2]
@@ -509,15 +505,15 @@ export default l.registerElement("ui-color-picker", {
     this.$sliderA.value = parseInt(255 * this._value[3]);
   },
   _updateHexInput() {
-    this.$hexInput.value = e(this._value).hex().toUpperCase();
+    this.$hexInput.value = chroma(this._value).hex().toUpperCase();
   },
   _emitConfirm() {
-    h.fire(this, "confirm", { bubbles: true, detail: { value: this._value } });
+    domUtils.fire(this, "confirm", { bubbles: true, detail: { value: this._value } });
   },
   _emitCancel() {
-    h.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+    domUtils.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
   },
   _emitChange() {
-    h.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
 });

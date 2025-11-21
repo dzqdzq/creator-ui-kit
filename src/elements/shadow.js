@@ -1,6 +1,6 @@
-import t from "./utils.js";
+import elementUtils from "./utils.js";
 
-export default t.registerElement("ui-shadow", {
+export default elementUtils.registerElement("ui-shadow", {
   style: "\n    :host {\n      display: block;\n    }\n  ",
   template: "",
   factoryImpl(t) {

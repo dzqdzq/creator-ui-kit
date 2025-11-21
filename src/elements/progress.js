@@ -1,13 +1,13 @@
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import t from "../../../share/math"; // 外部依赖，暂时注释
-import i from "../utils/resource-mgr.js";
+import resourceMgr from "../utils/resource-mgr.js";
 
 // 创建 math 占位符
-const t = {
+const mathUtils = {
   clamp: (value, min, max) => Math.min(Math.max(value, min), max),
 };
 
-export default e.registerElement("ui-progress", {
+export default elementUtils.registerElement("ui-progress", {
   get value() {
     return this._value;
   },
@@ -16,7 +16,7 @@ export default e.registerElement("ui-progress", {
       e = 0;
     }
 
-    e = parseInt(t.clamp(e, 0, 100));
+    e = parseInt(mathUtils.clamp(e, 0, 100));
 
     if (this._value !== e) {
       this._value = e;
@@ -25,7 +25,7 @@ export default e.registerElement("ui-progress", {
   },
   template:
     '\n    <div class="bar">\n      <div class="label"></div>\n    </div>\n  ',
-  style: i.getResource("theme://elements/progress.css"),
+  style: resourceMgr.getResource("theme://elements/progress.css"),
   $: { bar: ".bar", label: ".label" },
   factoryImpl(e) {
     if (e) {

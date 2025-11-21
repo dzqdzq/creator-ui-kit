@@ -1,12 +1,12 @@
-import e from "./utils.js";
-import t from "../utils/resource-mgr.js";
-import i from "../utils/dom-utils.js";
-import s from "../behaviors/focusable.js";
-import u from "../behaviors/disable.js";
-import l from "../behaviors/readonly.js";
-import r from "../behaviors/button-state.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import buttonStateBehavior from "../behaviors/button-state.js";
 
-export default e.registerElement("ui-checkbox", {
+export default elementUtils.registerElement("ui-checkbox", {
   get checked() {
     return this.getAttribute("checked") !== null;
   },
@@ -47,10 +47,10 @@ export default e.registerElement("ui-checkbox", {
       this[e.replace(/\-(\w)/g, (e, t) => t.toUpperCase())] = i;
     }
   },
-  behaviors: [s, u, l, r],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, buttonStateBehavior],
   template:
     '\n    <div class="box">\n      <i class="checker icon-ok"></i>\n    </div>\n    <span class="label">\n      <slot></slot>\n    </span>\n  ',
-  style: t.getResource("theme://elements/checkbox.css"),
+  style: resourceMgr.getResource("theme://elements/checkbox.css"),
   factoryImpl(e, t) {
     if (t) {
       this.innerText = t;
@@ -70,12 +70,12 @@ export default e.registerElement("ui-checkbox", {
       t.stopPropagation();
       this.checked = !this.checked;
       this.multiValues = false;
-      i.fire(this, "change", {
+      domUtils.fire(this, "change", {
         bubbles: true,
         detail: { value: this.checked },
       });
 
-      i.fire(this, "confirm", {
+      domUtils.fire(this, "confirm", {
         bubbles: true,
         detail: { value: this.checked },
       });

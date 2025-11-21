@@ -1,11 +1,11 @@
-import e from "./utils.js";
-import t from "../utils/resource-mgr.js";
-import l from "../utils/dom-utils.js";
-import i from "../utils/focus-mgr.js";
-import n from "./hint.js";
-import o from "../behaviors/disable.js";
-import s from "../behaviors/readonly.js";
-import r from "../utils/js-utils.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import hintElement from "./hint.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import jsUtils from "../utils/js-utils.js";
 let d = null;
 function u(e) {
   let t = document.createElement("th");
@@ -15,8 +15,8 @@ function u(e) {
   return t;
 }
 
-export default e.registerElement("ui-prop-table", {
-  style: t.getResource("theme://elements/prop-table.css"),
+export default elementUtils.registerElement("ui-prop-table", {
+  style: resourceMgr.getResource("theme://elements/prop-table.css"),
   template: "\n    <table></table>\n  ",
   $: { table: "table" },
   ready() {
@@ -37,8 +37,8 @@ export default e.registerElement("ui-prop-table", {
             n.setAttribute("readonly", "");
           }
 
-          r.addon(n, o);
-          r.addon(n, s);
+          jsUtils.addon(n, disableBehavior);
+          jsUtils.addon(n, readonlyBehavior);
           n._initDisable(true);
           n._initReadonly(true);
 
@@ -61,12 +61,12 @@ export default e.registerElement("ui-prop-table", {
           });
 
           n.addEventListener("mousedown", (e) => {
-            l.acceptEvent(e);
-            i._setFocusElement(null);
-            let t = i._getFirstFocusableFrom(n, true);
+            domUtils.acceptEvent(e);
+            focusMgr._setFocusElement(null);
+            let t = focusMgr._getFirstFocusableFrom(n, true);
 
             if (t) {
-              i._setFocusElement(t);
+              focusMgr._setFocusElement(t);
             }
           });
 
@@ -132,7 +132,7 @@ export default e.registerElement("ui-prop-table", {
         this.$table.appendChild(c);
 
         if (c._disabled) {
-          l.walk(c, { excludeSelf: true }, (e) => {
+          domUtils.walk(c, { excludeSelf: true }, (e) => {
             if (e._setIsDisabledAttribute) {
               e._setIsDisabledAttribute(true);
             }
@@ -142,7 +142,7 @@ export default e.registerElement("ui-prop-table", {
         }
 
         if (c._readonly) {
-          l.walk(c, { excludeSelf: true }, (e) => {
+          domUtils.walk(c, { excludeSelf: true }, (e) => {
             if (e._setIsReadonlyAttribute) {
               e._setIsReadonlyAttribute(true);
             }

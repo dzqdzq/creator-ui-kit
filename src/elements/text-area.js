@@ -1,12 +1,12 @@
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import t from "../../../share/platform"; // 外部依赖，暂时注释
-import i from "../utils/resource-mgr.js";
-import s from "../utils/dom-utils.js";
-import a from "../utils/focus-mgr.js";
-import u from "../behaviors/focusable.js";
-import l from "../behaviors/disable.js";
-import n from "../behaviors/readonly.js";
-import h from "../behaviors/input-state.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import inputStateBehavior from "../behaviors/input-state.js";
 
 // 创建 platform 占位符
 const t = {
@@ -20,7 +20,7 @@ if (t.isWin32) {
   r = "ctrl + enter";
 }
 
-export default e.registerElement("ui-text-area", {
+export default elementUtils.registerElement("ui-text-area", {
   get value() {
     return this._value;
   },
@@ -101,9 +101,9 @@ export default e.registerElement("ui-text-area", {
       }
     }
   },
-  behaviors: [u, l, n, h],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template: `\n    <div class="back">\n      <span>${r}</span>\n    </div>\n    <textarea></textarea>\n  `,
-  style: i.getResource("theme://elements/text-area.css"),
+  style: resourceMgr.getResource("theme://elements/text-area.css"),
   $: { input: "textarea", span: "span" },
   factoryImpl(e) {
     if (e) {
@@ -157,7 +157,7 @@ export default e.registerElement("ui-text-area", {
         this._value = e.value;
         this.multiValues = false;
 
-        s.fire(this, "confirm", {
+        domUtils.fire(this, "confirm", {
           bubbles: true,
           detail: { value: e.value, confirmByEnter: t },
         });
@@ -175,12 +175,12 @@ export default e.registerElement("ui-text-area", {
 
         e._initValue !== e.value &&
           ((this._value = e.value = e._initValue),
-          s.fire(this, "change", {
+          domUtils.fire(this, "change", {
             bubbles: true,
             detail: { value: e.value },
           }));
 
-        s.fire(this, "cancel", {
+        domUtils.fire(this, "cancel", {
           bubbles: true,
           detail: { value: e.value, cancelByEsc: t },
         });
@@ -200,15 +200,15 @@ export default e.registerElement("ui-text-area", {
     }
 
     this._value = e.value;
-    s.fire(this, "change", { bubbles: true, detail: { value: e.value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: e.value } });
   },
   _mouseDownHandler(e) {
     e.stopPropagation();
-    a._setFocusElement(this);
+    focusMgr._setFocusElement(this);
   },
   _keyDownHandler(e) {
     if (!this.disabled && (e.keyCode === 13 || e.keyCode === 32)) {
-      s.acceptEvent(e);
+      domUtils.acceptEvent(e);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();

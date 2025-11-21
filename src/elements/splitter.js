@@ -1,14 +1,14 @@
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import i from "../behaviors/resizable"; // 需要创建此文件
-import t from "../utils/resource-mgr.js";
+import resourceMgr from "../utils/resource-mgr.js";
 
 // 临时占位符
-const i = {};
+const resizableBehavior = {};
 
-export default e.registerElement("ui-splitter", {
-  behaviors: [i],
+export default elementUtils.registerElement("ui-splitter", {
+  behaviors: [resizableBehavior],
   template: '\n    <div class="content">\n      <slot></slot>\n    </div>\n  ',
-  style: t.getResource("theme://elements/splitter.css"),
+  style: resourceMgr.getResource("theme://elements/splitter.css"),
   ready() {
     this._initResizable();
     this._needEvaluateSize = this.children.length !== 0;

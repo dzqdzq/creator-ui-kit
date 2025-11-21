@@ -1,14 +1,14 @@
-import t from "chroma-js";
-import i from "./utils.js";
-import s from "../utils/resource-mgr.js";
-import l from "../utils/dom-utils.js";
-import a from "../utils/focus-mgr.js";
-import h from "../behaviors/focusable.js";
-import u from "../behaviors/disable.js";
-import r from "../behaviors/readonly.js";
+import chroma from "chroma-js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
 let e;
 
-export default i.registerElement("ui-color", {
+export default elementUtils.registerElement("ui-color", {
   get value() {
     return this._value;
   },
@@ -22,7 +22,7 @@ export default i.registerElement("ui-color", {
 
     if (`${i}` != `${this._value}` && !this._multiValues) {
       if (!this._multiValues) {
-        this._draw = t(e).rgba();
+        this._draw = chroma(e).rgba();
         this._updateRGB();
         this._updateAlpha();
       }
@@ -67,10 +67,10 @@ export default i.registerElement("ui-color", {
       this[e.replace(/\-(\w)/g, (e, t) => t.toUpperCase())] = i;
     }
   },
-  behaviors: [h, u, r],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template:
     '\n    <div class="inner">\n      <div class="rgb"></div>\n      <div class="alpha"></div>\n    </div>\n    <div class="mask"></div>\n  ',
-  style: s.getResource("theme://elements/color.css"),
+  style: resourceMgr.getResource("theme://elements/color.css"),
   $: { rgb: ".rgb", alpha: ".alpha" },
   factoryImpl(e) {
     if (e) {
@@ -101,8 +101,8 @@ export default i.registerElement("ui-color", {
   _initEvents() {
     this.addEventListener("mousedown", (t) => {
       if (!this.disabled) {
-        l.acceptEvent(t);
-        a._setFocusElement(this);
+        domUtils.acceptEvent(t);
+        focusMgr._setFocusElement(this);
 
         this.readonly ||
           (this._showing
@@ -117,7 +117,7 @@ export default i.registerElement("ui-color", {
         !this.disabled &&
         (t.keyCode === 13 || t.keyCode === 32)
       ) {
-        l.acceptEvent(t);
+        domUtils.acceptEvent(t);
         e.value = this._draw;
         this._showColorPicker(true);
       }
@@ -129,17 +129,17 @@ export default i.registerElement("ui-color", {
 
         e.detail.confirm
           ? ((this._initValue = this._value),
-            l.fire(this, "confirm", {
+            domUtils.fire(this, "confirm", {
               bubbles: true,
               detail: { value: this._value },
             }))
           : (this._initValue !== this._value &&
               ((this.value = this._initValue),
-              l.fire(this, "change", {
+              domUtils.fire(this, "change", {
                 bubbles: true,
                 detail: { value: this._value },
               })),
-            l.fire(this, "cancel", {
+            domUtils.fire(this, "cancel", {
               bubbles: true,
               detail: { value: this._value },
             }));
@@ -151,11 +151,11 @@ export default i.registerElement("ui-color", {
     this._changeFn = (e) => {
       this._changed = true;
       this.multiValues = false;
-      l.acceptEvent(e);
+      domUtils.acceptEvent(e);
 
       this.value = e.detail.value.map((e) => e);
 
-      l.fire(this, "change", {
+      domUtils.fire(this, "change", {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -186,23 +186,23 @@ export default i.registerElement("ui-color", {
           e.addEventListener("change", this._changeFn),
           e.addEventListener("confirm", this._confirmFn),
           e.addEventListener("cancel", this._cancelFn),
-          l.addHitGhost("default", 998, () => {
+          domUtils.addHitGhost("default", 998, () => {
             e.hide(true);
           }),
           document.body.appendChild(e),
           (e._target = this),
           (e.style.display = "block"),
           this._updateColorPickerPosition(),
-          a._setFocusElement(e))
+          focusMgr._setFocusElement(e))
         : (e.removeEventListener("hide", this._hideFn),
           e.removeEventListener("change", this._changeFn),
           e.removeEventListener("confirm", this._confirmFn),
           e.removeEventListener("cancel", this._cancelFn),
-          l.removeHitGhost(),
+          domUtils.removeHitGhost(),
           (e._target = null),
           e.remove(),
           (e.style.display = "none"),
-          a._setFocusElement(this));
+          focusMgr._setFocusElement(this));
     }
   },
   _updateColorPickerPosition() {

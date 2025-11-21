@@ -1,7 +1,7 @@
-import t from "./utils.js";
-import s from "../utils/resource-mgr.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
 
-export default t.registerElement("ui-hint", {
+export default elementUtils.registerElement("ui-hint", {
   get position() {
     return this._position;
   },
@@ -23,7 +23,7 @@ export default t.registerElement("ui-hint", {
   template:
     '\n    <div class="box">\n      <slot></slot>\n      <div class="arrow"></div>\n    </div>\n  ',
   $: { arrow: ".arrow" },
-  style: s.getResource("theme://elements/hint.css"),
+  style: resourceMgr.getResource("theme://elements/hint.css"),
   factoryImpl(t) {
     if (t) {
       this.innerText = t;

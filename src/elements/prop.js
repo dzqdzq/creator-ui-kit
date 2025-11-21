@@ -1,11 +1,11 @@
-import t from "./utils.js";
-import e from "../utils/resource-mgr.js";
-import i from "../utils/dom-utils.js";
-import s from "../utils/focus-mgr.js";
-import l from "../behaviors/focusable.js";
-import n from "../behaviors/disable.js";
-import a from "../behaviors/readonly.js";
-import h from "./hint.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import hintElement from "./hint.js";
 // import o from "../../../share/platform"; // 外部依赖，暂时注释
 
 // 创建 platform 占位符
@@ -26,7 +26,7 @@ if (document) {
   });
 }
 
-let m = t.registerElement("ui-prop", {
+let m = elementUtils.registerElement("ui-prop", {
   get name() {
     return this._name;
   },
@@ -256,10 +256,10 @@ let m = t.registerElement("ui-prop", {
       }
     }
   },
-  behaviors: [l, n, a],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template:
     '\n    <div class="wrapper">\n      <div class="label">\n        <i class="move icon-braille"></i>\n        <i class="fold icon-fold-up"></i>\n        <span class="text"></span>\n        <div class="resizer">\n            <i class="resizer-icon"></i>\n        </div>\n        <div class="lock">\n          <i class="icon-lock"></i>\n        </div>\n      </div>\n      <div class="wrapper-content">\n        <slot></slot>\n      </div>\n      <div class="remove">\n        <i class="icon-trash-empty"></i>\n      </div>\n    </div>\n    <slot name="child"></slot>\n  ',
-  style: e.getResource("theme://elements/prop.css"),
+  style: resourceMgr.getResource("theme://elements/prop.css"),
   $: {
     label: ".label",
     moveIcon: ".move",
@@ -328,7 +328,7 @@ let m = t.registerElement("ui-prop", {
     }
 
     if (this._disabled) {
-      i.walk(this, { excludeSelf: true }, (t) => {
+      domUtils.walk(this, { excludeSelf: true }, (t) => {
         if (t.tagName.indexOf("UI-") === 0) {
           t.setAttribute("is-disabled", "");
         }
@@ -338,7 +338,7 @@ let m = t.registerElement("ui-prop", {
     }
 
     if (this._readonly) {
-      i.walk(this, { excludeSelf: true }, (t) => {
+      domUtils.walk(this, { excludeSelf: true }, (t) => {
         if (t.tagName.indexOf("UI-") === 0) {
           t.setAttribute("is-readonly", "");
         }
@@ -352,7 +352,7 @@ let m = t.registerElement("ui-prop", {
     }
   },
   connectedCallback() {
-    i.fire(this, "ui-prop-connected", { bubbles: true, detail: this });
+    domUtils.fire(this, "ui-prop-connected", { bubbles: true, detail: this });
   },
   fold() {
     if (!this._folded) {
@@ -371,7 +371,7 @@ let m = t.registerElement("ui-prop", {
     }
   },
   regen(e) {
-    t.regenProperty(this, e);
+    elementUtils.regenProperty(this, e);
   },
   installStandardEvents(t) {
     if (typeof this.inputValue != "function") {
@@ -434,25 +434,25 @@ let m = t.registerElement("ui-prop", {
     });
   },
   _emitConfirm() {
-    i.fire(this, "confirm", {
+    domUtils.fire(this, "confirm", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitCancel() {
-    i.fire(this, "cancel", {
+    domUtils.fire(this, "cancel", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitChange() {
-    i.fire(this, "change", {
+    domUtils.fire(this, "change", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitLabelWidthChange(t) {
-    i.fire(this, "label-width-change", { bubbles: true, detail: t });
+    domUtils.fire(this, "label-width-change", { bubbles: true, detail: t });
   },
   _getFirstFocusableElement() {
     let t = s._getFirstFocusableFrom(this, true);
@@ -463,7 +463,7 @@ let m = t.registerElement("ui-prop", {
   _initEvents() {
     function t(t) {
       u = false;
-      i.fire(t, "label-width-change-finish", { bubbles: true });
+      domUtils.fire(t, "label-width-change-finish", { bubbles: true });
     }
 
     this.addEventListener("focus-changed", (t) => {
@@ -531,19 +531,19 @@ let m = t.registerElement("ui-prop", {
           i.startDrag("ew-resize", t);
         } else {
           this._sliding = true;
-          i.fire(this, "slide-start", { bubbles: false });
+          domUtils.fire(this, "slide-start", { bubbles: false });
 
           i.startDrag(
             "ew-resize",
             t,
             (t) => {
-              i.fire(this, "slide-change", {
+              domUtils.fire(this, "slide-change", {
                 bubbles: false,
                 detail: { dx: t.movementX, dy: t.movementY },
               });
             },
             () => {
-              i.fire(this, "slide-confirm", { bubbles: false });
+              domUtils.fire(this, "slide-confirm", { bubbles: false });
             }
           );
         }
@@ -628,8 +628,8 @@ let m = t.registerElement("ui-prop", {
   },
   _showTooltip() {
     if (this.tooltip) {
-      d ||
-        (((d = new h(this._tooltip)).style.display = "none"),
+        d ||
+          (((d = new hintElement(this._tooltip)).style.display = "none"),
         (d.style.position = "absolute"),
         (d.style.maxWidth = "200px"),
         (d.style.zIndex = "999"),

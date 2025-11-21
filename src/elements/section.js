@@ -1,11 +1,11 @@
-import e from "./utils.js";
-import t from "../utils/dom-utils.js";
-import s from "../utils/focus-mgr.js";
-import i from "../utils/resource-mgr.js";
-import o from "../behaviors/focusable.js";
-import r from "../behaviors/disable.js";
+import elementUtils from "./utils.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
 
-export default e.registerElement("ui-section", {
+export default elementUtils.registerElement("ui-section", {
   get hovering() {
     return this.getAttribute("hovering") !== null;
   },
@@ -16,10 +16,10 @@ export default e.registerElement("ui-section", {
       this.removeAttribute("hovering");
     }
   },
-  behaviors: [o, r],
+  behaviors: [focusableBehavior, disableBehavior],
   template:
     '\n    <div class="wrapper">\n      <i class="fold icon-fold-up"></i>\n      <slot name="header"></slot>\n    </div>\n    <slot class="content"></slot>\n  ',
-  style: i.getResource("theme://elements/section.css"),
+  style: resourceMgr.getResource("theme://elements/section.css"),
   $: { wrapper: ".wrapper", foldIcon: ".fold" },
   factoryImpl(e) {
     let t = document.createElement("span");
@@ -48,7 +48,7 @@ export default e.registerElement("ui-section", {
   _initEvents() {
     this.$wrapper.addEventListener("mousedown", (e) => {
       e.stopPropagation();
-      s._setFocusElement(this);
+      focusMgr._setFocusElement(this);
     });
 
     this.$wrapper.addEventListener("click", () => {
@@ -71,10 +71,10 @@ export default e.registerElement("ui-section", {
 
     this.$wrapper.addEventListener("keydown", (e) => {
       if (e.keyCode === 37) {
-        t.acceptEvent(e);
+        domUtils.acceptEvent(e);
         this.fold();
       } else if (e.keyCode === 39) {
-        t.acceptEvent(e);
+        domUtils.acceptEvent(e);
         this.foldup();
       }
     });

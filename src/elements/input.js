@@ -1,13 +1,13 @@
-import t from "./utils.js";
-import e from "../utils/resource-mgr.js";
-import i from "../utils/dom-utils.js";
-import s from "../utils/focus-mgr.js";
-import u from "../behaviors/focusable.js";
-import l from "../behaviors/disable.js";
-import a from "../behaviors/readonly.js";
-import n from "../behaviors/input-state.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import inputStateBehavior from "../behaviors/input-state.js";
 
-export default t.registerElement("ui-input", {
+export default elementUtils.registerElement("ui-input", {
   get value() {
     return this.$input.value;
   },
@@ -90,9 +90,9 @@ export default t.registerElement("ui-input", {
       this[t.replace(/\-(\w)/g, (t, e) => e.toUpperCase())] = i;
     }
   },
-  behaviors: [u, l, a, n],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template: "\n    <input></input>\n  ",
-  style: e.getResource("theme://elements/input.css"),
+  style: resourceMgr.getResource("theme://elements/input.css"),
   $: { input: "input" },
   factoryImpl(t) {
     if (t) {
@@ -146,7 +146,7 @@ export default t.registerElement("ui-input", {
         this._value = t.value;
         this.multiValues = false;
 
-        i.fire(this, "confirm", {
+        domUtils.fire(this, "confirm", {
           bubbles: true,
           detail: { value: t.value, confirmByEnter: e },
         });
@@ -165,12 +165,12 @@ export default t.registerElement("ui-input", {
         t._initValue !== t.value &&
           ((t.value = t._initValue),
           (this._value = t._initValue),
-          i.fire(this, "change", {
+          domUtils.fire(this, "change", {
             bubbles: true,
             detail: { value: t.value },
           }));
 
-        i.fire(this, "cancel", {
+        domUtils.fire(this, "cancel", {
           bubbles: true,
           detail: { value: t.value, cancelByEsc: e },
         });
@@ -189,15 +189,15 @@ export default t.registerElement("ui-input", {
       t.value = t.value.substr(0, this._maxLength);
     }
 
-    i.fire(this, "change", { bubbles: true, detail: { value: t.value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: t.value } });
   },
   _mouseDownHandler(t) {
     t.stopPropagation();
-    s._setFocusElement(this);
+    focusMgr._setFocusElement(this);
   },
   _keyDownHandler(t) {
     if (!this.disabled && (t.keyCode === 13 || t.keyCode === 32)) {
-      i.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();

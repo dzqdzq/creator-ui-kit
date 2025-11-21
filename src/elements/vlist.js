@@ -1,9 +1,9 @@
-import e from "./utils.js";
-import i from "../behaviors/focusable.js";
-import s from "../behaviors/disable.js";
+import elementUtils from "./utils.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
 
-export default e.registerElement("ui-vlist", {
-  behaviors: [i, s],
+export default elementUtils.registerElement("ui-vlist", {
+  behaviors: [focusableBehavior, disableBehavior],
   template: "\n    <slot></slot>\n  ",
   factoryImpl(e) {
     if (e) {

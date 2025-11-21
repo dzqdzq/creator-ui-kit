@@ -1,12 +1,12 @@
-import e from "./utils.js";
-import t from "../utils/resource-mgr.js";
-import s from "../utils/dom-utils.js";
-import l from "../utils/focus-mgr.js";
-import i from "../behaviors/focusable.js";
-import u from "../behaviors/disable.js";
-import a from "../behaviors/readonly.js";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
 
-export default e.registerElement("ui-select", {
+export default elementUtils.registerElement("ui-select", {
   get value() {
     return this._value;
   },
@@ -73,9 +73,9 @@ export default e.registerElement("ui-select", {
       this[e.replace(/\-(\w)/g, (e, t) => t.toUpperCase())] = s;
     }
   },
-  behaviors: [i, u, a],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template: "\n    <select></select>\n  ",
-  style: t.getResource("theme://elements/select.css"),
+  style: resourceMgr.getResource("theme://elements/select.css"),
   $: { select: "select" },
   factoryImpl(e) {
     if (!isNaN(e)) {
@@ -128,11 +128,11 @@ export default e.registerElement("ui-select", {
     );
 
     this.$select.addEventListener("change", (e) => {
-      s.acceptEvent(e);
+      domUtils.acceptEvent(e);
       this._value = this.$select.value;
       this.multiValues = false;
 
-      s.fire(this, "change", {
+      domUtils.fire(this, "change", {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -141,7 +141,7 @@ export default e.registerElement("ui-select", {
         },
       });
 
-      s.fire(this, "confirm", {
+      domUtils.fire(this, "confirm", {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -159,15 +159,15 @@ export default e.registerElement("ui-select", {
       this._selectAllWhenMouseUp = true;
     }
 
-    l._setFocusElement(this);
+    focusMgr._setFocusElement(this);
 
     if (this.readonly) {
-      s.acceptEvent(e);
+      domUtils.acceptEvent(e);
       return undefined;
     }
   },
   _updateItems() {
-    s.clear(this.$select);
+    domUtils.clear(this.$select);
     for (let e = 0; e < this.children.length; ++e) {
       let t = this.children[e];
       if (t instanceof HTMLOptionElement || t instanceof HTMLOptGroupElement) {
@@ -205,7 +205,7 @@ export default e.registerElement("ui-select", {
     this.$select.remove(e);
   },
   clear() {
-    s.clear(this.$select);
+    domUtils.clear(this.$select);
     this._value = null;
     this.$select.value = null;
   },

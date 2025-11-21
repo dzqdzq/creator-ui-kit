@@ -1,13 +1,13 @@
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import i from "../behaviors/droppable"; // 需要创建此文件
-import r from "../behaviors/disable.js";
+import disableBehavior from "../behaviors/disable.js";
 
 // 临时占位符
-const i = {};
+const droppableBehavior = {};
 
-export default e.registerElement("ui-drop-area", {
+export default elementUtils.registerElement("ui-drop-area", {
   shadowDOM: false,
-  behaviors: [i, r],
+  behaviors: [droppableBehavior, disableBehavior],
   ready() {
     this._initDroppable(this);
     this._initDisable(false);

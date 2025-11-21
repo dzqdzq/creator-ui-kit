@@ -1,14 +1,14 @@
 // import t from "vm"; // Node.js 模块，浏览器环境不可用
 // import e from "../settings"; // 外部依赖，暂时注释
-import i from "./utils.js";
+import elementUtils from "./utils.js";
 // import s from "../../../share/utils"; // 外部依赖，暂时注释
-import n from "../utils/resource-mgr.js";
-import a from "../utils/dom-utils.js";
-import r from "../utils/focus-mgr.js";
-import h from "../behaviors/focusable.js";
-import l from "../behaviors/disable.js";
-import u from "../behaviors/readonly.js";
-import p from "../behaviors/input-state.js";
+import resourceMgr from "../utils/resource-mgr.js";
+import domUtils from "../utils/dom-utils.js";
+import focusMgr from "../utils/focus-mgr.js";
+import focusableBehavior from "../behaviors/focusable.js";
+import disableBehavior from "../behaviors/disable.js";
+import readonlyBehavior from "../behaviors/readonly.js";
+import inputStateBehavior from "../behaviors/input-state.js";
 // import o from "../behaviors/droppable"; // 需要创建此文件
 // import _ from "../utils/drag-drop"; // 需要创建此文件
 // import { promisify } from "util"; // Node.js 模块，浏览器环境不可用
@@ -20,7 +20,7 @@ const s = {};
 const o = {};
 const _ = {};
 
-export default i.registerElement("ui-num-input", {
+export default elementUtils.registerElement("ui-num-input", {
   get type() {
     return this._type;
   },
@@ -184,10 +184,10 @@ export default i.registerElement("ui-num-input", {
       this[t.replace(/\-(\w)/g, (t, e) => e.toUpperCase())] = i;
     }
   },
-  behaviors: [h, l, u, p, o],
+  behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior, o],
   template:
     '\n    <input></input>\n    <div class="spin-wrapper" tabindex="-1">\n      <div class="spin up">\n        <i class="icon-up-dir"></i>\n      </div>\n      <div class="spin-div"></div>\n      <div class="spin down">\n        <i class="icon-down-dir"></i>\n      </div>\n    </div>\n  ',
-  style: n.getResource("theme://elements/num-input.css"),
+  style: resourceMgr.getResource("theme://elements/num-input.css"),
   $: {
     input: "input",
     spinWrapper: ".spin-wrapper",
@@ -239,18 +239,18 @@ export default i.registerElement("ui-num-input", {
 
     this.$spinWrapper.addEventListener("keydown", (t) => {
       if (t.keyCode === 27 && this._holdingID) {
-        a.acceptEvent(t);
+        domUtils.acceptEvent(t);
         this.cancel();
         this._curSpin.removeAttribute("pressed");
         this._stopHolding();
       }
     });
 
-    a.installDownUpEvent(this.$spinUp);
+    domUtils.installDownUpEvent(this.$spinUp);
 
     this.$spinUp.addEventListener("down", (t) => {
-      a.acceptEvent(t);
-      r._setFocusElement(this);
+        domUtils.acceptEvent(t);
+        focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
       this.$spinUp.setAttribute("pressed", "");
 
@@ -261,7 +261,7 @@ export default i.registerElement("ui-num-input", {
     });
 
     this.$spinUp.addEventListener("up", (t) => {
-      a.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this.$spinUp.removeAttribute("pressed", "");
 
       if (this._holdingID) {
@@ -270,11 +270,11 @@ export default i.registerElement("ui-num-input", {
       }
     });
 
-    a.installDownUpEvent(this.$spinDown);
+    domUtils.installDownUpEvent(this.$spinDown);
 
     this.$spinDown.addEventListener("down", (t) => {
-      a.acceptEvent(t);
-      r._setFocusElement(this);
+        domUtils.acceptEvent(t);
+        focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
       this.$spinDown.setAttribute("pressed", "");
 
@@ -285,7 +285,7 @@ export default i.registerElement("ui-num-input", {
     });
 
     this.$spinDown.addEventListener("up", (t) => {
-      a.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this.$spinDown.removeAttribute("pressed", "");
 
       if (this._holdingID) {
@@ -323,10 +323,10 @@ export default i.registerElement("ui-num-input", {
     this.$input.addEventListener("keydown", (t) => {
       if (!this.readonly) {
         if (t.keyCode === 38) {
-          a.acceptEvent(t);
+          domUtils.acceptEvent(t);
           this._stepUp();
         } else if (t.keyCode === 40) {
-          a.acceptEvent(t);
+          domUtils.acceptEvent(t);
           this._stepDown();
         }
       }
@@ -340,7 +340,7 @@ export default i.registerElement("ui-num-input", {
 
           this.readonly ||
             (t.deltaY > 0 ? this._stepDown() : this._stepUp(),
-            a.fire(this, "confirm", {
+            domUtils.fire(this, "confirm", {
               bubbles: true,
               detail: { value: this._value, confirmByEnter: false },
             }));
@@ -578,13 +578,13 @@ export default i.registerElement("ui-num-input", {
       this._value = i;
 
       if (s !== i) {
-        a.fire(this, "change", {
+        domUtils.fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      a.fire(this, "confirm", {
+      domUtils.fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value, confirmByEnter: e },
       });
@@ -606,13 +606,13 @@ export default i.registerElement("ui-num-input", {
         t._initValue = i;
         this._value = e;
 
-        a.fire(this, "change", {
+        domUtils.fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      a.fire(this, "cancel", {
+      domUtils.fire(this, "cancel", {
         bubbles: true,
         detail: { value: this._value, cancelByEsc: e },
       });
@@ -627,15 +627,15 @@ export default i.registerElement("ui-num-input", {
     this._changed = true;
     this._value = this._parseInput();
     this.multiValues = false;
-    a.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
   _mouseDownHandler(t) {
     t.stopPropagation();
-    r._setFocusElement(this);
+    focusMgr._setFocusElement(this);
   },
   _keyDownHandler(t) {
     if (!this.disabled && (t.keyCode === 13 || t.keyCode === 32)) {
-      a.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();

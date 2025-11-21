@@ -1,11 +1,11 @@
-import e from "./utils.js";
+import elementUtils from "./utils.js";
 // import i from "../behaviors/droppable"; // 需要创建此文件
-import t from "../behaviors/focusable.js";
+import focusableBehavior from "../behaviors/focusable.js";
 
 // 临时占位符
-const i = {};
+const droppableBehavior = {};
 
-export default e.registerElement("ui-webview", {
+export default elementUtils.registerElement("ui-webview", {
   get src() {
     return this.getAttribute("src");
   },
@@ -14,7 +14,7 @@ export default e.registerElement("ui-webview", {
     this.$view.src = e;
     this.$loader.hidden = false;
   },
-  behaviors: [t, i],
+  behaviors: [focusableBehavior, droppableBehavior],
   style:
     "\n    :host {\n      display: block;\n      position: relative;\n      min-width: 100px;\n      min-height: 100px;\n    }\n\n    .wrapper {\n      background: #333;\n    }\n\n    .fit {\n      position: absolute;\n      top: 0;\n      right: 0;\n      bottom: 0;\n      left: 0;\n    }\n\n    [hidden] {\n      display: none;\n    }\n  ",
   template:

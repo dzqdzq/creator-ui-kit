@@ -1,10 +1,10 @@
-import i from "./utils.js";
-import e from "./prop.js";
-import u from "../utils/dom-utils.js";
+import elementUtils from "./utils.js";
+import PropElement from "./prop.js";
+import domUtils from "../utils/dom-utils.js";
 let t = {};
 export default t;
 
-let { parseString, parseBoolean, parseColor, parseArray } = i;
+let { parseString, parseBoolean, parseColor, parseArray } = elementUtils;
 
 t.string = {
   value: parseString,
@@ -209,7 +209,7 @@ t.object = {
       let t = this.value;
       for (let i in t) {
         let t_i = t[i];
-        let s = new e(i, t_i, null, null, this.indent + 1);
+        let s = new PropElement(i, t_i, null, null, this.indent + 1);
         this.$child.appendChild(s);
       }
     });
@@ -242,10 +242,10 @@ t.array = {
     });
   },
   _updateChildren() {
-    u.clear(this.$child);
+    domUtils.clear(this.$child);
     for (let t = 0; t < this.value.length; ++t) {
       let i = this.value[t];
-      let u = new e(`[${t}]`, i.value, this.type, this.attrs, this.indent + 1);
+      let u = new PropElement(`[${t}]`, i.value, this.type, this.attrs, this.indent + 1);
       u.movable = true;
       u.removable = true;
       this.$child.appendChild(u);

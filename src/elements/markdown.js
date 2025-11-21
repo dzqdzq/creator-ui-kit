@@ -1,7 +1,7 @@
-import e from "highlight.js";
-import t from "remarkable";
-import r from "./utils.js";
-import i from "../utils/resource-mgr.js";
+import highlight from "highlight.js";
+import remarkable from "remarkable";
+import elementUtils from "./utils.js";
+import resourceMgr from "../utils/resource-mgr.js";
 // import l from "../../console"; // 外部依赖，暂时注释
 
 // 创建 console 占位符
@@ -11,7 +11,7 @@ const l = {
   log: (...args) => console.log(...args),
 };
 
-export default r.registerElement("ui-markdown", {
+export default elementUtils.registerElement("ui-markdown", {
   get value() {
     return this._value;
   },
@@ -56,7 +56,7 @@ export default r.registerElement("ui-markdown", {
     }
   },
   template: '\n    <div class="container"></div>\n  ',
-  style: i.getResource("theme://elements/markdown.css"),
+  style: resourceMgr.getResource("theme://elements/markdown.css"),
   $: { container: ".container" },
   factoryImpl(e) {
     if (e) {
@@ -68,18 +68,18 @@ export default r.registerElement("ui-markdown", {
     this.multiValues = this.getAttribute("multi-values");
   },
   _render() {
-    let r = new t({
+    let r = new remarkable({
       html: true,
       highlight(t, r) {
-        if (r && e.getLanguage(r)) {
+        if (r && highlight.getLanguage(r)) {
           try {
-            return e.highlight(r, t).value;
+            return highlight.highlight(r, t).value;
           } catch (e) {
             l.error(`Syntax highlight failed: ${e.message}`);
           }
         }
         try {
-          return e.highlightAuto(t).value;
+          return highlight.highlightAuto(t).value;
         } catch (e) {
           l.error(`Syntax highlight failed: ${e.message}`);
         }
