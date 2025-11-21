@@ -1,4 +1,3 @@
-import domUtils from "../utils/dom-utils";
 
 class DroppableBehavior {
   get droppable() {

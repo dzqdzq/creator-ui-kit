@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { fire } from "../utils/dom-utils.js";
 
 class ResizableBehavior {
   _resizable = true;
@@ -77,7 +77,7 @@ class ResizableBehavior {
   }
 
   _notifyResize() {
-    domUtils.fire(this, "resize");
+    fire(this, "resize");
 
     for (let childElement of this.children) {
       if (childElement._resizable) {

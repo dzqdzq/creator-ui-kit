@@ -1,5 +1,5 @@
 import elementUtils from "./utils.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import focusableBehavior from "../behaviors/focusable.js";
@@ -71,10 +71,10 @@ export default elementUtils.registerElement("ui-section", {
 
     this.$wrapper.addEventListener("keydown", (e) => {
       if (e.keyCode === 37) {
-        domUtils.acceptEvent(e);
+        acceptEvent(e);
         this.fold();
       } else if (e.keyCode === 39) {
-        domUtils.acceptEvent(e);
+        acceptEvent(e);
         this.foldup();
       }
     });

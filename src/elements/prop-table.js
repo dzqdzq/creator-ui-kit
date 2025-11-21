@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent, walk } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import hintElement from "./hint.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -61,7 +61,7 @@ export default elementUtils.registerElement("ui-prop-table", {
           });
 
           n.addEventListener("mousedown", (e) => {
-            domUtils.acceptEvent(e);
+            acceptEvent(e);
             focusMgr._setFocusElement(null);
             let t = focusMgr._getFirstFocusableFrom(n, true);
 
@@ -132,7 +132,7 @@ export default elementUtils.registerElement("ui-prop-table", {
         this.$table.appendChild(c);
 
         if (c._disabled) {
-          domUtils.walk(c, { excludeSelf: true }, (e) => {
+          walk(c, { excludeSelf: true }, (e) => {
             if (e._setIsDisabledAttribute) {
               e._setIsDisabledAttribute(true);
             }
@@ -142,7 +142,7 @@ export default elementUtils.registerElement("ui-prop-table", {
         }
 
         if (c._readonly) {
-          domUtils.walk(c, { excludeSelf: true }, (e) => {
+          walk(c, { excludeSelf: true }, (e) => {
             if (e._setIsReadonlyAttribute) {
               e._setIsReadonlyAttribute(true);
             }

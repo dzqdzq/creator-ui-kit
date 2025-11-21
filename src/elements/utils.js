@@ -1,5 +1,5 @@
 import chroma from "chroma-js";
-import domUtils from "../utils/dom-utils.js";
+import { clear } from "../utils/dom-utils.js";
 import jsUtils from "../utils/js-utils.js";
 
 const elementUtils = {};
@@ -17,7 +17,7 @@ function regeneratePropertyElement(element, config, callback) {
     }
   }
   
-  domUtils.clear(element);
+  clear(element);
   const customStyleElement = element.shadowRoot.getElementById("custom-style");
 
   if (customStyleElement) {

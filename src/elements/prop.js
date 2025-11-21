@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { walk, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -321,7 +321,7 @@ let m = elementUtils.registerElement("ui-prop", {
     }
 
     if (this._disabled) {
-      domUtils.walk(this, { excludeSelf: true }, (t) => {
+      walk(this, { excludeSelf: true }, (t) => {
         if (t.tagName.indexOf("UI-") === 0) {
           t.setAttribute("is-disabled", "");
         }
@@ -331,7 +331,7 @@ let m = elementUtils.registerElement("ui-prop", {
     }
 
     if (this._readonly) {
-      domUtils.walk(this, { excludeSelf: true }, (t) => {
+      walk(this, { excludeSelf: true }, (t) => {
         if (t.tagName.indexOf("UI-") === 0) {
           t.setAttribute("is-readonly", "");
         }
@@ -341,7 +341,7 @@ let m = elementUtils.registerElement("ui-prop", {
     }
   },
   connectedCallback() {
-    domUtils.fire(this, "ui-prop-connected", { bubbles: true, detail: this });
+    fire(this, "ui-prop-connected", { bubbles: true, detail: this });
   },
   fold() {
     if (!this._folded) {
@@ -423,25 +423,25 @@ let m = elementUtils.registerElement("ui-prop", {
     });
   },
   _emitConfirm() {
-    domUtils.fire(this, "confirm", {
+    fire(this, "confirm", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitCancel() {
-    domUtils.fire(this, "cancel", {
+    fire(this, "cancel", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitChange() {
-    domUtils.fire(this, "change", {
+    fire(this, "change", {
       bubbles: true,
       detail: { path: this._path, value: this._value },
     });
   },
   _emitLabelWidthChange(t) {
-    domUtils.fire(this, "label-width-change", { bubbles: true, detail: t });
+    fire(this, "label-width-change", { bubbles: true, detail: t });
   },
   _getFirstFocusableElement() {
     let t = s._getFirstFocusableFrom(this, true);
@@ -452,7 +452,7 @@ let m = elementUtils.registerElement("ui-prop", {
   _initEvents() {
     function t(t) {
       u = false;
-      domUtils.fire(t, "label-width-change-finish", { bubbles: true });
+      fire(t, "label-width-change-finish", { bubbles: true });
     }
 
     this.addEventListener("focus-changed", (t) => {

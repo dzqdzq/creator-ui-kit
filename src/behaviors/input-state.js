@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr";
 
 class InputStateBehavior {
@@ -38,12 +38,12 @@ class InputStateBehavior {
     });
 
     inputElement.addEventListener("change", (changeEvent) => {
-      domUtils.acceptEvent(changeEvent);
+      acceptEvent(changeEvent);
       this._onInputConfirm(inputElement);
     });
 
     inputElement.addEventListener("input", (inputEvent) => {
-      domUtils.acceptEvent(inputEvent);
+      acceptEvent(inputEvent);
       this._onInputChange(inputElement);
     });
 
@@ -57,11 +57,11 @@ class InputStateBehavior {
             keyboardEvent.ctrlKey ||
             keyboardEvent.metaKey
           ) {
-            domUtils.acceptEvent(keyboardEvent);
+            acceptEvent(keyboardEvent);
             this._onInputConfirm(inputElement, true);
           }
         } else if (keyboardEvent.keyCode === 27) {
-          domUtils.acceptEvent(keyboardEvent);
+          acceptEvent(keyboardEvent);
           this._onInputCancel(inputElement, true);
         }
       }

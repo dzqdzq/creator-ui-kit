@@ -2,7 +2,7 @@
 import elementUtils from "./utils.js";
 import shareUtils from "../utils/js-utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent, installDownUpEvent, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -234,17 +234,17 @@ export default elementUtils.registerElement("ui-num-input", {
 
     this.$spinWrapper.addEventListener("keydown", (t) => {
       if (t.keyCode === 27 && this._holdingID) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.cancel();
         this._curSpin.removeAttribute("pressed");
         this._stopHolding();
       }
     });
 
-    domUtils.installDownUpEvent(this.$spinUp);
+    installDownUpEvent(this.$spinUp);
 
     this.$spinUp.addEventListener("down", (t) => {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
       this.$spinUp.setAttribute("pressed", "");
@@ -256,7 +256,7 @@ export default elementUtils.registerElement("ui-num-input", {
     });
 
     this.$spinUp.addEventListener("up", (t) => {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
       this.$spinUp.removeAttribute("pressed", "");
 
       if (this._holdingID) {
@@ -265,10 +265,10 @@ export default elementUtils.registerElement("ui-num-input", {
       }
     });
 
-    domUtils.installDownUpEvent(this.$spinDown);
+    installDownUpEvent(this.$spinDown);
 
     this.$spinDown.addEventListener("down", (t) => {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
       this.$spinDown.setAttribute("pressed", "");
@@ -280,7 +280,7 @@ export default elementUtils.registerElement("ui-num-input", {
     });
 
     this.$spinDown.addEventListener("up", (t) => {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
       this.$spinDown.removeAttribute("pressed", "");
 
       if (this._holdingID) {
@@ -314,10 +314,10 @@ export default elementUtils.registerElement("ui-num-input", {
     this.$input.addEventListener("keydown", (t) => {
       if (!this.readonly) {
         if (t.keyCode === 38) {
-          domUtils.acceptEvent(t);
+          acceptEvent(t);
           this._stepUp();
         } else if (t.keyCode === 40) {
-          domUtils.acceptEvent(t);
+          acceptEvent(t);
           this._stepDown();
         }
       }
@@ -331,7 +331,7 @@ export default elementUtils.registerElement("ui-num-input", {
 
           this.readonly ||
             (t.deltaY > 0 ? this._stepDown() : this._stepUp(),
-            domUtils.fire(this, "confirm", {
+            fire(this, "confirm", {
               bubbles: true,
               detail: { value: this._value, confirmByEnter: false },
             }));
@@ -494,13 +494,13 @@ export default elementUtils.registerElement("ui-num-input", {
       this._value = i;
 
       if (s !== i) {
-        domUtils.fire(this, "change", {
+fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      domUtils.fire(this, "confirm", {
+fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value, confirmByEnter: e },
       });
@@ -522,13 +522,13 @@ export default elementUtils.registerElement("ui-num-input", {
         t._initValue = i;
         this._value = e;
 
-        domUtils.fire(this, "change", {
+fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      domUtils.fire(this, "cancel", {
+fire(this, "cancel", {
         bubbles: true,
         detail: { value: this._value, cancelByEsc: e },
       });
@@ -543,7 +543,7 @@ export default elementUtils.registerElement("ui-num-input", {
     this._changed = true;
     this._value = this._parseInput();
     this.multiValues = false;
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
   _mouseDownHandler(t) {
     t.stopPropagation();
@@ -551,7 +551,7 @@ export default elementUtils.registerElement("ui-num-input", {
   },
   _keyDownHandler(t) {
     if (!this.disabled && (t.keyCode === 13 || t.keyCode === 32)) {
-      domUtils.acceptEvent(t);
+acceptEvent(t);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();

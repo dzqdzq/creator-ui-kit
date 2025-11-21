@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import PropElement from "./prop.js";
-import domUtils from "../utils/dom-utils.js";
+import { clear } from "../utils/dom-utils.js";
 let t = {};
 export default t;
 
@@ -242,7 +242,7 @@ t.array = {
     });
   },
   _updateChildren() {
-    domUtils.clear(this.$child);
+    clear(this.$child);
     for (let t = 0; t < this.value.length; ++t) {
       let i = this.value[t];
       let u = new PropElement(`[${t}]`, i.value, this.type, this.attrs, this.indent + 1);

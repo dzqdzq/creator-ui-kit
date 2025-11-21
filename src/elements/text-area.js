@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -142,7 +142,7 @@ export default elementUtils.registerElement("ui-text-area", {
         this._value = e.value;
         this.multiValues = false;
 
-        domUtils.fire(this, "confirm", {
+        fire(this, "confirm", {
           bubbles: true,
           detail: { value: e.value, confirmByEnter: t },
         });
@@ -160,12 +160,12 @@ export default elementUtils.registerElement("ui-text-area", {
 
         e._initValue !== e.value &&
           ((this._value = e.value = e._initValue),
-          domUtils.fire(this, "change", {
+          fire(this, "change", {
             bubbles: true,
             detail: { value: e.value },
           }));
 
-        domUtils.fire(this, "cancel", {
+        fire(this, "cancel", {
           bubbles: true,
           detail: { value: e.value, cancelByEsc: t },
         });
@@ -185,7 +185,7 @@ export default elementUtils.registerElement("ui-text-area", {
     }
 
     this._value = e.value;
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: e.value } });
+    fire(this, "change", { bubbles: true, detail: { value: e.value } });
   },
   _mouseDownHandler(e) {
     e.stopPropagation();

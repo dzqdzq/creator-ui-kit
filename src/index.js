@@ -24,6 +24,6 @@ import "./elements/select.js";
 import "./elements/progress.js";
 
 export { default as utils } from "./utils/utils.js";
-export { default as domUtils } from "./utils/dom-utils.js";
+export * as domUtils from "./utils/dom-utils.js";
 export { default as focusMgr } from "./utils/focus-mgr.js";
 export { default as cssLoader } from "./utils/css-loader.js";

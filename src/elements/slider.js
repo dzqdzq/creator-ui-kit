@@ -3,7 +3,7 @@ import elementUtils from "./utils.js";
 import shareUtils from "../utils/js-utils.js";
 import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -176,20 +176,20 @@ export default elementUtils.registerElement("ui-slider", {
 
     this.$input.addEventListener("keydown", (t) => {
       if (t.keyCode === 38) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.readonly || this._stepUp(t);
       } else if (t.keyCode === 40) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.readonly || this._stepDown(t);
       }
     });
   },
   _mouseDownHandler(t) {
-    domUtils.acceptEvent(t);
+    acceptEvent(t);
     focusMgr._setFocusElement(this);
   },
   _wrapperMouseDownHandler(t) {
-    domUtils.acceptEvent(t);
+    acceptEvent(t);
     focusMgr._setFocusElement(this);
     this.$wrapper.focus();
 
@@ -215,14 +215,14 @@ export default elementUtils.registerElement("ui-slider", {
   _wrapperKeyDownHandler(t) {
     if (!this.disabled) {
       if (t.keyCode === 13 || t.keyCode === 32) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.$input._initValue = this.$input.value;
         this.$input.focus();
         this.$input.select();
       } else if (t.keyCode === 27) {
         this.cancel();
       } else if (t.keyCode === 37) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
 
         if (this.readonly) {
           return;
@@ -230,7 +230,7 @@ export default elementUtils.registerElement("ui-slider", {
 
         this._stepDown(t);
       } else if (t.keyCode === 39) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
 
         if (this.readonly) {
           return;
@@ -264,7 +264,7 @@ export default elementUtils.registerElement("ui-slider", {
   },
   _wrapperKeyUpHandler(t) {
     if (t.keyCode === 37 || t.keyCode === 39) {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
 
       if (this.readonly) {
         return;
@@ -306,7 +306,7 @@ export default elementUtils.registerElement("ui-slider", {
       this._changed = false;
       this._initValue = this._value;
       this._updateNubbinAndInput();
-      domUtils.fire(this, "confirm", {
+      fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -319,12 +319,12 @@ export default elementUtils.registerElement("ui-slider", {
       this._value !== this._initValue &&
         ((this._value = this._initValue),
         this._updateNubbinAndInput(),
-        domUtils.fire(this, "change", {
+        fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         }));
 
-      domUtils.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+      fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
     }
   },
   _onInputConfirm(t, e) {
@@ -337,7 +337,7 @@ export default elementUtils.registerElement("ui-slider", {
       this._initValue = i;
       this._updateNubbin();
 
-      domUtils.fire(this, "confirm", {
+      fire(this, "confirm", {
         bubbles: true,
         detail: { value: this._value, confirmByEnter: e },
       });
@@ -359,13 +359,13 @@ export default elementUtils.registerElement("ui-slider", {
         this._initValue = e;
         this._updateNubbin();
 
-        domUtils.fire(this, "change", {
+        fire(this, "change", {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      domUtils.fire(this, "cancel", {
+      fire(this, "cancel", {
         bubbles: true,
         detail: { value: this._value, cancelByEsc: e },
       });
@@ -388,7 +388,7 @@ export default elementUtils.registerElement("ui-slider", {
   },
   _emitChange() {
     this._changed = true;
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
   _snapToStep(t) {
     let e = Math.round((t - this._value) / this._step);

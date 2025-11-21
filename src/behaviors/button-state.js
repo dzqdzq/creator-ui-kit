@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { installDownUpEvent, acceptEvent, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr";
 
 function isPressed(element) {
@@ -7,16 +7,16 @@ function isPressed(element) {
 
 class ButtonStateBehavior {
   _initButtonState(buttonElement) {
-    domUtils.installDownUpEvent(buttonElement);
+    installDownUpEvent(buttonElement);
 
     buttonElement.addEventListener("keydown", (keyboardEvent) => {
       if (!this.disabled) {
         if (keyboardEvent.keyCode === 32) {
-          domUtils.acceptEvent(keyboardEvent);
+          acceptEvent(keyboardEvent);
           this._setPressed(buttonElement, true);
           this._canceledByEsc = false;
         } else if (keyboardEvent.keyCode === 13) {
-          domUtils.acceptEvent(keyboardEvent);
+          acceptEvent(keyboardEvent);
 
           if (this._enterTimeoutID) {
             return;
@@ -32,10 +32,10 @@ class ButtonStateBehavior {
           }, 100);
         } else {
           if (keyboardEvent.keyCode === 27) {
-            domUtils.acceptEvent(keyboardEvent);
+            acceptEvent(keyboardEvent);
 
             if (isPressed(buttonElement)) {
-              domUtils.fire(buttonElement, "cancel", { bubbles: true });
+              fire(buttonElement, "cancel", { bubbles: true });
               this._canceledByEsc = true;
             }
 
@@ -47,7 +47,7 @@ class ButtonStateBehavior {
 
     buttonElement.addEventListener("keyup", (keyboardEvent) => {
       if (keyboardEvent.keyCode === 32) {
-        domUtils.acceptEvent(keyboardEvent);
+        acceptEvent(keyboardEvent);
 
         if (isPressed(buttonElement)) {
           setTimeout(() => {
@@ -60,14 +60,14 @@ class ButtonStateBehavior {
     });
 
     buttonElement.addEventListener("down", (downEvent) => {
-      domUtils.acceptEvent(downEvent);
+      acceptEvent(downEvent);
       focusMgr._setFocusElement(this);
       this._setPressed(buttonElement, true);
       this._canceledByEsc = false;
     });
 
     buttonElement.addEventListener("up", (upEvent) => {
-      domUtils.acceptEvent(upEvent);
+      acceptEvent(upEvent);
       this._setPressed(buttonElement, false);
     });
 
@@ -77,7 +77,7 @@ class ButtonStateBehavior {
       if (!this.readonly) {
         if (this._canceledByEsc) {
           this._canceledByEsc = false;
-          domUtils.acceptEvent(clickEvent);
+          acceptEvent(clickEvent);
           return undefined;
         }
         return undefined;

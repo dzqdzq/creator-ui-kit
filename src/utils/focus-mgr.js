@@ -1,5 +1,5 @@
 // 简化的焦点管理器
-import domUtils from "./dom-utils.js";
+import { acceptEvent } from "./dom-utils.js";
 
 let focusedElement = null;
 let lastFocusedElement = null;
@@ -72,7 +72,7 @@ window.addEventListener(
       if (e.ctrlKey || e.metaKey) {
         return;
       }
-      domUtils.acceptEvent(e);
+      acceptEvent(e);
       // Tab 键导航可以在这里实现
     }
   },

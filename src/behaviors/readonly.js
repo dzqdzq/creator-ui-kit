@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { walk } from "../utils/dom-utils.js";
 
 class ReadonlyBehavior {
   get canBeReadonly() {
@@ -87,7 +87,7 @@ class ReadonlyBehavior {
   }
 
   _propagateReadonly() {
-    domUtils.walk(
+    walk(
       this,
       { excludeSelf: true },
       (childElement) =>

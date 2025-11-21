@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { fire } from "../utils/dom-utils.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
@@ -72,12 +72,12 @@ export default elementUtils.registerElement("ui-checkbox", {
       event.stopPropagation();
       this.checked = !this.checked;
       this.multiValues = false;
-      domUtils.fire(this, "change", {
+      fire(this, "change", {
         bubbles: true,
         detail: { value: this.checked },
       });
 
-      domUtils.fire(this, "confirm", {
+      fire(this, "confirm", {
         bubbles: true,
         detail: { value: this.checked },
       });

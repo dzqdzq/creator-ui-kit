@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { fire } from "../utils/dom-utils.js";
 
 class FocusableBehavior {
   get focusable() {
@@ -103,7 +103,7 @@ class FocusableBehavior {
             });
           }
         }
-        domUtils.fire(this, "focus-changed", {
+        fire(this, "focus-changed", {
           bubbles: true,
           detail: { focused: this.focused },
         });

@@ -1,4 +1,4 @@
-import domUtils from "../utils/dom-utils";
+import { walk } from "../utils/dom-utils.js";
 
 class DisableBehavior {
   get canBeDisable() {
@@ -49,7 +49,7 @@ class DisableBehavior {
   }
 
   _propagateDisable() {
-    domUtils.walk(
+    walk(
       this,
       { excludeSelf: true },
       (childElement) =>

@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 import elementUtils from "./utils.js";
 import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { fire, acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 
@@ -75,21 +75,21 @@ export default elementUtils.registerElement("ui-color-picker", {
     this._initEvents();
   },
   hide(t) {
-    domUtils.fire(this, "hide", { bubbles: false, detail: { confirm: t } });
+    fire(this, "hide", { bubbles: false, detail: { confirm: t } });
   },
   _initEvents() {
     this.addEventListener("keydown", (t) => {
       if (t.keyCode === 13 || t.keyCode === 32) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.hide(true);
       } else if (t.keyCode === 27) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this.hide(false);
       }
     });
 
     this.$hueCtrl.addEventListener("mousedown", (t) => {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
       focusMgr._setFocusElement(this);
       this.$hueCtrl.focus();
       let i = this._value[3];
@@ -111,7 +111,7 @@ export default elementUtils.registerElement("ui-color-picker", {
 
     this.$hueCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateHue();
@@ -125,7 +125,7 @@ export default elementUtils.registerElement("ui-color-picker", {
     });
 
     this.$alphaCtrl.addEventListener("mousedown", (t) => {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
       focusMgr._setFocusElement(this);
       this.$alphaCtrl.focus();
       this._initValue = this._value.slice();
@@ -140,7 +140,7 @@ export default elementUtils.registerElement("ui-color-picker", {
 
     this.$alphaCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateAlpha();
@@ -151,7 +151,7 @@ export default elementUtils.registerElement("ui-color-picker", {
     });
 
     this.$colorCtrl.addEventListener("mousedown", (t) => {
-      domUtils.acceptEvent(t);
+      acceptEvent(t);
       focusMgr._setFocusElement(this);
       this.$colorCtrl.focus();
       let i = 360 * (1 - parseFloat(this.$hueHandle.style.top) / 100);
@@ -176,7 +176,7 @@ export default elementUtils.registerElement("ui-color-picker", {
 
     this.$colorCtrl.addEventListener("keydown", (t) => {
       if (t.keyCode === 27) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         this._value = this._initValue;
         this._updateColorDiff();
         this._updateColor();
@@ -323,7 +323,7 @@ export default elementUtils.registerElement("ui-color-picker", {
         new MenuItem({
           label: "Replace",
           click: () => {
-            let t = domUtils.index(a);
+            let t = Array.from(a.parentElement.children).indexOf(a);
             let i = chroma(this._value).css();
             n.style.backgroundColor = i;
             this._settings.colors[t] = i;
@@ -336,7 +336,7 @@ export default elementUtils.registerElement("ui-color-picker", {
         new MenuItem({
           label: "Delete",
           click: () => {
-            let t = domUtils.index(a);
+            let t = Array.from(a.parentElement.children).indexOf(a);
             a.remove();
             this._settings.colors.splice(t, 1);
             this._saveSettings();
@@ -420,12 +420,12 @@ export default elementUtils.registerElement("ui-color-picker", {
     this.$hexInput.value = chroma(this._value).hex().toUpperCase();
   },
   _emitConfirm() {
-    domUtils.fire(this, "confirm", { bubbles: true, detail: { value: this._value } });
+    fire(this, "confirm", { bubbles: true, detail: { value: this._value } });
   },
   _emitCancel() {
-    domUtils.fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+    fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
   },
   _emitChange() {
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    fire(this, "change", { bubbles: true, detail: { value: this._value } });
   },
 });

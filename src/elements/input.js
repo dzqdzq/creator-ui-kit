@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { fire, acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -148,7 +148,7 @@ export default elementUtils.registerElement("ui-input", {
         this._value = input.value;
         this.multiValues = false;
 
-        domUtils.fire(this, "confirm", {
+        fire(this, "confirm", {
           bubbles: true,
           detail: { value: input.value, confirmByEnter },
         });
@@ -167,13 +167,13 @@ export default elementUtils.registerElement("ui-input", {
         if (input._initValue !== input.value) {
           input.value = input._initValue;
           this._value = input._initValue;
-          domUtils.fire(this, "change", {
+          fire(this, "change", {
             bubbles: true,
             detail: { value: input.value },
           });
         }
 
-        domUtils.fire(this, "cancel", {
+        fire(this, "cancel", {
           bubbles: true,
           detail: { value: input.value, cancelByEsc },
         });
@@ -192,7 +192,7 @@ export default elementUtils.registerElement("ui-input", {
       input.value = input.value.substr(0, this._maxLength);
     }
 
-    domUtils.fire(this, "change", { bubbles: true, detail: { value: input.value } });
+    fire(this, "change", { bubbles: true, detail: { value: input.value } });
   },
   _mouseDownHandler(event) {
     event.stopPropagation();
@@ -200,7 +200,7 @@ export default elementUtils.registerElement("ui-input", {
   },
   _keyDownHandler(event) {
     if (!this.disabled && (event.keyCode === 13 || event.keyCode === 32)) {
-      domUtils.acceptEvent(event);
+      acceptEvent(event);
       this.$input._initValue = this.$input.value;
       this.$input.focus();
       this.$input.select();

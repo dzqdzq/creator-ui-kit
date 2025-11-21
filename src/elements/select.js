@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent, fire, clear } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -128,11 +128,11 @@ export default elementUtils.registerElement("ui-select", {
     );
 
     this.$select.addEventListener("change", (event) => {
-      domUtils.acceptEvent(event);
+      acceptEvent(event);
       this._value = this.$select.value;
       this.multiValues = false;
 
-      domUtils.fire(this, "change", {
+      fire(this, "change", {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -141,7 +141,7 @@ export default elementUtils.registerElement("ui-select", {
         },
       });
 
-      domUtils.fire(this, "confirm", {
+      fire(this, "confirm", {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -162,12 +162,12 @@ export default elementUtils.registerElement("ui-select", {
     focusMgr._setFocusElement(this);
 
     if (this.readonly) {
-      domUtils.acceptEvent(event);
+      acceptEvent(event);
       return undefined;
     }
   },
   _updateItems() {
-    domUtils.clear(this.$select);
+    clear(this.$select);
     for (let i = 0; i < this.children.length; ++i) {
       const child = this.children[i];
       if (child instanceof HTMLOptionElement || child instanceof HTMLOptGroupElement) {
@@ -205,7 +205,7 @@ export default elementUtils.registerElement("ui-select", {
     this.$select.remove(index);
   },
   clear() {
-    domUtils.clear(this.$select);
+    clear(this.$select);
     this._value = null;
     this.$select.value = null;
   },

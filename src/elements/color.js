@@ -1,12 +1,23 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import domUtils from "../utils/dom-utils.js";
+import { acceptEvent, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 let e;
+
+// 占位符函数，用于替代可能的外部 API
+function addHitGhost(type, zIndex, callback) {
+  // 如果这些方法来自外部 API（如 Electron），可以在这里调用
+  // 目前作为占位符，不执行任何操作
+}
+
+function removeHitGhost() {
+  // 如果这些方法来自外部 API（如 Electron），可以在这里调用
+  // 目前作为占位符，不执行任何操作
+}
 
 export default elementUtils.registerElement("ui-color", {
   get value() {
@@ -101,7 +112,7 @@ export default elementUtils.registerElement("ui-color", {
   _initEvents() {
     this.addEventListener("mousedown", (t) => {
       if (!this.disabled) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         focusMgr._setFocusElement(this);
 
         this.readonly ||
@@ -117,7 +128,7 @@ export default elementUtils.registerElement("ui-color", {
         !this.disabled &&
         (t.keyCode === 13 || t.keyCode === 32)
       ) {
-        domUtils.acceptEvent(t);
+        acceptEvent(t);
         e.value = this._draw;
         this._showColorPicker(true);
       }
@@ -129,17 +140,17 @@ export default elementUtils.registerElement("ui-color", {
 
         e.detail.confirm
           ? ((this._initValue = this._value),
-            domUtils.fire(this, "confirm", {
+            fire(this, "confirm", {
               bubbles: true,
               detail: { value: this._value },
             }))
           : (this._initValue !== this._value &&
               ((this.value = this._initValue),
-              domUtils.fire(this, "change", {
+              fire(this, "change", {
                 bubbles: true,
                 detail: { value: this._value },
               })),
-            domUtils.fire(this, "cancel", {
+            fire(this, "cancel", {
               bubbles: true,
               detail: { value: this._value },
             }));
@@ -151,11 +162,11 @@ export default elementUtils.registerElement("ui-color", {
     this._changeFn = (e) => {
       this._changed = true;
       this.multiValues = false;
-      domUtils.acceptEvent(e);
+      acceptEvent(e);
 
       this.value = e.detail.value.map((e) => e);
 
-      domUtils.fire(this, "change", {
+      fire(this, "change", {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -186,7 +197,7 @@ export default elementUtils.registerElement("ui-color", {
           e.addEventListener("change", this._changeFn),
           e.addEventListener("confirm", this._confirmFn),
           e.addEventListener("cancel", this._cancelFn),
-          domUtils.addHitGhost("default", 998, () => {
+          addHitGhost("default", 998, () => {
             e.hide(true);
           }),
           document.body.appendChild(e),
@@ -198,7 +209,7 @@ export default elementUtils.registerElement("ui-color", {
           e.removeEventListener("change", this._changeFn),
           e.removeEventListener("confirm", this._confirmFn),
           e.removeEventListener("cancel", this._cancelFn),
-          domUtils.removeHitGhost(),
+          removeHitGhost(),
           (e._target = null),
           e.remove(),
           (e.style.display = "none"),
