@@ -6,14 +6,7 @@ import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import hintElement from "./hint.js";
-// import o from "../../../share/platform"; // 外部依赖，暂时注释
 
-// 创建 platform 占位符
-const o = {
-  isMac: navigator.platform.toUpperCase().indexOf('MAC') >= 0,
-  isWindows: navigator.platform.toUpperCase().indexOf('WIN') >= 0,
-  isLinux: navigator.platform.toUpperCase().indexOf('LINUX') >= 0,
-};
 const r = /\d$/;
 let d = null;
 let u = false;
@@ -345,10 +338,6 @@ let m = elementUtils.registerElement("ui-prop", {
 
         return false;
       });
-    }
-
-    if (o.isWin32) {
-      this.$resizer.classList.add("platform-win");
     }
   },
   connectedCallback() {
