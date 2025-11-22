@@ -1,7 +1,6 @@
 import domUtils from "../utils/dom-utils";
 import dockUtils from "../utils/dock-utils";
 import focusMgr from "../utils/focus-mgr";
-import platform from "../../../share/platform";
 function s(e, t) {
   return t < e._computedMinWidth
     ? e._computedMinWidth
@@ -38,9 +37,6 @@ class Resizer extends window.HTMLElement {
     this.addEventListener("mousedown", this._onMouseDown.bind(this));
   }
   connectedCallback() {
-    if (platform.isWin32) {
-      this.classList.add("platform-win");
-    }
   }
   get vertical() {
     return this.getAttribute("vertical") !== null;
@@ -262,12 +258,6 @@ class Resizer extends window.HTMLElement {
       dockUtils.saveLayout();
       focusMgr._refocus();
     };
-
-    if (platform.isWin32) {
-      domUtils.addDragGhost(this.vertical ? "ew-resize" : "ns-resize");
-    } else {
-      domUtils.addDragGhost(this.vertical ? "col-resize" : "row-resize");
-    }
 
     document.addEventListener("mousemove", p);
     document.addEventListener("mouseup", v);

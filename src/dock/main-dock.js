@@ -4,7 +4,7 @@ import dragDrop from "../utils/drag-drop";
 import Dock from "./dock";
 import ipc from "../../ipc";
 
-export default class extends Dock {
+class MainDock extends Dock {
   static get tagName() {
     return "ui-main-dock";
   }
@@ -80,3 +80,5 @@ export default class extends Dock {
     });
   }
 }
+
+export default MainDock;

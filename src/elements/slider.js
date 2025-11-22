@@ -1,6 +1,6 @@
 // import t from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
-import shareUtils from "../utils/js-utils.js";
+import jsUtils from "../utils/js-utils.js";
 import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import { acceptEvent, fire } from "../utils/dom-utils.js";
@@ -399,7 +399,7 @@ export default elementUtils.registerElement("ui-slider", {
     return t === null || t === ""
       ? ""
       : this._precision === 0
-      ? shareUtils.toFixed(t, this._precision)
-      : shareUtils.toFixed(t, this._precision, this._precision);
+      ? jsUtils.toFixed(t, this._precision)
+      : jsUtils.toFixed(t, this._precision, this._precision);
   },
 });

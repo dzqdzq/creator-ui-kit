@@ -1,6 +1,6 @@
 // import e from "../settings"; // 外部依赖，暂时注释
 import elementUtils from "./utils.js";
-import shareUtils from "../utils/js-utils.js";
+import jsUtils from "../utils/js-utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import { acceptEvent, installDownUpEvent, fire } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
@@ -401,10 +401,10 @@ export default elementUtils.registerElement("ui-num-input", {
     return t === null || t === ""
       ? ""
       : this._type === "int"
-      ? shareUtils.toFixed(t, 0)
+      ? jsUtils.toFixed(t, 0)
       : this._precision === 0
-      ? shareUtils.toFixed(t, this._precision)
-      : shareUtils.toFixed(t, this._precision, this._precision);
+      ? jsUtils.toFixed(t, this._precision)
+      : jsUtils.toFixed(t, this._precision, this._precision);
   },
   _clampValue(t) {
     Math.max(this._min, t);
