@@ -1,76 +1,47 @@
-import { loadElementStyle } from "./theme-loader.js";
-
+// 编译时注入的样式，由 vite 插件在构建时注入
 const compiledStyles = typeof __COMPILED_STYLES__ !== 'undefined' ? __COMPILED_STYLES__ : {};
 const styleCache = new Map();
 
 export async function getElementStyle(elementName, themeName = 'default') {
-  const cacheKey = `${themeName}/${elementName}`;
-  
-  if (styleCache.has(cacheKey)) {
-    return styleCache.get(cacheKey);
-  }
-  
-  try {
-    const css = await loadElementStyle(elementName, themeName);
-    styleCache.set(cacheKey, css);
-    return css;
-  } catch (error) {
-    console.error(`Failed to load style for ${elementName}:`, error);
-    return '';
-  }
+  // 异步版本，直接返回同步结果
+  return getElementStyleSync(elementName, themeName);
 }
 
 export function getElementStyleSync(elementName, themeName = 'default') {
   const cacheKey = `${themeName}/${elementName}`;
   
+  // 首先检查缓存
+  if (styleCache.has(cacheKey)) {
+    return styleCache.get(cacheKey);
+  }
+  
+  // 从编译时注入的样式中获取
   if (compiledStyles[elementName]) {
-    console.log(`[css-loader] 从编译样式获取 ${elementName}:`, compiledStyles[elementName].length, "字符");
-    return compiledStyles[elementName];
+    const css = compiledStyles[elementName];
+    styleCache.set(cacheKey, css);
+    return css;
   }
   
-  const cached = styleCache.get(cacheKey);
-  if (cached) {
-    console.log(`[css-loader] 从缓存获取 ${elementName}:`, cached.length, "字符");
-    return cached;
-  }
-  
+  // 如果找不到，返回空字符串
   console.warn(`[css-loader] 警告: ${elementName} 样式未找到！`, {
     elementName,
     themeName,
     cacheKey,
     hasCompiledStyle: !!compiledStyles[elementName],
-    cacheSize: styleCache.size,
-    cacheKeys: Array.from(styleCache.keys()),
+    availableStyles: Object.keys(compiledStyles),
   });
   return '';
 }
 
 export async function preloadElementStyles(elementNames, themeName = 'default') {
-  console.log("[css-loader] 开始预加载样式:", elementNames);
-  
+  // 将所有编译时样式预加载到缓存中
   elementNames.forEach(name => {
     if (compiledStyles[name]) {
       const cacheKey = `${themeName}/${name}`;
       styleCache.set(cacheKey, compiledStyles[name]);
-      console.log(`[css-loader] 从编译样式设置缓存 ${name}:`, compiledStyles[name].length, "字符");
+    } else {
+      console.warn(`[css-loader] 样式 ${name} 在编译时样式中未找到`);
     }
-  });
-  
-  const runtimePromises = elementNames
-    .filter(name => !compiledStyles[name])
-    .map(async (name) => {
-      console.log(`[css-loader] 异步加载样式 ${name}...`);
-      const style = await getElementStyle(name, themeName);
-      console.log(`[css-loader] 样式 ${name} 加载完成:`, style.length, "字符");
-      return style;
-    });
-  
-  await Promise.all(runtimePromises);
-  
-  console.log("[css-loader] 样式预加载完成，缓存状态:", {
-    cacheSize: styleCache.size,
-    cacheKeys: Array.from(styleCache.keys()),
-    compiledStyles: Object.keys(compiledStyles),
   });
 }
 

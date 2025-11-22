@@ -110,3 +110,12 @@ export function walk(el, options, callback) {
     }
   }
 }
+
+// 添加默认导出以保持向后兼容
+export default {
+  clear,
+  fire,
+  acceptEvent,
+  installDownUpEvent,
+  walk
+};

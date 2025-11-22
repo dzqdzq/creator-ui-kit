@@ -7,15 +7,8 @@ const ELEMENT_NAMES = [
   'slider', 'splitter', 'text-area'
 ];
 
-async function initStyles() {
-  try {
-    await preloadElementStyles(ELEMENT_NAMES, 'default');
-  } catch (error) {
-    console.error('Failed to load theme styles:', error);
-  }
-}
-
-await initStyles();
+// 预加载所有样式（现在所有样式都在编译时注入，无需异步加载）
+preloadElementStyles(ELEMENT_NAMES, 'default');
 
 import "./elements/button.js";
 import "./elements/checkbox.js";
