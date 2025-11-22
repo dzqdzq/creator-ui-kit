@@ -6,10 +6,27 @@ import { fire, acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 
-// 创建占位符
-const t = null; // Electron remote 在浏览器中不可用
+// 创建占位符类（Electron remote 在浏览器中不可用）
+class Menu {
+  constructor() {
+    this.items = [];
+  }
+  append(item) {
+    this.items.push(item);
+  }
+  popup() {
+    // 在浏览器环境中不执行任何操作
+  }
+}
 
-const { Menu, MenuItem } = t;
+class MenuItem {
+  constructor(options) {
+    this.options = options;
+  }
+}
+
+const Menu_export = Menu;
+const MenuItem_export = MenuItem;
 
 export default elementUtils.registerElement("ui-color-picker", {
   get value() {
@@ -344,7 +361,8 @@ export default elementUtils.registerElement("ui-color-picker", {
         })
       );
 
-      o.popup(t.getCurrentWindow());
+      // 在浏览器环境中，右键菜单功能不可用
+      // o.popup(t.getCurrentWindow());
     });
 
     a.addEventListener("mousedown", (t) => {

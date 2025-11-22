@@ -89,7 +89,7 @@ export default elementUtils.registerElement("ui-text-area", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
-  template: `\n    <div class="back">\n      <span>${r}</span>\n    </div>\n    <textarea></textarea>\n  `,
+  template: `\n    <div class="back">\n      <span>⌘ + enter</span>\n    </div>\n    <textarea></textarea>\n  `,
   style: getElementStyleSync("text-area"),
   $: { input: "textarea", span: "span" },
   factoryImpl(e) {

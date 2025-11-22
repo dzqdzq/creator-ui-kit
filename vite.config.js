@@ -136,6 +136,22 @@ function processImportsBuild(css, themeName, processedImports = new Set()) {
       processedImports.add(themeUrl);
       let importedCss = readFileSync(filePath, 'utf-8');
       
+      // 如果导入的是 fontello.css，需要确保包含 @font-face 定义
+      if (themeUrl === 'theme://globals/fontello.css') {
+        const commonCssPath = resolveThemeUrlBuild('theme://globals/common.css', themeName);
+        if (existsSync(commonCssPath)) {
+          let commonCss = readFileSync(commonCssPath, 'utf-8');
+          // 提取 @font-face 定义
+          const fontFaceMatch = commonCss.match(/@font-face\s*\{[^}]*font-family:\s*fontello[^}]*\}/s);
+          if (fontFaceMatch) {
+            // 处理 @font-face 中的 URL
+            let fontFaceCss = processThemeUrlsBuild(fontFaceMatch[0], themeName);
+            // 将 @font-face 添加到 fontello.css 的开头
+            importedCss = fontFaceCss + '\n' + importedCss;
+          }
+        }
+      }
+      
       // 递归处理导入的 CSS 中的 @import
       importedCss = processImportsBuild(importedCss, themeName, processedImports);
       
@@ -210,6 +226,30 @@ function collectAllStyles(themeName = 'default') {
   return cssMap;
 }
 
+/**
+ * 提取字体定义
+ */
+function extractFontFace(cssMap) {
+  // 优先从 globals/common.css 中提取
+  if (cssMap['globals/common']) {
+    const css = cssMap['globals/common'];
+    // 匹配完整的 @font-face 规则（包括多行）
+    const fontFaceMatch = css.match(/@font-face\s*\{[^}]*font-family:\s*fontello[^}]*\}/s);
+    if (fontFaceMatch) {
+      return fontFaceMatch[0];
+    }
+  }
+  
+  // 如果没找到，从任何包含 @font-face 的 CSS 中提取
+  for (const [key, css] of Object.entries(cssMap)) {
+    const fontFaceMatch = css.match(/@font-face\s*\{[^}]*font-family:\s*fontello[^}]*\}/s);
+    if (fontFaceMatch) {
+      return fontFaceMatch[0];
+    }
+  }
+  return null;
+}
+
 function cssInjectPlugin() {
   return {
     name: 'css-inject',
@@ -218,13 +258,75 @@ function cssInjectPlugin() {
         const themeName = 'default';
         const cssMap = collectAllStyles(themeName);
         
-        const injectedCode = `const __COMPILED_STYLES__ = ${JSON.stringify(cssMap, null, 2)};
-${code}`;
+        // 提取字体定义
+        const fontFace = extractFontFace(cssMap);
+        
+        // 直接替换 compiledStyles 的初始化，使用注入的样式对象
+        const cssMapStr = JSON.stringify(cssMap, null, 2);
+        const pattern = /const compiledStyles\s*=\s*[^;]+;/s;
+        const replacement = `const compiledStyles = ${cssMapStr};`;
+        let injectedCode = code.replace(pattern, replacement);
+        
+        // 如果替换失败，尝试更宽松的匹配
+        if (injectedCode === code) {
+          const pattern2 = /const compiledStyles\s*=\s*typeof[^;]+;/s;
+          injectedCode = code.replace(pattern2, `const compiledStyles = ${cssMapStr};`);
+        }
+        
+        // 如果还是失败，在文件开头注入
+        if (injectedCode === code) {
+          console.warn('[vite-plugin] 无法替换 compiledStyles，使用注入方式');
+          injectedCode = `const __COMPILED_STYLES__ = ${cssMapStr};\n${code}`;
+        }
+        
+        // 注入字体定义到全局变量
+        if (fontFace) {
+          const fontFaceStr = JSON.stringify(fontFace);
+          injectedCode = `const __GLOBAL_FONT_FACE__ = ${fontFaceStr};\n${injectedCode}`;
+        }
         
         return {
           code: injectedCode,
           map: null
         };
+      }
+      
+      // 同时处理 index.js，注入全局字体加载逻辑
+      if (id.endsWith('src/index.js') || id.endsWith('/index.js')) {
+        const themeName = 'default';
+        const cssMap = collectAllStyles(themeName);
+        const fontFace = extractFontFace(cssMap);
+        
+        if (fontFace) {
+          const fontFaceStr = JSON.stringify(fontFace);
+          const fontFaceCode = `
+// 全局字体加载：在文档级别注入字体定义，确保 Shadow DOM 中的元素也能使用
+if (typeof document !== 'undefined') {
+  const fontStyleId = 'ui-kit-global-fonts';
+  if (!document.getElementById(fontStyleId)) {
+    const fontStyle = document.createElement('style');
+    fontStyle.id = fontStyleId;
+    fontStyle.type = 'text/css';
+    fontStyle.textContent = ${fontFaceStr};
+    if (document.head) {
+      document.head.appendChild(fontStyle);
+    } else if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        document.head.appendChild(fontStyle);
+      });
+    } else {
+      const head = document.getElementsByTagName('head')[0];
+      if (head) head.appendChild(fontStyle);
+    }
+  }
+}
+`;
+          // 在文件开头注入字体加载代码
+          return {
+            code: fontFaceCode + code,
+            map: null
+          };
+        }
       }
     }
   };

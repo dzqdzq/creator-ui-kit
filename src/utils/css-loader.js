@@ -1,5 +1,8 @@
 // 编译时注入的样式，由 vite 插件在构建时注入
+// vite 插件会直接替换这行代码，将 compiledStyles 初始化为实际的样式对象
+// 如果替换失败，则使用 __COMPILED_STYLES__ 作为后备
 const compiledStyles = typeof __COMPILED_STYLES__ !== 'undefined' ? __COMPILED_STYLES__ : {};
+
 const styleCache = new Map();
 
 export async function getElementStyle(elementName, themeName = 'default') {
@@ -23,13 +26,7 @@ export function getElementStyleSync(elementName, themeName = 'default') {
   }
   
   // 如果找不到，返回空字符串
-  console.warn(`[css-loader] 警告: ${elementName} 样式未找到！`, {
-    elementName,
-    themeName,
-    cacheKey,
-    hasCompiledStyle: !!compiledStyles[elementName],
-    availableStyles: Object.keys(compiledStyles),
-  });
+  console.warn(`[css-loader] 警告: ${elementName} 样式未找到！`);
   return '';
 }
 
@@ -39,8 +36,6 @@ export async function preloadElementStyles(elementNames, themeName = 'default') 
     if (compiledStyles[name]) {
       const cacheKey = `${themeName}/${name}`;
       styleCache.set(cacheKey, compiledStyles[name]);
-    } else {
-      console.warn(`[css-loader] 样式 ${name} 在编译时样式中未找到`);
     }
   });
 }
