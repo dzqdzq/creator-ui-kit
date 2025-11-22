@@ -6,7 +6,10 @@
   "main": "src/index.js",
   "scripts": {
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "demo": "node demo/server.js",
+    "demo:python": "cd demo && python3 -m http.server 3000",
+    "demo:python2": "cd demo && python -m SimpleHTTPServer 3000"
   },
   "keywords": [
     "web-components",

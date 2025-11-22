@@ -1,119 +1,148 @@
-
-class DroppableBehavior {
+import t from "../utils/dom-utils";
+import e from "../utils/drag-drop";
+let r = {
   get droppable() {
     return this.getAttribute("droppable");
-  }
-
-  set droppable(droppableValue) {
-    this.setAttribute("droppable", droppableValue);
-  }
-
+  },
+  set droppable(t) {
+    this.setAttribute("droppable", t);
+  },
   get multi() {
     return this.getAttribute("multi") !== null;
-  }
-
-  set multi(multiValue) {
-    if (multiValue) {
+  },
+  set multi(t) {
+    if (t) {
       this.setAttribute("multi", "");
     } else {
       this.removeAttribute("multi");
     }
-  }
-
+  },
   get canDrop() {
     return this._canDrop;
-  }
-
-  _initDroppable(containerElement) {
-    // Drag and drop functionality has been removed
-  }
-}
-
-// 导出类的实例方法和属性，以便混入到元素原型
-const behaviorPrototype = DroppableBehavior.prototype;
-
-// 获取 getter 描述符的辅助函数
-function getGetter(prototype, name) {
-  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
-  if (descriptor && descriptor.get) {
-    return descriptor.get;
-  }
-  return null;
-}
-
-function getSetter(prototype, name) {
-  const descriptor = Object.getOwnPropertyDescriptor(prototype, name);
-  if (descriptor && descriptor.set) {
-    return descriptor.set;
-  }
-  return null;
-}
-
-export default {
-  get droppable() {
-    const getter = getGetter(behaviorPrototype, "droppable");
-    if (!getter) {
-      console.error("[droppable] droppable getter not found");
-      return null;
-    }
-    try {
-      return getter.call(this);
-    } catch (error) {
-      console.error("[droppable] Error calling droppable getter:", error, "this:", this);
-      throw error;
-    }
   },
-  set droppable(value) {
-    const setter = getSetter(behaviorPrototype, "droppable");
-    if (!setter) {
-      console.error("[droppable] droppable setter not found");
-      return;
-    }
-    try {
-      setter.call(this, value);
-    } catch (error) {
-      console.error("[droppable] Error calling droppable setter:", error, "this:", this);
-      throw error;
-    }
+  _initDroppable(r) {
+    let a = r.shadowRoot || r;
+    this._dragenterCnt = 0;
+    this._canDrop = false;
+
+    a.addEventListener("dragenter", (r) => {
+      ++this._dragenterCnt;
+
+      if (this._dragenterCnt === 1) {
+        this._canDrop = false;
+        let a = [];
+
+        if (this.droppable !== null) {
+          a = this.droppable.split(",");
+        }
+
+        let i = e.type(r.dataTransfer);
+        let s = false;
+        for (let t = 0; t < a.length; ++t) {
+          if (i === a[t]) {
+            s = true;
+            break;
+          }
+        }
+        if (!s) {
+          this._canDrop = false;
+          return undefined;
+        }
+        let n = e.getLength();
+
+        if (i === "file" && n === 0) {
+          n = r.dataTransfer.items.length;
+        }
+
+        if (!this.multi && n > 1) {
+          this._canDrop = false;
+          return undefined;
+        }
+
+        r.stopPropagation();
+        this._canDrop = true;
+        this.setAttribute("drag-hovering", "");
+
+        t.fire(this, "drop-area-enter", {
+          bubbles: true,
+          detail: {
+            target: r.target,
+            dataTransfer: r.dataTransfer,
+            clientX: r.clientX,
+            clientY: r.clientY,
+            offsetX: r.offsetX,
+            offsetY: r.offsetY,
+            dragType: i,
+            dragItems: e.items(r.dataTransfer),
+            dragOptions: e.options(),
+          },
+        });
+      }
+    });
+
+    a.addEventListener("dragleave", (e) => {
+      --this._dragenterCnt;
+
+      if (this._dragenterCnt === 0) {
+        if (!this._canDrop) {
+          return;
+        }
+        e.stopPropagation();
+        this.removeAttribute("drag-hovering");
+
+        t.fire(this, "drop-area-leave", {
+          bubbles: true,
+          detail: { target: e.target, dataTransfer: e.dataTransfer },
+        });
+      }
+    });
+
+    a.addEventListener("drop", (r) => {
+      this._dragenterCnt = 0;
+
+      if (this._canDrop) {
+        r.preventDefault();
+        r.stopPropagation();
+        this.removeAttribute("drag-hovering");
+
+        t.fire(this, "drop-area-accept", {
+          bubbles: true,
+          detail: {
+            target: r.target,
+            dataTransfer: r.dataTransfer,
+            clientX: r.clientX,
+            clientY: r.clientY,
+            offsetX: r.offsetX,
+            offsetY: r.offsetY,
+            dragType: e.type(r.dataTransfer),
+            dragItems: e.items(r.dataTransfer),
+            dragOptions: e.options(),
+          },
+        });
+      }
+    });
+
+    a.addEventListener("dragover", (r) => {
+      if (this._canDrop) {
+        r.preventDefault();
+        r.stopPropagation();
+
+        t.fire(this, "drop-area-move", {
+          bubbles: true,
+          detail: {
+            target: r.target,
+            clientX: r.clientX,
+            clientY: r.clientY,
+            offsetX: r.offsetX,
+            offsetY: r.offsetY,
+            dataTransfer: r.dataTransfer,
+            dragType: e.type(r.dataTransfer),
+            dragItems: e.items(r.dataTransfer),
+            dragOptions: e.options(),
+          },
+        });
+      }
+    });
   },
-  get multi() {
-    const getter = getGetter(behaviorPrototype, "multi");
-    if (!getter) {
-      console.error("[droppable] multi getter not found");
-      return false;
-    }
-    try {
-      return getter.call(this);
-    } catch (error) {
-      console.error("[droppable] Error calling multi getter:", error, "this:", this);
-      throw error;
-    }
-  },
-  set multi(value) {
-    const setter = getSetter(behaviorPrototype, "multi");
-    if (!setter) {
-      console.error("[droppable] multi setter not found");
-      return;
-    }
-    try {
-      setter.call(this, value);
-    } catch (error) {
-      console.error("[droppable] Error calling multi setter:", error, "this:", this);
-      throw error;
-    }
-  },
-  get canDrop() {
-    const getter = getGetter(behaviorPrototype, "canDrop");
-    if (!getter) {
-      console.error("[droppable] canDrop getter not found");
-      return false;
-    }
-    try {
-      return getter.call(this);
-    } catch (error) {
-      console.error("[droppable] Error calling canDrop getter:", error, "this:", this);
-      throw error;
-    }
-  },
-  _initDroppable: behaviorPrototype._initDroppable,
 };
+export default r;

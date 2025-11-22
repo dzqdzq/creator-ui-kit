@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>基础表单元素 - UI-Kit Demo</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "../node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ddd;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .header a {
+      color: #4a9eff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .header a:hover {
+      text-decoration: underline;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 25px;
+      background: #222;
+      border-radius: 8px;
+      border-left: 4px solid #4a9eff;
+    }
+    .section h2 {
+      color: #4a9eff;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .demo-group {
+      margin: 20px 0;
+    }
+    .demo-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .demo-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .output {
+      margin-top: 30px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #333;
+    }
+    .output-title {
+      color: #4a9eff;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .log-entry {
+      padding: 3px 0;
+      border-bottom: 1px solid #333;
+    }
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+  </style>
+  <script type="module">
+    import '../dist/ui-kit.js';
+    
+    await customElements.whenDefined('ui-button');
+    await customElements.whenDefined('ui-input');
+    await customElements.whenDefined('ui-checkbox');
+    await customElements.whenDefined('ui-select');
+    await customElements.whenDefined('ui-text-area');
+    
+    const output = document.getElementById('output');
+    
+    function log(message, type = 'info') {
+      const time = new Date().toLocaleTimeString();
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `<span style="color: #888">[${time}]</span> <span style="color: ${type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#4a9eff'}">${message}</span>`;
+      output.appendChild(entry);
+      output.scrollTop = output.scrollHeight;
+    }
+    
+    // Button 示例
+    document.getElementById('button1').addEventListener('confirm', () => {
+      log('✅ 普通按钮被点击了！', 'success');
+    });
+    
+    document.getElementById('button2').addEventListener('confirm', () => {
+      log('✅ 主要按钮被点击了！', 'success');
+    });
+    
+    // Checkbox 示例
+    document.getElementById('checkbox1').addEventListener('change', (e) => {
+      log(`☑️ 复选框状态改变: ${e.detail.value ? '已选中' : '未选中'}`);
+    });
+    
+    document.getElementById('checkbox2').addEventListener('change', (e) => {
+      log(`☑️ 选项2状态: ${e.detail.value ? '已选中' : '未选中'}`);
+    });
+    
+    // Input 示例
+    const input1 = document.getElementById('input1');
+    input1.addEventListener('change', (e) => {
+      log(`📝 输入值改变: "${e.detail.value}"`);
+    });
+    input1.addEventListener('confirm', (e) => {
+      log(`✅ 输入确认: "${e.detail.value}"`, 'success');
+    });
+    
+    document.getElementById('input2').addEventListener('change', (e) => {
+      log(`🔒 密码输入: ${'*'.repeat(e.detail.value.length)}`);
+    });
+    
+    // Select 示例
+    const select1 = document.getElementById('select1');
+    select1.addEventListener('change', (e) => {
+      log(`📋 选择改变: ${e.detail.text} (值: ${e.detail.value})`);
+    });
+    
+    // Text Area 示例
+    const textArea1 = document.getElementById('textArea1');
+    textArea1.addEventListener('change', (e) => {
+      const lines = e.detail.value.split('\n').length;
+      log(`📄 文本域内容改变: ${lines} 行`);
+    });
+    textArea1.addEventListener('confirm', (e) => {
+      log(`✅ 文本域确认: ${e.detail.value.length} 个字符`, 'success');
+    });
+    
+    log('🚀 基础表单元素 Demo 加载完成！', 'success');
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📝 基础表单元素</h1>
+      <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="section">
+      <h2>按钮 (ui-button)</h2>
+      <div class="demo-group">
+        <div class="demo-row">
+          <ui-button id="button1">普通按钮</ui-button>
+          <ui-button id="button2">主要按钮</ui-button>
+          <ui-button disabled>禁用按钮</ui-button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>复选框 (ui-checkbox)</h2>
+      <div class="demo-group">
+        <div class="demo-row">
+          <ui-checkbox id="checkbox1">选项 1</ui-checkbox>
+          <ui-checkbox id="checkbox2">选项 2</ui-checkbox>
+          <ui-checkbox checked>已选中</ui-checkbox>
+          <ui-checkbox disabled>禁用选项</ui-checkbox>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>输入框 (ui-input)</h2>
+      <div class="demo-group">
+        <label>普通输入框：</label>
+        <ui-input id="input1" placeholder="请输入内容..."></ui-input>
+      </div>
+      <div class="demo-group">
+        <label>密码输入框：</label>
+        <ui-input id="input2" password placeholder="请输入密码"></ui-input>
+      </div>
+      <div class="demo-group">
+        <label>只读输入框：</label>
+        <ui-input readonly value="只读内容，无法编辑"></ui-input>
+      </div>
+      <div class="demo-group">
+        <label>最大长度限制（10字符）：</label>
+        <ui-input max-length="10" placeholder="最多输入10个字符"></ui-input>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>下拉选择 (ui-select)</h2>
+      <div class="demo-group">
+        <label>选择选项：</label>
+        <ui-select id="select1">
+          <option value="1">选项 1</option>
+          <option value="2">选项 2</option>
+          <option value="3">选项 3</option>
+          <option value="4">选项 4</option>
+        </ui-select>
+      </div>
+      <div class="demo-group">
+        <label>禁用状态：</label>
+        <ui-select disabled>
+          <option value="1">禁用选项</option>
+        </ui-select>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>文本域 (ui-text-area)</h2>
+      <div class="demo-group">
+        <label>多行文本输入：</label>
+        <ui-text-area id="textArea1" placeholder="请输入多行文本..."></ui-text-area>
+      </div>
+      <div class="demo-group">
+        <label>只读文本域：</label>
+        <ui-text-area readonly value="这是只读的文本内容&#10;可以显示多行文本"></ui-text-area>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>事件输出</h2>
+      <div class="output-title">实时事件日志：</div>
+      <div id="output" class="output"></div>
+    </div>
+  </div>
+</body>
+</html>
+

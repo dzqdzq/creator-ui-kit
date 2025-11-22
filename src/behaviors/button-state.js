@@ -1,107 +1,94 @@
-import { installDownUpEvent, acceptEvent, fire } from "../utils/dom-utils.js";
-import focusMgr from "../utils/focus-mgr";
-
-function isPressed(element) {
-  return element.getAttribute("pressed") !== null;
+import e from "../utils/dom-utils";
+import t from "../utils/focus-mgr";
+function s(e) {
+  return e.getAttribute("pressed") !== null;
 }
+let i = {
+  _initButtonState(i) {
+    e.installDownUpEvent(i);
 
-class ButtonStateBehavior {
-  _initButtonState(buttonElement) {
-    installDownUpEvent(buttonElement);
-
-    buttonElement.addEventListener("keydown", (keyboardEvent) => {
+    i.addEventListener("keydown", (t) => {
       if (!this.disabled) {
-        if (keyboardEvent.keyCode === 32) {
-          acceptEvent(keyboardEvent);
-          this._setPressed(buttonElement, true);
+        if (t.keyCode === 32) {
+          e.acceptEvent(t);
+          this._setPressed(i, true);
           this._canceledByEsc = false;
-        } else if (keyboardEvent.keyCode === 13) {
-          acceptEvent(keyboardEvent);
+        } else if (t.keyCode === 13) {
+          e.acceptEvent(t);
 
           if (this._enterTimeoutID) {
             return;
           }
 
-          this._setPressed(buttonElement, true);
+          this._setPressed(i, true);
           this._canceledByEsc = false;
 
           this._enterTimeoutID = setTimeout(() => {
             this._enterTimeoutID = null;
-            this._setPressed(buttonElement, false);
-            buttonElement.click();
+            this._setPressed(i, false);
+            i.click();
           }, 100);
         } else {
-          if (keyboardEvent.keyCode === 27) {
-            acceptEvent(keyboardEvent);
+          if (t.keyCode === 27) {
+            e.acceptEvent(t);
 
-            if (isPressed(buttonElement)) {
-              fire(buttonElement, "cancel", { bubbles: true });
-              this._canceledByEsc = true;
-            }
+            s(i) &&
+              (e.fire(i, "cancel", { bubbles: true }),
+              (this._canceledByEsc = true));
 
-            this._setPressed(buttonElement, false);
+            this._setPressed(i, false);
           }
         }
       }
     });
 
-    buttonElement.addEventListener("keyup", (keyboardEvent) => {
-      if (keyboardEvent.keyCode === 32) {
-        acceptEvent(keyboardEvent);
+    i.addEventListener("keyup", (t) => {
+      if (t.keyCode === 32) {
+        e.acceptEvent(t);
 
-        if (isPressed(buttonElement)) {
+        s(i) &&
           setTimeout(() => {
-            buttonElement.click();
+            i.click();
           }, 1);
-        }
 
-        this._setPressed(buttonElement, false);
+        this._setPressed(i, false);
       }
     });
 
-    buttonElement.addEventListener("down", (downEvent) => {
-      acceptEvent(downEvent);
-      focusMgr._setFocusElement(this);
-      this._setPressed(buttonElement, true);
+    i.addEventListener("down", (s) => {
+      e.acceptEvent(s);
+      t._setFocusElement(this);
+      this._setPressed(i, true);
       this._canceledByEsc = false;
     });
 
-    buttonElement.addEventListener("up", (upEvent) => {
-      acceptEvent(upEvent);
-      this._setPressed(buttonElement, false);
+    i.addEventListener("up", (t) => {
+      e.acceptEvent(t);
+      this._setPressed(i, false);
     });
 
-    buttonElement.addEventListener("click", (clickEvent) => {
-      this._onButtonClick(buttonElement, clickEvent);
+    i.addEventListener("click", (t) => {
+      this._onButtonClick(i, t);
 
       if (!this.readonly) {
-        if (this._canceledByEsc) {
-          this._canceledByEsc = false;
-          acceptEvent(clickEvent);
-          return undefined;
-        }
-        return undefined;
+        return this._canceledByEsc
+          ? ((this._canceledByEsc = false), e.acceptEvent(t), undefined)
+          : undefined;
       }
     });
 
-    buttonElement.addEventListener("focus-changed", () => {
+    i.addEventListener("focus-changed", () => {
       if (!this.focused) {
-        this._setPressed(buttonElement, false);
+        this._setPressed(i, false);
       }
     });
-  }
-
-  _setPressed(element, pressed) {
-    if (pressed) {
-      element.setAttribute("pressed", "");
+  },
+  _setPressed(e, t) {
+    if (t) {
+      e.setAttribute("pressed", "");
     } else {
-      element.removeAttribute("pressed");
+      e.removeAttribute("pressed");
     }
-  }
-}
-
-const behaviorPrototype = ButtonStateBehavior.prototype;
-export default {
-  _initButtonState: behaviorPrototype._initButtonState,
-  _setPressed: behaviorPrototype._setPressed,
+  },
 };
+export default i;

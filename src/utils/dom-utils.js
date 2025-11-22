@@ -1,10 +1,23 @@
+let mouseEvents = ["mousedown", "mousemove", "mouseup", "click"];
+let f222 = [0, 1, 4, 2];
+
+let m = (() => {
+  try {
+    return new MouseEvent("test", { buttons: 1 }).buttons === 1;
+  } catch (e) {
+    return false;
+  }
+})();
+
 function isLeftMouseButton(e) {
-  const mouseEvents = ["mousedown", "mousemove", "mouseup", "click"];
   if (!mouseEvents.includes(e.type)) {
     return false;
   }
   if (e.type === "mousemove") {
-    const buttons = e.buttons === undefined ? 1 : e.buttons;
+    let buttons = e.buttons === undefined ? 1 : e.buttons;
+    if (e instanceof window.MouseEvent && !m) {
+      buttons = f222[e.which] || 0;
+    }
     return Boolean(1 & buttons);
   }
   return e.button === 0 || e.button === undefined;

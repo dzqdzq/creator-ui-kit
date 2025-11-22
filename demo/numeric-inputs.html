@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数值输入与滑块 - UI-Kit Demo</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "../node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ddd;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .header a {
+      color: #4a9eff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 25px;
+      background: #222;
+      border-radius: 8px;
+      border-left: 4px solid #51cf66;
+    }
+    .section h2 {
+      color: #51cf66;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .demo-group {
+      margin: 25px 0;
+    }
+    .demo-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .value-display {
+      display: inline-block;
+      margin-left: 15px;
+      padding: 5px 10px;
+      background: #2a2a2a;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #51cf66;
+    }
+    .demo-row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+    .info-box {
+      margin-top: 20px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      border-left: 3px solid #51cf66;
+    }
+    .info-box code {
+      color: #51cf66;
+      font-family: monospace;
+    }
+  </style>
+  <script type="module">
+    import '../dist/ui-kit.js';
+    
+    await customElements.whenDefined('ui-num-input');
+    await customElements.whenDefined('ui-slider');
+    
+    // Num Input 示例
+    const numInput1 = document.getElementById('numInput1');
+    const numInput1Display = document.getElementById('numInput1Display');
+    numInput1.addEventListener('change', (e) => {
+      numInput1Display.textContent = e.detail.value;
+    });
+    
+    const numInput2 = document.getElementById('numInput2');
+    const numInput2Display = document.getElementById('numInput2Display');
+    numInput2.addEventListener('change', (e) => {
+      numInput2Display.textContent = e.detail.value;
+    });
+    
+    const numInput3 = document.getElementById('numInput3');
+    const numInput3Display = document.getElementById('numInput3Display');
+    numInput3.addEventListener('change', (e) => {
+      numInput3Display.textContent = e.detail.value;
+    });
+    
+    // Slider 示例
+    const slider1 = document.getElementById('slider1');
+    const slider1Display = document.getElementById('slider1Display');
+    slider1.addEventListener('change', (e) => {
+      slider1Display.textContent = e.detail.value.toFixed(2);
+    });
+    
+    const slider2 = document.getElementById('slider2');
+    const slider2Display = document.getElementById('slider2Display');
+    slider2.addEventListener('change', (e) => {
+      slider2Display.textContent = e.detail.value;
+    });
+    
+    const slider3 = document.getElementById('slider3');
+    const slider3Display = document.getElementById('slider3Display');
+    slider3.addEventListener('change', (e) => {
+      slider3Display.textContent = e.detail.value.toFixed(1);
+    });
+    
+    // 同步滑块和数字输入
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeInput = document.getElementById('volumeInput');
+    
+    volumeSlider.addEventListener('change', (e) => {
+      volumeInput.value = e.detail.value;
+      document.getElementById('volumeDisplay').textContent = Math.round(e.detail.value);
+    });
+    
+    volumeInput.addEventListener('change', (e) => {
+      volumeSlider.value = e.detail.value;
+      document.getElementById('volumeDisplay').textContent = Math.round(e.detail.value);
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔢 数值输入与滑块</h1>
+      <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="section">
+      <h2>数字输入框 (ui-num-input)</h2>
+      
+      <div class="demo-group">
+        <label>整数输入（0-100，步长1）：</label>
+        <div class="demo-row">
+          <ui-num-input id="numInput1" type="int" min="0" max="100" step="1" value="50"></ui-num-input>
+          <span class="value-display">当前值: <span id="numInput1Display">50</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>浮点数输入（0-1，步长0.1，精度2位）：</label>
+        <div class="demo-row">
+          <ui-num-input id="numInput2" type="float" min="0" max="1" step="0.1" precision="2" value="0.5"></ui-num-input>
+          <span class="value-display">当前值: <span id="numInput2Display">0.5</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>带范围的输入（-100到100，步长5）：</label>
+        <div class="demo-row">
+          <ui-num-input id="numInput3" type="int" min="-100" max="100" step="5" value="0"></ui-num-input>
+          <span class="value-display">当前值: <span id="numInput3Display">0</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>只读数字输入：</label>
+        <div class="demo-row">
+          <ui-num-input readonly value="42"></ui-num-input>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>禁用数字输入：</label>
+        <div class="demo-row">
+          <ui-num-input disabled value="100"></ui-num-input>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 使用键盘上下箭头可以快速调整数值，按住 Shift 键可以按更大步长调整。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>滑块 (ui-slider)</h2>
+      
+      <div class="demo-group">
+        <label>基础滑块（0-1，步长0.01）：</label>
+        <div class="demo-row">
+          <ui-slider id="slider1" min="0" max="1" step="0.01" precision="2" value="0.5" style="flex: 1; min-width: 200px;"></ui-slider>
+          <span class="value-display"><span id="slider1Display">0.50</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>整数滑块（0-255，步长1）：</label>
+        <div class="demo-row">
+          <ui-slider id="slider2" min="0" max="255" step="1" precision="0" value="128" style="flex: 1; min-width: 200px;"></ui-slider>
+          <span class="value-display"><span id="slider2Display">128</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>范围滑块（-50到50，步长0.5）：</label>
+        <div class="demo-row">
+          <ui-slider id="slider3" min="-50" max="50" step="0.5" precision="1" value="0" style="flex: 1; min-width: 200px;"></ui-slider>
+          <span class="value-display"><span id="slider3Display">0.0</span></span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>只读滑块：</label>
+        <div class="demo-row">
+          <ui-slider readonly value="75" style="flex: 1; min-width: 200px;"></ui-slider>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 点击滑块轨道可以快速跳转到该位置，使用左右箭头键可以精确调整。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>组合示例：音量控制</h2>
+      <div class="demo-group">
+        <label>音量（0-100）：</label>
+        <div class="demo-row">
+          <ui-slider id="volumeSlider" min="0" max="100" step="1" precision="0" value="50" style="flex: 1; min-width: 200px;"></ui-slider>
+          <ui-num-input id="volumeInput" type="int" min="0" max="100" step="1" value="50" style="width: 100px;"></ui-num-input>
+          <span class="value-display">音量: <span id="volumeDisplay">50</span>%</span>
+        </div>
+        <p style="margin-top: 10px; color: #888; font-size: 0.9em;">滑块和数字输入框已同步，修改任一控件都会更新另一个。</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

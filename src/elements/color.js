@@ -25,7 +25,7 @@ export default elementUtils.registerElement("ui-color", {
   },
   set value(e) {
     if (!e) {
-      [0, 0, 0, 1];
+      e = [0, 0, 0, 1];
     }
 
     const i = this._value;
@@ -33,7 +33,17 @@ export default elementUtils.registerElement("ui-color", {
 
     if (`${i}` != `${this._value}` && !this._multiValues) {
       if (!this._multiValues) {
-        this._draw = chroma(e).rgba();
+        // 处理数组格式 [r, g, b, a]，其中 a 可能是 0-1 或 0-255
+        if (Array.isArray(e) && e.length >= 3) {
+          const r = e[0];
+          const g = e[1];
+          const b = e[2];
+          const a = e.length === 4 ? (e[3] > 1 ? e[3] / 255 : e[3]) : 1;
+          this._draw = [r, g, b, a];
+        } else {
+          // 处理字符串或其他格式，使用 chroma 解析
+          this._draw = chroma(e).rgba();
+        }
         this._updateRGB();
         this._updateAlpha();
       }
@@ -47,7 +57,7 @@ export default elementUtils.registerElement("ui-color", {
     this._values = e;
 
     if (`${i}` != `${e}` && this._multiValues) {
-      this._draw = t(e[0]).rgba();
+      this._draw = chroma(e[0]).rgba();
       this._updateRGB();
       this._updateAlpha();
     }
@@ -90,11 +100,68 @@ export default elementUtils.registerElement("ui-color", {
   },
   ready() {
     this._showing = false;
+    
+    // 初始化 _draw，确保在调用 _updateRGB 和 _updateAlpha 之前有值
     let t = this.getAttribute("value");
-    this.value = t !== null ? t : [255, 255, 255, 1];
+    let initialValue;
+    
+    if (t !== null) {
+      // 解析 "255,0,0,1" 格式的字符串为数组
+      if (typeof t === 'string' && t.includes(',')) {
+        const parts = t.split(',').map(p => parseFloat(p.trim()));
+        if (parts.length >= 3) {
+          initialValue = parts.length === 4 ? parts : [...parts, 1];
+        } else {
+          initialValue = [255, 255, 255, 1];
+        }
+      } else {
+        initialValue = t;
+      }
+    } else {
+      initialValue = [255, 255, 255, 1];
+    }
+    
+    // 直接设置 _draw，避免在 set value 中重复处理
+    if (Array.isArray(initialValue) && initialValue.length >= 3) {
+      const r = initialValue[0];
+      const g = initialValue[1];
+      const b = initialValue[2];
+      const a = initialValue.length === 4 ? (initialValue[3] > 1 ? initialValue[3] / 255 : initialValue[3]) : 1;
+      this._draw = [r, g, b, a];
+      this._value = initialValue;
+    } else {
+      // 使用 chroma 解析
+      this._draw = chroma(initialValue).rgba();
+      this._value = this._draw;
+    }
+    
     this.multiValues = this.getAttribute("multi-values");
-    this._updateRGB();
-    this._updateAlpha();
+    
+    // 调试信息
+    console.log('[ui-color] ready() 调用:', {
+      hasShadowRoot: !!this.shadowRoot,
+      hasRgb: !!this.$rgb,
+      hasAlpha: !!this.$alpha,
+      _draw: this._draw,
+      _value: this._value,
+    });
+    
+    // 确保 $ 选择器已经初始化后再更新
+    // 使用 requestAnimationFrame 确保 DOM 已准备好
+    requestAnimationFrame(() => {
+      if (!this.$rgb || !this.$alpha) {
+        console.error('[ui-color] $rgb 或 $alpha 未找到:', {
+          $rgb: this.$rgb,
+          $alpha: this.$alpha,
+          shadowRoot: this.shadowRoot,
+          shadowHTML: this.shadowRoot ? this.shadowRoot.innerHTML.substring(0, 200) : 'no shadow root',
+        });
+        return;
+      }
+      this._updateRGB();
+      this._updateAlpha();
+    });
+    
     this._initFocusable(this);
     this._initDisable(false);
     this._initReadonly(false);
@@ -173,10 +240,38 @@ export default elementUtils.registerElement("ui-color", {
     };
   },
   _updateRGB() {
-    this.$rgb.style.backgroundColor = t(this._draw.slice(0, 3)).hex();
+    if (!this.$rgb) {
+      console.warn('[ui-color] $rgb 未找到，无法更新 RGB');
+      return;
+    }
+    if (!this._draw) {
+      console.warn('[ui-color] _draw 未初始化，无法更新 RGB');
+      return;
+    }
+    try {
+      const hexColor = chroma(this._draw.slice(0, 3)).hex();
+      this.$rgb.style.backgroundColor = hexColor;
+      console.log('[ui-color] RGB 更新:', hexColor, this._draw.slice(0, 3));
+    } catch (error) {
+      console.error('[ui-color] 更新 RGB 时出错:', error);
+    }
   },
   _updateAlpha() {
-    this.$alpha.style.width = `${100 * this._draw[3]}%`;
+    if (!this.$alpha) {
+      console.warn('[ui-color] $alpha 未找到，无法更新 Alpha');
+      return;
+    }
+    if (!this._draw) {
+      console.warn('[ui-color] _draw 未初始化，无法更新 Alpha');
+      return;
+    }
+    try {
+      const alphaWidth = `${100 * this._draw[3]}%`;
+      this.$alpha.style.width = alphaWidth;
+      console.log('[ui-color] Alpha 更新:', alphaWidth, this._draw[3]);
+    } catch (error) {
+      console.error('[ui-color] 更新 Alpha 时出错:', error);
+    }
   },
   _equals(e) {
     return (

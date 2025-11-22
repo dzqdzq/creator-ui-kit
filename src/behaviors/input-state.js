@@ -1,8 +1,7 @@
-import { acceptEvent } from "../utils/dom-utils.js";
-import focusMgr from "../utils/focus-mgr";
-
-class InputStateBehavior {
-  _initInputState(inputElement) {
+import e from "../utils/dom-utils";
+import t from "../utils/focus-mgr";
+let n = {
+  _initInputState(n) {
     if (!this._onInputConfirm) {
       throw new Error(
         "Failed to init input-state: please implement _onInputConfirm"
@@ -18,92 +17,76 @@ class InputStateBehavior {
         "Failed to init input-state: please implement _onInputChange"
       );
     }
-    let isTextArea = inputElement instanceof HTMLTextAreaElement;
-    inputElement._initValue = inputElement.value;
-    inputElement._focused = false;
-    inputElement._selectAllWhenMouseUp = false;
-    inputElement._mouseStartX = -1;
+    let s = n instanceof HTMLTextAreaElement;
+    n._initValue = n.value;
+    n._focused = false;
+    n._selectAllWhenMouseUp = false;
+    n._mouseStartX = -1;
 
-    inputElement.addEventListener("focus", () => {
-      inputElement._focused = true;
-      inputElement._initValue = inputElement.value;
+    n.addEventListener("focus", () => {
+      n._focused = true;
+      n._initValue = n.value;
 
-      if (inputElement._selectAllWhenMouseUp === false) {
-        inputElement.select();
+      if (n._selectAllWhenMouseUp === false) {
+        n.select();
       }
     });
 
-    inputElement.addEventListener("blur", () => {
-      inputElement._focused = false;
+    n.addEventListener("blur", () => {
+      n._focused = false;
     });
 
-    inputElement.addEventListener("change", (changeEvent) => {
-      acceptEvent(changeEvent);
-      this._onInputConfirm(inputElement);
+    n.addEventListener("change", (t) => {
+      e.acceptEvent(t);
+      this._onInputConfirm(n);
     });
 
-    inputElement.addEventListener("input", (inputEvent) => {
-      acceptEvent(inputEvent);
-      this._onInputChange(inputElement);
+    n.addEventListener("input", (t) => {
+      e.acceptEvent(t);
+      this._onInputChange(n);
     });
 
-    inputElement.addEventListener("keydown", (keyboardEvent) => {
+    n.addEventListener("keydown", (t) => {
       if (!this.disabled) {
-        keyboardEvent.stopPropagation();
+        t.stopPropagation();
 
-        if (keyboardEvent.keyCode === 13) {
-          if (
-            !isTextArea ||
-            keyboardEvent.ctrlKey ||
-            keyboardEvent.metaKey
-          ) {
-            acceptEvent(keyboardEvent);
-            this._onInputConfirm(inputElement, true);
-          }
-        } else if (keyboardEvent.keyCode === 27) {
-          acceptEvent(keyboardEvent);
-          this._onInputCancel(inputElement, true);
-        }
+        t.keyCode === 13
+          ? (!s || t.ctrlKey || t.ctrlKey || t.metaKey) &&
+            (e.acceptEvent(t), this._onInputConfirm(n, true))
+          : t.keyCode === 27 &&
+            (e.acceptEvent(t), this._onInputCancel(n, true));
       }
     });
 
-    inputElement.addEventListener("keyup", (keyboardEvent) => {
-      keyboardEvent.stopPropagation();
+    n.addEventListener("keyup", (e) => {
+      e.stopPropagation();
     });
 
-    inputElement.addEventListener("keypress", (keyboardEvent) => {
-      keyboardEvent.stopPropagation();
+    n.addEventListener("keypress", (e) => {
+      e.stopPropagation();
     });
 
-    inputElement.addEventListener("mousedown", (mouseEvent) => {
-      mouseEvent.stopPropagation();
-      focusMgr._setFocusElement(this);
-      inputElement._mouseStartX = mouseEvent.clientX;
+    n.addEventListener("mousedown", (e) => {
+      e.stopPropagation();
+      t._setFocusElement(this);
+      n._mouseStartX = e.clientX;
 
-      if (!inputElement._focused) {
-        inputElement._selectAllWhenMouseUp = true;
+      if (!n._focused) {
+        n._selectAllWhenMouseUp = true;
       }
     });
 
-    inputElement.addEventListener("mouseup", (mouseEvent) => {
-      mouseEvent.stopPropagation();
+    n.addEventListener("mouseup", (e) => {
+      e.stopPropagation();
 
-      if (inputElement._selectAllWhenMouseUp) {
-        inputElement._selectAllWhenMouseUp = false;
-        if (Math.abs(mouseEvent.clientX - inputElement._mouseStartX) < 4) {
-          inputElement.select();
-        }
+      if (n._selectAllWhenMouseUp) {
+        n._selectAllWhenMouseUp = false;
+        Math.abs(e.clientX - n._mouseStartX) < 4 && n.select();
       }
     });
-  }
-
-  _unselect(inputElement) {
-    inputElement.selectionStart = inputElement.selectionEnd = -1;
-  }
-}
-
-const behaviorPrototype = InputStateBehavior.prototype;
-export default {
-  _initInputState: behaviorPrototype._initInputState,
-  _unselect: behaviorPrototype._unselect,
+  },
+  _unselect(e) {
+    e.selectionStart = e.selectionEnd = -1;
+  },
 };
+export default n;

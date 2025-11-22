@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>布局与容器 - UI-Kit Demo</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "../node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ddd;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .header a {
+      color: #4a9eff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 25px;
+      background: #222;
+      border-radius: 8px;
+      border-left: 4px solid #ffd93d;
+    }
+    .section h2 {
+      color: #ffd93d;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .demo-group {
+      margin: 25px 0;
+    }
+    .demo-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .section-content {
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .box-container-demo {
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+    .splitter-demo {
+      height: 300px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    .splitter-panel {
+      padding: 20px;
+      background: #333;
+      border-radius: 3px;
+      height: 100%;
+      overflow: auto;
+    }
+    .info-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      border-left: 3px solid #ffd93d;
+    }
+  </style>
+  <script type="module">
+    import '../dist/ui-kit.js';
+    
+    await customElements.whenDefined('ui-section');
+    await customElements.whenDefined('ui-box-container');
+    
+    // Section 折叠示例
+    const section1 = document.getElementById('section1');
+    section1.addEventListener('click', () => {
+      console.log('Section 被点击');
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📦 布局与容器</h1>
+      <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="section">
+      <h2>可折叠区域 (ui-section)</h2>
+      
+      <div class="demo-group">
+        <label>展开状态的可折叠区域：</label>
+        <ui-section id="section1">
+          <span slot="header">基础设置</span>
+          <div class="section-content">
+            <p>这是可折叠区域的内容。点击标题栏可以折叠或展开。</p>
+            <ui-input placeholder="输入框示例"></ui-input>
+            <ui-button style="margin-top: 10px;">按钮示例</ui-button>
+          </div>
+        </ui-section>
+      </div>
+      
+      <div class="demo-group">
+        <label>默认折叠的区域：</label>
+        <ui-section folded>
+          <span slot="header">高级设置</span>
+          <div class="section-content">
+            <p>这个区域默认是折叠的。</p>
+            <ui-checkbox>启用高级功能</ui-checkbox>
+            <ui-checkbox>显示调试信息</ui-checkbox>
+          </div>
+        </ui-section>
+      </div>
+      
+      <div class="demo-group">
+        <label>多个可折叠区域组合：</label>
+        <ui-section>
+          <span slot="header">外观设置</span>
+          <div class="section-content">
+            <label style="display: block; margin-bottom: 10px;">主题颜色：</label>
+            <ui-color value="100,150,255,1"></ui-color>
+            <label style="display: block; margin: 15px 0 10px 0;">字体大小：</label>
+            <ui-slider min="12" max="24" step="1" precision="0" value="16" style="width: 100%;"></ui-slider>
+          </div>
+        </ui-section>
+        
+        <ui-section>
+          <span slot="header">功能设置</span>
+          <div class="section-content">
+            <ui-checkbox checked>自动保存</ui-checkbox>
+            <ui-checkbox>启用通知</ui-checkbox>
+            <ui-checkbox>显示工具栏</ui-checkbox>
+          </div>
+        </ui-section>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 点击标题栏可以折叠/展开区域，也可以使用左右箭头键控制。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>容器 (ui-box-container)</h2>
+      
+      <div class="demo-group">
+        <label>基础容器：</label>
+        <ui-box-container class="box-container-demo">
+          <p>这是一个容器组件，可以包含其他元素。</p>
+          <ui-button>容器内的按钮</ui-button>
+          <ui-input placeholder="容器内的输入框" style="margin-top: 10px; display: block;"></ui-input>
+        </ui-box-container>
+      </div>
+      
+      <div class="demo-group">
+        <label>嵌套容器：</label>
+        <ui-box-container class="box-container-demo">
+          <p>外层容器</p>
+          <ui-box-container style="margin-top: 15px; padding: 15px; background: #333; border-radius: 3px;">
+            <p>内层容器</p>
+            <ui-checkbox>嵌套的复选框</ui-checkbox>
+          </ui-box-container>
+        </ui-box-container>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>分割器 (ui-splitter)</h2>
+      
+      <div class="demo-group">
+        <label>水平分割器（左右布局）：</label>
+        <div class="splitter-demo">
+          <ui-splitter style="display: flex; height: 100%;">
+            <ui-splitter style="flex: 1;">
+              <div class="splitter-panel">
+                <h3 style="margin-top: 0; color: #ffd93d;">左侧面板</h3>
+                <p>这是左侧的内容区域。</p>
+                <ui-button>左侧按钮</ui-button>
+              </div>
+            </ui-splitter>
+            <ui-splitter style="flex: 1;">
+              <div class="splitter-panel">
+                <h3 style="margin-top: 0; color: #ffd93d;">右侧面板</h3>
+                <p>这是右侧的内容区域。</p>
+                <ui-input placeholder="右侧输入框"></ui-input>
+              </div>
+            </ui-splitter>
+          </ui-splitter>
+        </div>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 分割器允许用户调整面板大小。拖动分割线可以调整左右或上下面板的宽度/高度。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>组合示例：设置面板</h2>
+      
+      <ui-section>
+        <span slot="header">用户偏好设置</span>
+        <div style="padding: 15px;">
+          <ui-section style="margin-bottom: 15px;">
+            <span slot="header">界面设置</span>
+            <div class="section-content">
+              <label style="display: block; margin-bottom: 10px;">主题：</label>
+              <ui-select>
+                <option value="dark">深色主题</option>
+                <option value="light">浅色主题</option>
+                <option value="auto">自动</option>
+              </ui-select>
+            </div>
+          </ui-section>
+          
+          <ui-section>
+            <span slot="header">编辑器设置</span>
+            <div class="section-content">
+              <label style="display: block; margin-bottom: 10px;">字体大小：</label>
+              <ui-slider min="10" max="20" step="1" precision="0" value="14" style="width: 100%;"></ui-slider>
+              <ui-checkbox checked style="margin-top: 15px;">显示行号</ui-checkbox>
+              <ui-checkbox>自动换行</ui-checkbox>
+            </div>
+          </ui-section>
+        </div>
+      </ui-section>
+    </div>
+  </div>
+</body>
+</html>
+

@@ -1,20 +1,16 @@
-import dockUtils from "../utils/dock-utils";
-
-class DockableBehavior {
-  _dockable = true;
-
+import t from "../utils/dock-utils";
+let i = {
+  _dockable: true,
   get noCollapse() {
     return this.getAttribute("no-collapse") !== null;
-  }
-
-  set noCollapse(noCollapseValue) {
-    if (noCollapseValue) {
+  },
+  set noCollapse(e) {
+    if (e) {
       this.setAttribute("no-collapse", "");
     } else {
       this.removeAttribute("no-collapse");
     }
-  }
-
+  },
   _initDockable() {
     this._preferredWidth = "auto";
     this._preferredHeight = "auto";
@@ -27,247 +23,193 @@ class DockableBehavior {
       this.style.maxWidth = "auto";
       this.style.maxHeight = "auto";
     });
-  }
 
+    this.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      t.dragoverDock(this);
+    });
+  },
   _notifyResize() {
-    for (let childElement of this.children) {
-      if (childElement._dockable) {
-        childElement._notifyResize();
+    for (let t of this.children) {
+      if (t._dockable) {
+        t._notifyResize();
       }
     }
-  }
-
+  },
   _collapse() {
-    let parentNode = this.parentNode;
-    if (this.noCollapse || !parentNode) {
+    let e = this.parentNode;
+    if (this.noCollapse || !e) {
       return false;
     }
     if (this.children.length === 0) {
-      if (parentNode._dockable) {
-        parentNode.removeDock(this);
+      if (e._dockable) {
+        e.removeDock(this);
       } else {
-        parentNode.removeChild(this);
+        e.removeChild(this);
       }
 
       return true;
     }
     if (this.children.length === 1) {
-      let onlyChild = this.children[0];
-      onlyChild.style.flex = this.style.flex;
-      onlyChild._preferredWidth = this._preferredWidth;
-      onlyChild._preferredHeight = this._preferredHeight;
-      parentNode.insertBefore(onlyChild, this);
-      parentNode.removeChild(this);
+      let t = this.children[0];
+      t.style.flex = this.style.flex;
+      t._preferredWidth = this._preferredWidth;
+      t._preferredHeight = this._preferredHeight;
+      e.insertBefore(t, this);
+      e.removeChild(this);
 
-      if (onlyChild._dockable) {
-        onlyChild._collapse();
+      if (t._dockable) {
+        t._collapse();
       }
 
       return true;
     }
-    if (parentNode._dockable && parentNode.row === this.row) {
+    if (e._dockable && e.row === this.row) {
       while (this.children.length > 0) {
-        parentNode.insertBefore(this.children[0], this);
+        e.insertBefore(this.children[0], this);
       }
 
-      parentNode.removeChild(this);
+      e.removeChild(this);
       return true;
     }
     return false;
-  }
+  },
+  _makeRoomForNewComer(e, i) {
+    if (e === "left" || e === "right") {
+      let e = this._preferredWidth - i._preferredWidth - t.resizerSpace;
 
-  _makeRoomForNewComer(position, newElement) {
-    if (position === "left" || position === "right") {
-      let remainingWidth =
-        this._preferredWidth - newElement._preferredWidth - dockUtils.resizerSpace;
-
-      if (remainingWidth > 0) {
-        this._preferredWidth = remainingWidth;
+      if (e > 0) {
+        this._preferredWidth = e;
       } else {
-        remainingWidth = Math.floor(
-          0.5 * (this._preferredWidth - dockUtils.resizerSpace)
-        );
-        this._preferredWidth = remainingWidth;
-        newElement._preferredWidth = remainingWidth;
+        e = Math.floor(0.5 * (this._preferredWidth - t.resizerSpace));
+        this._preferredWidth = e;
+        i._preferredWidth = e;
       }
     } else {
-      let remainingHeight =
-        this._preferredHeight -
-        newElement._preferredHeight -
-        dockUtils.resizerSpace;
+      let e = this._preferredHeight - i._preferredHeight - t.resizerSpace;
 
-      if (remainingHeight > 0) {
-        this._preferredHeight = remainingHeight;
+      if (e > 0) {
+        this._preferredHeight = e;
       } else {
-        remainingHeight = Math.floor(
-          0.5 * (this._preferredHeight - dockUtils.resizerSpace)
-        );
-        this._preferredHeight = remainingHeight;
-        newElement._preferredHeight = remainingHeight;
+        e = Math.floor(0.5 * (this._preferredHeight - t.resizerSpace));
+        this._preferredHeight = e;
+        i._preferredHeight = e;
       }
     }
-  }
-
-  addDock(position, newElement, skipMakeRoom) {
-    if (newElement._dockable === false) {
-      console.warn(
-        `Dock element at position ${position} must be dockable`
-      );
+  },
+  addDock(t, i, r) {
+    if (i._dockable === false) {
+      console.warn(`Dock element at position ${t} must be dockable`);
       return undefined;
     }
-    let newDockContainer;
-    let resizerElement;
-    let nextSibling;
-    let needNewContainer = false;
-    let parentNode = this.parentNode;
-    if (parentNode._dockable) {
-      if (position === "left" || position === "right") {
-        needNewContainer = !parentNode.row;
+    let h;
+    let s;
+    let l;
+    let o = false;
+    let d = this.parentNode;
+    if (d._dockable) {
+      t === "left" || t === "right" ? d.row || true : d.row && (o = true);
+
+      if (o) {
+        h = document.createElement("ui-dock");
+        h.row = t === "left" || t === "right";
+        d.insertBefore(h, this);
+
+        t === "left" || t === "top"
+          ? (h.appendChild(i), h.appendChild(this))
+          : (h.appendChild(this), h.appendChild(i));
+
+        h._initResizers();
+        h._finalizePreferredSize();
+        h.style.flex = this.style.flex;
+        h._preferredWidth = this._preferredWidth;
+        h._preferredHeight = this._preferredHeight;
+        this._makeRoomForNewComer(t, i);
       } else {
-        needNewContainer = parentNode.row;
-      }
+        s = null;
+        s = document.createElement("ui-dock-resizer");
+        s.vertical = d.row;
 
-      if (needNewContainer) {
-        newDockContainer = document.createElement("ui-dock");
-        newDockContainer.row = position === "left" || position === "right";
-        parentNode.insertBefore(newDockContainer, this);
+        t === "left" || t === "top"
+          ? (d.insertBefore(i, this), d.insertBefore(s, this))
+          : null === (l = this.nextElementSibling)
+          ? (d.appendChild(s), d.appendChild(i))
+          : (d.insertBefore(s, l), d.insertBefore(i, l));
 
-        if (position === "left" || position === "top") {
-          newDockContainer.appendChild(newElement);
-          newDockContainer.appendChild(this);
-        } else {
-          newDockContainer.appendChild(this);
-          newDockContainer.appendChild(newElement);
-        }
-
-        newDockContainer._initResizers();
-        newDockContainer._finalizePreferredSize();
-        newDockContainer.style.flex = this.style.flex;
-        newDockContainer._preferredWidth = this._preferredWidth;
-        newDockContainer._preferredHeight = this._preferredHeight;
-        this._makeRoomForNewComer(position, newElement);
-      } else {
-        resizerElement = document.createElement("ui-dock-resizer");
-        resizerElement.vertical = parentNode.row;
-
-        if (position === "left" || position === "top") {
-          parentNode.insertBefore(newElement, this);
-          parentNode.insertBefore(resizerElement, this);
-        } else {
-          nextSibling = this.nextElementSibling;
-          if (nextSibling === null) {
-            parentNode.appendChild(resizerElement);
-            parentNode.appendChild(newElement);
-          } else {
-            parentNode.insertBefore(resizerElement, nextSibling);
-            parentNode.insertBefore(newElement, nextSibling);
-          }
-        }
-
-        if (!skipMakeRoom) {
-          this._makeRoomForNewComer(position, newElement);
-        }
+        r || this._makeRoomForNewComer(t, i);
       }
     } else {
-      if (position === "left" || position === "right") {
-        needNewContainer = !this.row;
-      } else {
-        needNewContainer = this.row;
-      }
+      t === "left" || t === "right" ? this.row || true : this.row && (o = true);
 
-      if (needNewContainer) {
-        newDockContainer = document.createElement("ui-dock");
-        newDockContainer.row = this.row;
+      if (o) {
+        h = document.createElement("ui-dock");
+        h.row = this.row;
 
-        this.row = position === "left" || position === "right";
+        for (
+          this.row = t === "left" || t === "right";
+          this.children.length > 0;
 
-        while (this.children.length > 0) {
-          let firstChild = this.children[0];
-          newDockContainer.appendChild(firstChild);
+        ) {
+          let e = this.children[0];
+          h.appendChild(e);
         }
 
-        if (position === "left" || position === "top") {
-          this.appendChild(newElement);
-          this.appendChild(newDockContainer);
+        if (t === "left" || t === "top") {
+          this.appendChild(i);
+          this.appendChild(h);
         } else {
-          this.appendChild(newDockContainer);
-          this.appendChild(newElement);
+          this.appendChild(h);
+          this.appendChild(i);
         }
 
         this._initResizers();
-        newDockContainer._finalizePreferredSize();
-        newDockContainer.style.flex = this.style.flex;
-        newDockContainer._preferredWidth = this._preferredWidth;
-        newDockContainer._preferredHeight = this._preferredHeight;
-        this._makeRoomForNewComer(position, newElement);
+        h._finalizePreferredSize();
+        h.style.flex = this.style.flex;
+        h._preferredWidth = this._preferredWidth;
+        h._preferredHeight = this._preferredHeight;
+        this._makeRoomForNewComer(t, i);
       } else {
-        resizerElement = document.createElement("ui-dock-resizer");
-        resizerElement.vertical = this.row;
+        s = null;
+        s = document.createElement("ui-dock-resizer");
+        s.vertical = this.row;
 
-        if (position === "left" || position === "top") {
-          this.insertBefore(newElement, this.firstElementChild);
-          this.insertBefore(resizerElement, this.firstElementChild);
+        if (t === "left" || t === "top") {
+          this.insertBefore(i, this.firstElementChild);
+          this.insertBefore(s, this.firstElementChild);
+        } else if (null === (l = this.nextElementSibling)) {
+          this.appendChild(s);
+          this.appendChild(i);
         } else {
-          nextSibling = this.nextElementSibling;
-          if (nextSibling === null) {
-            this.appendChild(resizerElement);
-            this.appendChild(newElement);
-          } else {
-            this.insertBefore(resizerElement, nextSibling);
-            this.insertBefore(newElement, nextSibling);
-          }
+          this.insertBefore(s, l);
+          this.insertBefore(i, l);
         }
 
-        if (!skipMakeRoom) {
-          this._makeRoomForNewComer(position, newElement);
+        if (!r) {
+          this._makeRoomForNewComer(t, i);
         }
       }
     }
-  }
-
-  removeDock(elementToRemove) {
-    let found = false;
-    for (let index = 0; index < this.children.length; ++index) {
-      if (this.children[index] === elementToRemove) {
-        found = true;
+  },
+  removeDock(e) {
+    let i = false;
+    for (let t = 0; t < this.children.length; ++t) {
+      if (this.children[t] === e) {
+        i = true;
         break;
       }
     }
-    if (!found) {
-      return false;
-    }
-
-    if (this.children[0] === elementToRemove) {
-      let nextSibling = elementToRemove.nextElementSibling;
-      if (nextSibling && dockUtils.isResizer(nextSibling)) {
-        this.removeChild(nextSibling);
-      }
-    } else {
-      let previousSibling = elementToRemove.previousElementSibling;
-      if (previousSibling && dockUtils.isResizer(previousSibling)) {
-        this.removeChild(previousSibling);
-      }
-    }
-
-    this.removeChild(elementToRemove);
-    return this._collapse();
-  }
-}
-
-// 导出类的实例方法和属性，以便混入到元素原型
-const behaviorPrototype = DockableBehavior.prototype;
-export default {
-  _dockable: true,
-  get noCollapse() {
-    return behaviorPrototype.noCollapse.get.call(this);
+    return (
+      !!i &&
+      (this.children[0] === e
+        ? e.nextElementSibling &&
+          t.isResizer(e.nextElementSibling) &&
+          this.removeChild(e.nextElementSibling)
+        : e.previousElementSibling &&
+          t.isResizer(e.previousElementSibling) &&
+          this.removeChild(e.previousElementSibling),
+      this.removeChild(e),
+      this._collapse())
+    );
   },
-  set noCollapse(value) {
-    behaviorPrototype.noCollapse.set.call(this, value);
-  },
-  _initDockable: behaviorPrototype._initDockable,
-  _notifyResize: behaviorPrototype._notifyResize,
-  _collapse: behaviorPrototype._collapse,
-  _makeRoomForNewComer: behaviorPrototype._makeRoomForNewComer,
-  addDock: behaviorPrototype.addDock,
-  removeDock: behaviorPrototype.removeDock,
 };
+export default i;

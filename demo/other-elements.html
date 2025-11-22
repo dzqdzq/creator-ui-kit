@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>其他元素 - UI-Kit Demo</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "../node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ddd;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .header a {
+      color: #4a9eff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 25px;
+      background: #222;
+      border-radius: 8px;
+      border-left: 4px solid #f59e0b;
+    }
+    .section h2 {
+      color: #f59e0b;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .demo-group {
+      margin: 25px 0;
+    }
+    .demo-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .hint-demo {
+      position: relative;
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    .markdown-demo {
+      background: #2a2a2a;
+      border-radius: 5px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+    .drop-area-demo {
+      min-height: 200px;
+      border: 2px dashed #555;
+      border-radius: 5px;
+      padding: 40px;
+      text-align: center;
+      background: #2a2a2a;
+      margin: 15px 0;
+      transition: all 0.3s;
+    }
+    .drop-area-demo:hover {
+      border-color: #4a9eff;
+      background: #333;
+    }
+    .vlist-demo {
+      background: #2a2a2a;
+      border-radius: 5px;
+      padding: 15px;
+      margin: 15px 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .vlist-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: #333;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .vlist-item:hover {
+      background: #444;
+    }
+    .shadow-demo {
+      padding: 20px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      margin: 15px 0;
+    }
+    .info-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      border-left: 3px solid #f59e0b;
+    }
+    .button-with-hint {
+      position: relative;
+      display: inline-block;
+    }
+  </style>
+  <script type="module">
+    import '../dist/ui-kit.js';
+    
+    await customElements.whenDefined('ui-hint');
+    await customElements.whenDefined('ui-markdown');
+    await customElements.whenDefined('ui-drop-area');
+    await customElements.whenDefined('ui-vlist');
+    await customElements.whenDefined('ui-shadow');
+    
+    // Drop Area 示例
+    const dropArea = document.getElementById('dropArea');
+    if (dropArea) {
+      dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = '#4a9eff';
+        dropArea.style.background = '#333';
+      });
+      
+      dropArea.addEventListener('dragleave', () => {
+        dropArea.style.borderColor = '#555';
+        dropArea.style.background = '#2a2a2a';
+      });
+      
+      dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = '#51cf66';
+        dropArea.innerHTML = '<p style="color: #51cf66;">✅ 文件已放置！</p>';
+        setTimeout(() => {
+          dropArea.innerHTML = '<p>拖放文件到这里</p>';
+          dropArea.style.borderColor = '#555';
+        }, 2000);
+      });
+    }
+    
+    // VList 示例
+    const vlistItems = Array.from({ length: 20 }, (_, i) => `列表项 ${i + 1}`);
+    const vlist = document.getElementById('vlist');
+    if (vlist) {
+      vlistItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'vlist-item';
+        div.textContent = item;
+        div.addEventListener('click', () => {
+          console.log(`点击了: ${item}`);
+        });
+        vlist.appendChild(div);
+      });
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>✨ 其他元素</h1>
+      <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="section">
+      <h2>提示框 (ui-hint)</h2>
+      
+      <div class="demo-group">
+        <label>基础提示框：</label>
+        <div class="hint-demo">
+          <ui-hint position="50%">
+            这是一个提示框，可以显示帮助信息
+          </ui-hint>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>不同位置的提示框：</label>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <div class="button-with-hint">
+            <ui-button>顶部提示</ui-button>
+            <ui-hint class="top" position="50%">这是顶部的提示</ui-hint>
+          </div>
+          <div class="button-with-hint">
+            <ui-button>底部提示</ui-button>
+            <ui-hint class="bottom" position="50%">这是底部的提示</ui-hint>
+          </div>
+          <div class="button-with-hint">
+            <ui-button>左侧提示</ui-button>
+            <ui-hint class="left" position="50%">这是左侧的提示</ui-hint>
+          </div>
+          <div class="button-with-hint">
+            <ui-button>右侧提示</ui-button>
+            <ui-hint class="right" position="50%">这是右侧的提示</ui-hint>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>Markdown 渲染 (ui-markdown)</h2>
+      
+      <div class="demo-group">
+        <label>基础 Markdown 内容：</label>
+        <div class="markdown-demo">
+          <ui-markdown>
+# Markdown 示例
+
+这是一个 **Markdown** 渲染组件。
+
+## 功能特性
+
+- 支持标题
+- 支持**粗体**和*斜体*
+- 支持代码块
+- 支持列表
+
+### 代码示例
+
+```javascript
+function hello() {
+  console.log('Hello, World!');
+}
+```
+
+### 链接
+
+访问 [示例网站](https://example.com) 了解更多。
+          </ui-markdown>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>更多 Markdown 内容：</label>
+        <div class="markdown-demo">
+          <ui-markdown>
+## 列表示例
+
+1. 第一项
+2. 第二项
+3. 第三项
+
+### 表格示例
+
+| 列1 | 列2 | 列3 |
+|-----|-----|-----|
+| 数据1 | 数据2 | 数据3 |
+| 数据4 | 数据5 | 数据6 |
+
+> 这是一个引用块
+          </ui-markdown>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>拖放区域 (ui-drop-area)</h2>
+      
+      <div class="demo-group">
+        <label>文件拖放区域：</label>
+        <ui-drop-area id="dropArea" class="drop-area-demo">
+          <p>拖放文件到这里</p>
+          <p style="color: #888; font-size: 0.9em; margin-top: 10px;">支持拖放文件到此处</p>
+        </ui-drop-area>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 拖放区域可以接收文件拖放操作。在实际应用中，可以处理文件上传等功能。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>虚拟列表 (ui-vlist)</h2>
+      
+      <div class="demo-group">
+        <label>列表项展示：</label>
+        <ui-vlist id="vlist" class="vlist-demo">
+          <!-- 列表项将通过 JavaScript 动态添加 -->
+        </ui-vlist>
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 提示：</strong> 虚拟列表适用于大量数据的展示，可以优化性能。
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>Shadow DOM (ui-shadow)</h2>
+      
+      <div class="demo-group">
+        <label>Shadow DOM 示例：</label>
+        <div class="shadow-demo">
+          <ui-shadow>
+            <style>
+              .shadow-content {
+                padding: 15px;
+                background: #333;
+                border-radius: 5px;
+                color: #fff;
+              }
+            </style>
+            <div class="shadow-content">
+              <p>这是 Shadow DOM 中的内容</p>
+              <p>样式被隔离在 Shadow DOM 中</p>
+            </div>
+          </ui-shadow>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>WebView (ui-webview)</h2>
+      
+      <div class="demo-group">
+        <label>WebView 组件（需要 Electron 环境）：</label>
+        <div style="background: #2a2a2a; border-radius: 5px; padding: 15px; margin: 15px 0;">
+          <p style="color: #888; font-style: italic;">
+            WebView 组件主要用于 Electron 应用中嵌入网页内容。
+            在普通浏览器环境中可能无法正常工作。
+          </p>
+          <!-- 
+          <ui-webview src="https://example.com"></ui-webview>
+          -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>组合示例：帮助面板</h2>
+      
+      <div class="demo-group">
+        <label>使用 Markdown 和提示框的帮助面板：</label>
+        <div style="background: #2a2a2a; border-radius: 5px; padding: 20px; margin: 15px 0;">
+          <ui-section>
+            <span slot="header">使用帮助</span>
+            <div style="padding: 15px;">
+              <ui-markdown>
+## 快速开始
+
+1. 点击按钮进行操作
+2. 使用输入框输入内容
+3. 查看提示信息获取帮助
+
+### 快捷键
+
+- `Enter`: 确认输入
+- `Esc`: 取消操作
+- `Tab`: 切换焦点
+              </ui-markdown>
+            </div>
+          </ui-section>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

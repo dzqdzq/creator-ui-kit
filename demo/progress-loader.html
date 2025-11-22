@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>进度与加载 - UI-Kit Demo</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "chroma-js": "../node_modules/chroma-js/index.js"
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ddd;
+      padding: 20px;
+      margin: 0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: #fff;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .header a {
+      color: #4a9eff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    .section {
+      margin: 30px 0;
+      padding: 25px;
+      background: #222;
+      border-radius: 8px;
+      border-left: 4px solid #4ecdc4;
+    }
+    .section h2 {
+      color: #4ecdc4;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+    .demo-group {
+      margin: 25px 0;
+    }
+    .demo-group label {
+      display: block;
+      margin-bottom: 10px;
+      color: #aaa;
+      font-size: 0.9em;
+    }
+    .progress-demo {
+      margin: 15px 0;
+    }
+    .control-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+    .loader-demo {
+      position: relative;
+      min-height: 200px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .loader-inline-demo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #2a2a2a;
+      border-radius: 5px;
+    }
+    .info-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #2a2a2a;
+      border-radius: 5px;
+      border-left: 3px solid #4ecdc4;
+    }
+  </style>
+  <script type="module">
+    import '../dist/ui-kit.js';
+    
+    await customElements.whenDefined('ui-progress');
+    await customElements.whenDefined('ui-loader');
+    
+    // 进度条示例
+    const progress1 = document.getElementById('progress1');
+    const progress2 = document.getElementById('progress2');
+    const progress3 = document.getElementById('progress3');
+    
+    let progress1Value = 0;
+    let progress2Value = 0;
+    let progress3Value = 0;
+    
+    // 自动进度示例
+    const autoProgress = setInterval(() => {
+      progress1Value = (progress1Value + 1) % 101;
+      progress1.value = progress1Value;
+    }, 100);
+    
+    // 控制按钮
+    document.getElementById('startProgress2').addEventListener('confirm', () => {
+      progress2Value = 0;
+      progress2.value = 0;
+      const interval = setInterval(() => {
+        progress2Value += 2;
+        if (progress2Value > 100) {
+          progress2Value = 100;
+          clearInterval(interval);
+        }
+        progress2.value = progress2Value;
+      }, 50);
+    });
+    
+    document.getElementById('resetProgress2').addEventListener('confirm', () => {
+      progress2Value = 0;
+      progress2.value = 0;
+    });
+    
+    document.getElementById('startProgress3').addEventListener('confirm', () => {
+      progress3Value = 0;
+      progress3.value = 0;
+      const interval = setInterval(() => {
+        progress3Value += 0.5;
+        if (progress3Value > 100) {
+          progress3Value = 100;
+          clearInterval(interval);
+        }
+        progress3.value = progress3Value;
+      }, 20);
+    });
+    
+    // 加载器显示/隐藏控制
+    const loader1 = document.getElementById('loader1');
+    const loader2 = document.getElementById('loader2');
+    const loader3 = document.getElementById('loader3');
+    
+    document.getElementById('showLoader1').addEventListener('confirm', () => {
+      loader1.style.display = 'block';
+      setTimeout(() => {
+        loader1.style.display = 'none';
+      }, 3000);
+    });
+    
+    document.getElementById('showLoader2').addEventListener('confirm', () => {
+      loader2.style.display = 'block';
+      setTimeout(() => {
+        loader2.style.display = 'none';
+      }, 3000);
+    });
+    
+    // 模拟文件上传
+    const uploadProgress = document.getElementById('uploadProgress');
+    document.getElementById('startUpload').addEventListener('confirm', () => {
+      uploadProgress.value = 0;
+      const interval = setInterval(() => {
+        const current = uploadProgress.value;
+        if (current >= 100) {
+          clearInterval(interval);
+          document.getElementById('uploadStatus').textContent = '✅ 上传完成！';
+        } else {
+          uploadProgress.value = current + Math.random() * 10;
+          document.getElementById('uploadStatus').textContent = `上传中... ${Math.round(uploadProgress.value)}%`;
+        }
+      }, 200);
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>⏳ 进度与加载</h1>
+      <a href="index.html">← 返回首页</a>
+    </div>
+    
+    <div class="section">
+      <h2>进度条 (ui-progress)</h2>
+      
+      <div class="demo-group">
+        <label>自动进度条（循环显示 0-100%）：</label>
+        <div class="progress-demo">
+          <ui-progress id="progress1" value="0"></ui-progress>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>可控制的进度条：</label>
+        <div class="progress-demo">
+          <ui-progress id="progress2" value="0"></ui-progress>
+        </div>
+        <div class="control-buttons">
+          <ui-button id="startProgress2">开始</ui-button>
+          <ui-button id="resetProgress2">重置</ui-button>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>平滑动画进度条：</label>
+        <div class="progress-demo">
+          <ui-progress id="progress3" value="0"></ui-progress>
+        </div>
+        <div class="control-buttons">
+          <ui-button id="startProgress3">开始动画</ui-button>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>不同进度的示例：</label>
+        <div class="progress-demo">
+          <ui-progress value="25" style="margin-bottom: 10px;"></ui-progress>
+          <ui-progress value="50" style="margin-bottom: 10px;"></ui-progress>
+          <ui-progress value="75" style="margin-bottom: 10px;"></ui-progress>
+          <ui-progress value="100"></ui-progress>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>加载器 (ui-loader)</h2>
+      
+      <div class="demo-group">
+        <label>全屏遮罩加载器：</label>
+        <div class="loader-demo">
+          <ui-loader id="loader1" style="display: none;">加载中...</ui-loader>
+          <div>
+            <p>点击按钮显示加载器</p>
+            <ui-button id="showLoader1" style="margin-top: 10px;">显示加载器（3秒）</ui-button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>自定义颜色的加载器：</label>
+        <div class="loader-demo">
+          <ui-loader id="loader2" color="rgba(78, 205, 196, 0.5)" style="display: none;">处理中...</ui-loader>
+          <div>
+            <p>自定义颜色的加载遮罩</p>
+            <ui-button id="showLoader2" style="margin-top: 10px;">显示加载器（3秒）</ui-button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>内联加载器：</label>
+        <div class="loader-inline-demo">
+          <ui-loader inline>加载中</ui-loader>
+          <span>正在处理数据...</span>
+        </div>
+      </div>
+      
+      <div class="demo-group">
+        <label>多个内联加载器示例：</label>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div class="loader-inline-demo">
+            <ui-loader inline>保存中</ui-loader>
+            <span>正在保存文件...</span>
+          </div>
+          <div class="loader-inline-demo">
+            <ui-loader inline>上传中</ui-loader>
+            <span>正在上传到服务器...</span>
+          </div>
+          <div class="loader-inline-demo">
+            <ui-loader inline>处理中</ui-loader>
+            <span>正在处理请求...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>实际应用示例：文件上传</h2>
+      
+      <div class="demo-group">
+        <label>模拟文件上传进度：</label>
+        <div class="progress-demo">
+          <ui-progress id="uploadProgress" value="0"></ui-progress>
+          <p id="uploadStatus" style="margin-top: 10px; color: #4ecdc4;">准备上传...</p>
+        </div>
+        <div class="control-buttons">
+          <ui-button id="startUpload">开始上传</ui-button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>组合使用示例</h2>
+      
+      <div class="demo-group">
+        <label>带加载器的操作面板：</label>
+        <div style="position: relative; min-height: 200px; background: #2a2a2a; border-radius: 5px; padding: 20px;">
+          <ui-loader id="loader3" style="display: none;">正在加载数据...</ui-loader>
+          <div id="content3">
+            <h3 style="margin-top: 0; color: #4ecdc4;">数据面板</h3>
+            <p>这是内容区域。当加载数据时，会显示加载遮罩。</p>
+            <ui-button id="loadData" style="margin-top: 15px;">加载数据</ui-button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="info-box">
+      <strong>💡 提示：</strong> 进度条会自动显示百分比，加载器可以设置为全屏遮罩或内联显示。加载器支持自定义遮罩颜色。
+    </div>
+  </div>
+  
+  <script type="module">
+    const loader3 = document.getElementById('loader3');
+    const content3 = document.getElementById('content3');
+    
+    document.getElementById('loadData').addEventListener('confirm', () => {
+      loader3.style.display = 'block';
+      content3.style.opacity = '0.5';
+      content3.style.pointerEvents = 'none';
+      
+      setTimeout(() => {
+        loader3.style.display = 'none';
+        content3.style.opacity = '1';
+        content3.style.pointerEvents = 'auto';
+        content3.querySelector('p').textContent = '数据加载完成！';
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
+
