@@ -1,5 +1,5 @@
-import t from "../utils/dom-utils";
-import e from "../utils/drag-drop";
+import domUtils from "../utils/dom-utils";
+import dragDrop from "../utils/drag-drop";
 let r = {
   get droppable() {
     return this.getAttribute("droppable");
@@ -36,7 +36,7 @@ let r = {
           a = this.droppable.split(",");
         }
 
-        let i = e.type(r.dataTransfer);
+        let i = dragDrop.type(r.dataTransfer);
         let s = false;
         for (let t = 0; t < a.length; ++t) {
           if (i === a[t]) {
@@ -48,7 +48,7 @@ let r = {
           this._canDrop = false;
           return undefined;
         }
-        let n = e.getLength();
+        let n = dragDrop.getLength();
 
         if (i === "file" && n === 0) {
           n = r.dataTransfer.items.length;
@@ -63,7 +63,7 @@ let r = {
         this._canDrop = true;
         this.setAttribute("drag-hovering", "");
 
-        t.fire(this, "drop-area-enter", {
+        domUtils.fire(this, "drop-area-enter", {
           bubbles: true,
           detail: {
             target: r.target,
@@ -73,8 +73,8 @@ let r = {
             offsetX: r.offsetX,
             offsetY: r.offsetY,
             dragType: i,
-            dragItems: e.items(r.dataTransfer),
-            dragOptions: e.options(),
+            dragItems: dragDrop.items(r.dataTransfer),
+            dragOptions: dragDrop.options(),
           },
         });
       }
@@ -90,7 +90,7 @@ let r = {
         e.stopPropagation();
         this.removeAttribute("drag-hovering");
 
-        t.fire(this, "drop-area-leave", {
+        domUtils.fire(this, "drop-area-leave", {
           bubbles: true,
           detail: { target: e.target, dataTransfer: e.dataTransfer },
         });
@@ -105,7 +105,7 @@ let r = {
         r.stopPropagation();
         this.removeAttribute("drag-hovering");
 
-        t.fire(this, "drop-area-accept", {
+        domUtils.fire(this, "drop-area-accept", {
           bubbles: true,
           detail: {
             target: r.target,
@@ -114,9 +114,9 @@ let r = {
             clientY: r.clientY,
             offsetX: r.offsetX,
             offsetY: r.offsetY,
-            dragType: e.type(r.dataTransfer),
-            dragItems: e.items(r.dataTransfer),
-            dragOptions: e.options(),
+            dragType: dragDrop.type(r.dataTransfer),
+            dragItems: dragDrop.items(r.dataTransfer),
+            dragOptions: dragDrop.options(),
           },
         });
       }
@@ -127,7 +127,7 @@ let r = {
         r.preventDefault();
         r.stopPropagation();
 
-        t.fire(this, "drop-area-move", {
+        domUtils.fire(this, "drop-area-move", {
           bubbles: true,
           detail: {
             target: r.target,
@@ -136,9 +136,9 @@ let r = {
             offsetX: r.offsetX,
             offsetY: r.offsetY,
             dataTransfer: r.dataTransfer,
-            dragType: e.type(r.dataTransfer),
-            dragItems: e.items(r.dataTransfer),
-            dragOptions: e.options(),
+            dragType: dragDrop.type(r.dataTransfer),
+            dragItems: dragDrop.items(r.dataTransfer),
+            dragOptions: dragDrop.options(),
           },
         });
       }

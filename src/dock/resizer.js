@@ -1,7 +1,7 @@
-import e from "../utils/dom-utils";
-import t from "../utils/dock-utils";
-import i from "../utils/focus-mgr";
-import r from "../../../share/platform";
+import domUtils from "../utils/dom-utils";
+import dockUtils from "../utils/dock-utils";
+import focusMgr from "../utils/focus-mgr";
+import platform from "../../../share/platform";
 function s(e, t) {
   return t < e._computedMinWidth
     ? e._computedMinWidth
@@ -21,7 +21,7 @@ function n(e, t) {
     : t;
 }
 
-export default class extends window.HTMLElement {
+class Resizer extends window.HTMLElement {
   static get tagName() {
     return "ui-dock-resizer";
   }
@@ -31,14 +31,14 @@ export default class extends window.HTMLElement {
     t.innerHTML = '\n      <div class="bar"></div>\n    ';
 
     t.insertBefore(
-      e.createStyleElement("theme://elements/resizer.css"),
+      domUtils.createStyleElement("theme://elements/resizer.css"),
       t.firstChild
     );
 
     this.addEventListener("mousedown", this._onMouseDown.bind(this));
   }
   connectedCallback() {
-    if (r.isWin32) {
+    if (platform.isWin32) {
       this.classList.add("platform-win");
     }
   }
@@ -126,7 +126,7 @@ export default class extends window.HTMLElement {
     for (let e = 0; e < l.children.length; ++e) {
       let i = l.children[e];
 
-      if (!t.isResizer(i)) {
+      if (!dockUtils.isResizer(i)) {
         i.style.flex = `0 0 ${h.sizeList[e]}px`;
       }
     }
@@ -213,7 +213,7 @@ export default class extends window.HTMLElement {
           S.style.flex = `0 0 ${m}px`;
 
           for (let r of e) {
-            if (!t.isResizer(r)) {
+            if (!dockUtils.isResizer(r)) {
               if (r._notifyResize) {
                 r._notifyResize();
               }
@@ -239,7 +239,7 @@ export default class extends window.HTMLElement {
       r.stopPropagation();
       document.removeEventListener("mousemove", p);
       document.removeEventListener("mouseup", v);
-      e.removeDragGhost();
+      domUtils.removeDragGhost();
       this.active = false;
       let s = this.parentNode;
 
@@ -252,24 +252,26 @@ export default class extends window.HTMLElement {
       }
 
       for (let i of s.children) {
-        if (!t.isResizer(i)) {
+        if (!dockUtils.isResizer(i)) {
           if (i._notifyResize) {
             i._notifyResize();
           }
         }
       }
 
-      t.saveLayout();
-      i._refocus();
+      dockUtils.saveLayout();
+      focusMgr._refocus();
     };
 
-    if (r.isWin32) {
-      e.addDragGhost(this.vertical ? "ew-resize" : "ns-resize");
+    if (platform.isWin32) {
+      domUtils.addDragGhost(this.vertical ? "ew-resize" : "ns-resize");
     } else {
-      e.addDragGhost(this.vertical ? "col-resize" : "row-resize");
+      domUtils.addDragGhost(this.vertical ? "col-resize" : "row-resize");
     }
 
     document.addEventListener("mousemove", p);
     document.addEventListener("mouseup", v);
   }
 }
+
+export default Resizer;

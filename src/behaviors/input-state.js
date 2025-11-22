@@ -1,5 +1,5 @@
-import e from "../utils/dom-utils";
-import t from "../utils/focus-mgr";
+import domUtils from "../utils/dom-utils";
+import focusMgr from "../utils/focus-mgr";
 let n = {
   _initInputState(n) {
     if (!this._onInputConfirm) {
@@ -37,12 +37,12 @@ let n = {
     });
 
     n.addEventListener("change", (t) => {
-      e.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this._onInputConfirm(n);
     });
 
     n.addEventListener("input", (t) => {
-      e.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this._onInputChange(n);
     });
 
@@ -52,9 +52,9 @@ let n = {
 
         t.keyCode === 13
           ? (!s || t.ctrlKey || t.ctrlKey || t.metaKey) &&
-            (e.acceptEvent(t), this._onInputConfirm(n, true))
+            (domUtils.acceptEvent(t), this._onInputConfirm(n, true))
           : t.keyCode === 27 &&
-            (e.acceptEvent(t), this._onInputCancel(n, true));
+            (domUtils.acceptEvent(t), this._onInputCancel(n, true));
       }
     });
 
@@ -68,7 +68,7 @@ let n = {
 
     n.addEventListener("mousedown", (e) => {
       e.stopPropagation();
-      t._setFocusElement(this);
+      focusMgr._setFocusElement(this);
       n._mouseStartX = e.clientX;
 
       if (!n._focused) {

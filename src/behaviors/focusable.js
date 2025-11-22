@@ -1,4 +1,4 @@
-import s from "../utils/dom-utils";
+import domUtils from "../utils/dom-utils";
 let t = {
   get focusable() {
     return true;
@@ -77,7 +77,7 @@ let t = {
           }
         });
       }
-      s.fire(this, "focus-changed", {
+      domUtils.fire(this, "focus-changed", {
         bubbles: true,
         detail: { focused: this.focused },
       });

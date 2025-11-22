@@ -1,20 +1,20 @@
-import e from "../utils/dom-utils";
-import t from "../utils/focus-mgr";
+import domUtils from "../utils/dom-utils";
+import focusMgr from "../utils/focus-mgr";
 function s(e) {
   return e.getAttribute("pressed") !== null;
 }
 let i = {
   _initButtonState(i) {
-    e.installDownUpEvent(i);
+    domUtils.installDownUpEvent(i);
 
     i.addEventListener("keydown", (t) => {
       if (!this.disabled) {
         if (t.keyCode === 32) {
-          e.acceptEvent(t);
+          domUtils.acceptEvent(t);
           this._setPressed(i, true);
           this._canceledByEsc = false;
         } else if (t.keyCode === 13) {
-          e.acceptEvent(t);
+          domUtils.acceptEvent(t);
 
           if (this._enterTimeoutID) {
             return;
@@ -30,10 +30,10 @@ let i = {
           }, 100);
         } else {
           if (t.keyCode === 27) {
-            e.acceptEvent(t);
+            domUtils.acceptEvent(t);
 
             s(i) &&
-              (e.fire(i, "cancel", { bubbles: true }),
+              (domUtils.fire(i, "cancel", { bubbles: true }),
               (this._canceledByEsc = true));
 
             this._setPressed(i, false);
@@ -44,7 +44,7 @@ let i = {
 
     i.addEventListener("keyup", (t) => {
       if (t.keyCode === 32) {
-        e.acceptEvent(t);
+        domUtils.acceptEvent(t);
 
         s(i) &&
           setTimeout(() => {
@@ -56,14 +56,14 @@ let i = {
     });
 
     i.addEventListener("down", (s) => {
-      e.acceptEvent(s);
-      t._setFocusElement(this);
+      domUtils.acceptEvent(s);
+      focusMgr._setFocusElement(this);
       this._setPressed(i, true);
       this._canceledByEsc = false;
     });
 
     i.addEventListener("up", (t) => {
-      e.acceptEvent(t);
+      domUtils.acceptEvent(t);
       this._setPressed(i, false);
     });
 
@@ -72,7 +72,7 @@ let i = {
 
       if (!this.readonly) {
         return this._canceledByEsc
-          ? ((this._canceledByEsc = false), e.acceptEvent(t), undefined)
+          ? ((this._canceledByEsc = false), domUtils.acceptEvent(t), undefined)
           : undefined;
       }
     });

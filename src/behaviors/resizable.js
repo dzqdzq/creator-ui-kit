@@ -1,4 +1,4 @@
-import i from "../utils/dom-utils";
+import domUtils from "../utils/dom-utils";
 let e = {
   _resizable: true,
   get row() {
@@ -66,7 +66,7 @@ let e = {
       this._initMaxHeight !== "auto" ? `${this._initMaxHeight}px` : "auto";
   },
   _notifyResize() {
-    i.fire(this, "resize");
+    domUtils.fire(this, "resize");
 
     for (let i of this.children) {
       if (i._resizable) {

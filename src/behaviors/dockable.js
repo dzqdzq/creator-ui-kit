@@ -1,4 +1,4 @@
-import t from "../utils/dock-utils";
+import dockUtils from "../utils/dock-utils";
 let i = {
   _dockable: true,
   get noCollapse() {
@@ -26,7 +26,7 @@ let i = {
 
     this.addEventListener("dragover", (e) => {
       e.preventDefault();
-      t.dragoverDock(this);
+      dockUtils.dragoverDock(this);
     });
   },
   _notifyResize() {
@@ -76,22 +76,22 @@ let i = {
   },
   _makeRoomForNewComer(e, i) {
     if (e === "left" || e === "right") {
-      let e = this._preferredWidth - i._preferredWidth - t.resizerSpace;
+      let e = this._preferredWidth - i._preferredWidth - dockUtils.resizerSpace;
 
       if (e > 0) {
         this._preferredWidth = e;
       } else {
-        e = Math.floor(0.5 * (this._preferredWidth - t.resizerSpace));
+        e = Math.floor(0.5 * (this._preferredWidth - dockUtils.resizerSpace));
         this._preferredWidth = e;
         i._preferredWidth = e;
       }
     } else {
-      let e = this._preferredHeight - i._preferredHeight - t.resizerSpace;
+      let e = this._preferredHeight - i._preferredHeight - dockUtils.resizerSpace;
 
       if (e > 0) {
         this._preferredHeight = e;
       } else {
-        e = Math.floor(0.5 * (this._preferredHeight - t.resizerSpace));
+        e = Math.floor(0.5 * (this._preferredHeight - dockUtils.resizerSpace));
         this._preferredHeight = e;
         i._preferredHeight = e;
       }
@@ -200,12 +200,12 @@ let i = {
     }
     return (
       !!i &&
-      (this.children[0] === e
+      (      this.children[0] === e
         ? e.nextElementSibling &&
-          t.isResizer(e.nextElementSibling) &&
+          dockUtils.isResizer(e.nextElementSibling) &&
           this.removeChild(e.nextElementSibling)
         : e.previousElementSibling &&
-          t.isResizer(e.previousElementSibling) &&
+          dockUtils.isResizer(e.previousElementSibling) &&
           this.removeChild(e.previousElementSibling),
       this.removeChild(e),
       this._collapse())

@@ -1,17 +1,17 @@
-import t from "../utils/dock-utils";
-import a from "../utils/focus-mgr";
-import r from "../utils/drag-drop";
-import i from "./dock";
-import o from "../../ipc";
+import dockUtils from "../utils/dock-utils";
+import focusMgr from "../utils/focus-mgr";
+import dragDrop from "../utils/drag-drop";
+import Dock from "./dock";
+import ipc from "../../ipc";
 
-export default class extends i {
+export default class extends Dock {
   static get tagName() {
     return "ui-main-dock";
   }
   constructor() {
     super();
     this._initEvents();
-    t.root = this;
+    dockUtils.root = this;
   }
   connectedCallback() {
     this.noCollapse = true;
@@ -21,7 +21,7 @@ export default class extends i {
         console.error(`Failed to load layout: ${t.stack}`);
       }
 
-      a._setFocusPanelFrame(null);
+      focusMgr._setFocusPanelFrame(null);
     });
   }
   _finalizeStyle() {
@@ -31,40 +31,40 @@ export default class extends i {
   }
   _initEvents() {
     this.addEventListener("dragenter", (e) => {
-      if (r.type(e.dataTransfer) === "tab") {
+      if (dragDrop.type(e.dataTransfer) === "tab") {
         e.stopPropagation();
-        t.dragenterMainDock();
+        dockUtils.dragenterMainDock();
       }
     });
 
     this.addEventListener("dragleave", (e) => {
-      if (r.type(e.dataTransfer) === "tab") {
+      if (dragDrop.type(e.dataTransfer) === "tab") {
         e.stopPropagation();
-        t.dragleaveMainDock();
+        dockUtils.dragleaveMainDock();
       }
     });
 
     this.addEventListener("dragover", (e) => {
-      if (r.type(e.dataTransfer) === "tab") {
+      if (dragDrop.type(e.dataTransfer) === "tab") {
         e.preventDefault();
         e.stopPropagation();
-        r.updateDropEffect(e.dataTransfer, "move");
-        t.dragoverMainDock(e.x, e.y);
+        dragDrop.updateDropEffect(e.dataTransfer, "move");
+        dockUtils.dragoverMainDock(e.x, e.y);
       }
     });
 
     this.addEventListener("drop", (e) => {
-      if (r.type(e.dataTransfer) !== "tab") {
+      if (dragDrop.type(e.dataTransfer) !== "tab") {
         return;
       }
       e.preventDefault();
       e.stopPropagation();
-      let a = r.items(e.dataTransfer)[0];
-      t.dropMainDock(a);
+      let a = dragDrop.items(e.dataTransfer)[0];
+      dockUtils.dropMainDock(a);
     });
   }
   _loadLayout(e) {
-    o.sendToMain("editor:window-query-layout", (a, r) => {
+    ipc.sendToMain("editor:window-query-layout", (a, r) => {
       if (a) {
         if (e) {
           e(a);
@@ -72,7 +72,7 @@ export default class extends i {
 
         return undefined;
       }
-      t.reset(this, r, (t) => {
+      dockUtils.reset(this, r, (t) => {
         if (e) {
           e(t);
         }

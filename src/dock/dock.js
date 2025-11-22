@@ -1,7 +1,7 @@
 import jsUtils from "../utils/js-utils";
-import t from "../utils/dock-utils";
-import i from "../utils/dom-utils";
-import r from "../behaviors/dockable";
+import dockUtils from "../utils/dock-utils";
+import domUtils from "../utils/dom-utils";
+import dockableBehavior from "../behaviors/dockable";
 class Dock extends window.HTMLElement {
   static get tagName() {
     return "ui-dock";
@@ -23,7 +23,7 @@ class Dock extends window.HTMLElement {
       '\n      <div class="content">\n        <slot select="ui-dock,ui-dock-panel,ui-dock-resizer"></slot>\n      </div>\n    ';
 
     e.insertBefore(
-      i.createStyleElement("theme://elements/dock.css"),
+      domUtils.createStyleElement("theme://elements/dock.css"),
       e.firstChild
     );
 
@@ -99,7 +99,7 @@ class Dock extends window.HTMLElement {
     }
   }
   _finalizePreferredSize() {
-    let t_resizerSpace = t.resizerSpace;
+    let t_resizerSpace = dockUtils.resizerSpace;
     let i = [];
 
     for (let t of this.children) {
@@ -164,7 +164,7 @@ class Dock extends window.HTMLElement {
     }
   }
   _finalizeMinMax() {
-    let t_resizerSpace = t.resizerSpace;
+    let t_resizerSpace = dockUtils.resizerSpace;
     let i = [];
 
     for (let t of this.children) {
@@ -237,5 +237,5 @@ class Dock extends window.HTMLElement {
     }
   }
 }
-jsUtils.addon(Dock.prototype, r);
+jsUtils.addon(Dock.prototype, dockableBehavior);
 export default Dock;

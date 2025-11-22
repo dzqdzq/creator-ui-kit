@@ -1,4 +1,4 @@
-import e from "../utils/dom-utils";
+import domUtils from "../utils/dom-utils";
 let t = {
   get canBeReadonly() {
     return true;
@@ -44,7 +44,7 @@ let t = {
     this._readonlyNested = e;
   },
   _propgateReadonly() {
-    e.walk(
+    domUtils.walk(
       this,
       { excludeSelf: true },
       (e) =>
