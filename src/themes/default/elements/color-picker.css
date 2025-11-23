@@ -1,6 +1,4 @@
 @import url(theme://globals/fontello.css);
-.alpha,
-.color,
 .hbox,
 .hue,
 .vbox {
@@ -21,18 +19,34 @@
   outline: 0;
   border: 1px solid #555;
   border-radius: 3px;
-  background: #474747;
+  background: #454545;
   box-shadow: 0 0 15px 2px rgba(0, 0, 0, 0.8);
   cursor: default;
   color: #bdbdbd;
 }
-.alpha i,
-.alpha-handle,
-.color-handle,
-.color-handle i,
-.hue-handle,
-.hue-handle i {
-  position: absolute;
+.alpha,
+.color,
+.hue {
+  height: 150px;
+  background-image: url(theme://img/hue.png);
+}
+:host([disabled]) {
+  cursor: not-allowed;
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([simple]) .vbox {
+  display: none;
+}
+:host([row]) {
+  display: flex;
+  width: 440px;
+}
+:host([row]) .vbox {
+  margin-left: 10px;
+}
+:host([row]) .vbox > .hex-field {
+  display: none;
 }
 .hbox,
 .hex-field,
@@ -41,11 +55,33 @@
 .vbox {
   display: flex;
 }
-.alpha,
-.color,
-.hue {
-  height: 150px;
-  background-image: url(theme://img/hue.png);
+:host([disabled-color]) > .hbox > .hue {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-color]) > .hbox > .color {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-color]) .vbox #r-slider {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-color]) .vbox #g-slider {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-color]) .vbox #b-slider {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-alpha]) > .hbox > .alpha-wrap {
+  opacity: 0.4;
+  pointer-events: none;
+}
+:host([disabled-alpha]) .vbox #a-slider {
+  opacity: 0.4;
+  pointer-events: none;
 }
 .ctrl [class*=" icon-"]:before,
 .ctrl [class^="icon-"]:before {
@@ -80,32 +116,40 @@
   background-position: 0 0;
 }
 .hue-handle {
+  position: absolute;
   color: #fff;
   left: 0;
 }
 .hue-handle i {
+  position: absolute;
   left: -6px;
 }
 .color {
+  position: relative;
   width: 150px;
   background-position: -40px 0;
 }
 .color-handle {
+  position: absolute;
   color: #000;
 }
 .color-handle i {
+  position: absolute;
   left: -8px;
 }
 .alpha {
+  position: relative;
   width: 20px;
   background-color: #000;
   background-position: -20px 0;
 }
 .alpha-handle {
+  position: absolute;
   color: #fff;
   right: 0;
 }
 .alpha i {
+  position: absolute;
   right: -2px;
 }
 .prop {

@@ -141,7 +141,7 @@ export default elementUtils.registerElement("ui-slider", {
     let n = this.getAttribute("value");
     this._value = n !== null ? parseFloat(n) : 0;
 
-    this._value = this._initValue = mathUtilmathUtils.clamp(this._value, this._min, this._max);
+    this._value = this._initValue = mathUtils.clamp(this._value, this._min, this._max);
 
     let h = this.getAttribute("step");
     this._step = h !== null ? parseFloat(h) : settings.stepFloat;
@@ -174,6 +174,11 @@ export default elementUtils.registerElement("ui-slider", {
       this._wrapperMouseDownHandler.bind(this)
     );
 
+    this.$nubbin.addEventListener(
+      "mousedown",
+      this._nubbinMouseDownHandler.bind(this)
+    );
+
     this.$input.addEventListener("keydown", (t) => {
       if (t.keyCode === 38) {
         acceptEvent(t);
@@ -193,13 +198,60 @@ export default elementUtils.registerElement("ui-slider", {
     focusMgr._setFocusElement(this);
     this.$wrapper.focus();
 
-    if (this.readonly) {
+    if (this.readonly || this.disabled) {
       return;
     }
 
     this._initValue = this._value;
+    this._startDrag(t);
+  },
+  _nubbinMouseDownHandler(t) {
+    acceptEvent(t);
+    focusMgr._setFocusElement(this);
+    this.$wrapper.focus();
+
+    if (this.readonly || this.disabled) {
+      return;
+    }
+
+    this._initValue = this._value;
+    this._startDrag(t);
+  },
+  _startDrag(t) {
+    this._isDragging = true;
+    this._updateValueFromEvent(t);
+
+    // 绑定到 document 上，这样即使鼠标移出元素也能继续拖动
+    this._dragMouseMoveHandler = this._dragMouseMoveHandler || this._onDragMove.bind(this);
+    this._dragMouseUpHandler = this._dragMouseUpHandler || this._onDragEnd.bind(this);
+
+    document.addEventListener("mousemove", this._dragMouseMoveHandler);
+    document.addEventListener("mouseup", this._dragMouseUpHandler);
+  },
+  _onDragMove(t) {
+    if (!this._isDragging) {
+      return;
+    }
+
+    this._updateValueFromEvent(t);
+  },
+  _onDragEnd(t) {
+    if (!this._isDragging) {
+      return;
+    }
+
+    this._isDragging = false;
+    this._updateValueFromEvent(t);
+    this.confirm();
+
+    // 移除事件监听器
+    document.removeEventListener("mousemove", this._dragMouseMoveHandler);
+    document.removeEventListener("mouseup", this._dragMouseUpHandler);
+  },
+  _updateValueFromEvent(t) {
     let e = this.$track.getBoundingClientRect();
     let i = (t.clientX - e.left) / this.$track.clientWidth;
+    i = Math.max(0, Math.min(1, i)); // 限制在 0-1 之间
     let a = this._min + i * (this._max - this._min);
 
     if (this._snap) {
@@ -247,7 +299,7 @@ export default elementUtils.registerElement("ui-slider", {
       i *= settings.shiftStep;
     }
 
-    this._value = mathUtilmathUtils.clamp(this._value + i, this._min, this._max);
+    this._value = mathUtils.clamp(this._value + i, this._min, this._max);
     this._updateNubbinAndInput();
     this._emitChange();
   },
@@ -258,7 +310,7 @@ export default elementUtils.registerElement("ui-slider", {
       i *= settings.shiftStep;
     }
 
-    this._value = mathUtilmathUtils.clamp(this._value - i, this._min, this._max);
+    this._value = mathUtils.clamp(this._value - i, this._min, this._max);
     this._updateNubbinAndInput();
     this._emitChange();
   },
@@ -393,7 +445,7 @@ export default elementUtils.registerElement("ui-slider", {
   _snapToStep(t) {
     let e = Math.round((t - this._value) / this._step);
     t = this._value + this._step * e;
-    return mathUtilmathUtils.clamp(t, this.min, this.max);
+    return mathUtils.clamp(t, this.min, this.max);
   },
   _formatValue(t) {
     return t === null || t === ""

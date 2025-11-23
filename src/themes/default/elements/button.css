@@ -20,16 +20,16 @@
     Ubuntu,
     Cantarell,
     "Open Sans",
+    SourceHanSansCN-Normal,
     sans-serif;
   line-height: 1em;
   overflow: hidden;
   text-align: center;
   text-decoration: none;
   text-overflow: ellipsis;
-  white-space: nowrap;
   cursor: pointer;
   color: #bdbdbd;
-  background-image: linear-gradient(#585858, #444);
+  background-image: linear-gradient(#4e4e4e, #4e4e4e);
 }
 :host(:last-child) {
   margin-right: 0;
@@ -37,16 +37,14 @@
 .inner {
   box-sizing: border-box;
   height: 100%;
-  padding: 0.4em 1.5em;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0 1.5em;
   border-radius: 3px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 :host(:hover) {
-  background-image: linear-gradient(#626262, #4e4e4e);
+  background-image: linear-gradient(#585858, #585858);
   color: #d1d1d1;
 }
 :host([focused]) {
@@ -58,8 +56,6 @@
 }
 :host([pressed]) .inner {
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
-  border-top: 1px solid rgba(0, 0, 0, 0.5);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 :host([unnavigable]) {
   border-color: #171717;
@@ -67,7 +63,7 @@
 :host([is-disabled]) {
   pointer-events: none;
   border-color: #2b2b2b;
-  background-image: linear-gradient(#4e4e4e, #3a3a3a);
+  background-image: linear-gradient(#444, #444);
   color: rgba(255, 255, 255, 0.25);
 }
 :host(.mini) {
@@ -75,8 +71,11 @@
   height: 18px;
 }
 :host(.tiny) {
-  font-size: 0.83333333rem;
-  height: 22px;
+  font-size: 0.91666667rem;
+  height: 21px;
+}
+:host(.tiny) .inner {
+  line-height: 12px;
 }
 :host(.small) {
   font-size: 0.91666667rem;
@@ -104,10 +103,10 @@
 }
 :host(.red) {
   color: #ddd;
-  background-image: linear-gradient(#bf4d4e, #ab393a);
+  background-image: linear-gradient(#b54344, #b54344);
 }
 :host(.red:hover) {
-  background-image: linear-gradient(#c95758, #b54344);
+  background-image: linear-gradient(#bf4d4e, #bf4d4e);
   color: #f1f1f1;
 }
 :host(.red[pressed]) {
@@ -115,15 +114,15 @@
   background: #a12f30;
 }
 :host(.red[disabled]) {
-  background-image: linear-gradient(#b54344, #a12f30);
+  background-image: linear-gradient(#ab393a, #ab393a);
   color: rgba(255, 255, 255, 0.25);
 }
 :host(.green) {
   color: #fff;
-  background-image: linear-gradient(#75a85b, #619447);
+  background-image: linear-gradient(#6b9e51, #6b9e51);
 }
 :host(.green:hover) {
-  background-image: linear-gradient(#7fb265, #6b9e51);
+  background-image: linear-gradient(#75a85b, #75a85b);
   color: #fff;
 }
 :host(.green[pressed]) {
@@ -131,15 +130,15 @@
   background: #578a3d;
 }
 :host(.green[disabled]) {
-  background-image: linear-gradient(#6b9e51, #578a3d);
+  background-image: linear-gradient(#619447, #619447);
   color: rgba(255, 255, 255, 0.25);
 }
 :host(.blue) {
   color: #fff;
-  background-image: linear-gradient(#4c8bc0, #3877ac);
+  background-image: linear-gradient(#4281b6, #4281b6);
 }
 :host(.blue:hover) {
-  background-image: linear-gradient(#5695ca, #4281b6);
+  background-image: linear-gradient(#4c8bc0, #4c8bc0);
   color: #fff;
 }
 :host(.blue[pressed]) {
@@ -147,7 +146,7 @@
   background: #2e6da2;
 }
 :host(.blue[disabled]) {
-  background-image: linear-gradient(#4281b6, #2e6da2);
+  background-image: linear-gradient(#3877ac, #3877ac);
   color: rgba(255, 255, 255, 0.25);
 }
 :host(.transparent) {

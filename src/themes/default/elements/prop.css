@@ -1,12 +1,8 @@
 @import url(theme://globals/fontello.css);
 .label,
-.remove,
-.wrapper {
-  box-sizing: border-box;
-}
-.label,
 .wrapper {
   position: relative;
+  box-sizing: border-box;
 }
 :host {
   display: flex;
@@ -18,19 +14,18 @@
   box-sizing: border-box;
   contain: content;
   outline: 0;
-  min-width: 240px;
+  min-width: 220px;
 }
-.label,
 .wrapper,
 .wrapper-content {
-  display: flex;
   flex-direction: row;
+  display: flex;
 }
 .wrapper {
   width: 100%;
-  min-height: 24px;
-  max-height: 24px;
-  margin: 3px 0;
+  min-height: 23px;
+  max-height: 23px;
+  margin: 2px 0;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
@@ -43,14 +38,16 @@
   flex: 1;
 }
 .label {
+  display: flex;
+  flex-direction: row;
   flex-wrap: nowrap;
   align-items: baseline;
   justify-content: flex-start;
   margin-right: 5px;
   flex-shrink: 0;
   font-size: 1em;
-  width: 25%;
-  min-width: 100px;
+  width: 35%;
+  min-width: 70px;
   white-space: nowrap;
 }
 .move,
@@ -80,14 +77,14 @@
 .resizer.platform-win {
   cursor: ew-resize;
 }
-.resizer:hover {
-  opacity: 1;
-}
 .label > * {
   margin-right: 3px;
 }
 .label > :last-child {
   margin-right: 0;
+}
+.label:hover > .resizer {
+  opacity: 1;
 }
 .text {
   overflow: hidden;
@@ -112,6 +109,7 @@
 }
 .remove {
   height: 20px;
+  box-sizing: border-box;
   flex-direction: column;
   justify-content: center;
   align-self: center;
@@ -149,7 +147,7 @@
 :host([foldable]) .fold {
   visibility: visible;
 }
-:host([folded]) ::content > .child {
+:host([folded]) ::slotted([slot="child"]) {
   display: none !important;
 }
 :host([movable]) .move {
@@ -199,14 +197,14 @@
 :host(.red[is-disabled]) .text {
   opacity: 0.2;
 }
-::content > ui-prop {
+::slotted(ui-prop) {
   margin-right: 10px;
   min-width: auto;
 }
-::content > ui-prop:last-child {
+::slotted(ui-prop:last-child) {
   margin-right: 0;
 }
-::content > .user-content {
+::slotted(.user-content) {
   display: none;
 }
 :host([is-readonly], [slidable]) .label .resizer {

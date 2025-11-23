@@ -15,6 +15,7 @@ pre {
     Ubuntu,
     Cantarell,
     "Open Sans",
+    SourceHanSansCN-Normal,
     sans-serif;
 }
 body,
@@ -53,7 +54,7 @@ body {
   margin: 0;
   -webkit-font-smoothing: subpixel-antialiased;
   color: #bdbdbd;
-  background-color: #333;
+  background: linear-gradient(to bottom, #2d2d2d, #191919);
 }
 a {
   color: #fd942b;

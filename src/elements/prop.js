@@ -182,9 +182,7 @@ let m = elementUtils.registerElement("ui-prop", {
     return this._tooltip;
   },
   set tooltip(t) {
-    if (this._tooltip !== t) {
-      this._tooltip = Editor.i18n.format(t);
-    }
+    this._tooltip = t;
   },
   get path() {
     return this._path;

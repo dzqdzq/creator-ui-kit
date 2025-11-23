@@ -117,13 +117,86 @@
       
       <div class="demo-group">
         <label>展开状态的可折叠区域：</label>
-        <ui-section id="section1">
-          <span slot="header">基础设置</span>
-          <div class="section-content">
-            <p>这是可折叠区域的内容。点击标题栏可以折叠或展开。</p>
-            <ui-input placeholder="输入框示例"></ui-input>
-            <ui-button style="margin-top: 10px;">按钮示例</ui-button>
+        <ui-section tabindex="-1">
+          <div slot="header" class="header flex-1 layout horizontal center-center">
+            <span draggable="true">Node</span>
+            <span class="flex-1"></span>
+            <ui-button class="tiny transparent" title="" tabindex="-1">
+              <i class="fa fa-cog"></i>
+            </ui-button>
           </div>
+    
+          <ui-prop name="Position" step="1" type="cc.Vec2" tooltip="相对父节点的位置坐标，以像素为单位" tabindex="-1">
+            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          
+            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          </ui-prop>
+    
+          <ui-prop name="Rotation" type="number" step="1" slidable="" tooltip="相对父节点的旋转，以度为单位，输入正值时逆时针旋转" tabindex="-1">
+            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+          </ui-prop>
+    
+          
+    
+          <ui-prop name="Scale" step="0.1" type="cc.Vec2" tooltip="节点的整体缩放比例，会影响所有子节点" tabindex="-1">
+            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          
+            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          </ui-prop>
+    
+          <ui-prop name="Anchor" type="cc.Vec2" step="0.1" tooltip="节点位置和旋转的基准点，(0,0)表示左下角，(1,1)表示右上角" tabindex="-1">
+            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          
+            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          </ui-prop>
+    
+          <ui-prop name="Size" type="cc.Size" step="1" tooltip="节点的内容尺寸，以像素为单位，在排版中至关重要。修改 size 不会影响子节点。" tabindex="-1">
+          <ui-prop name="W" id="w-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+          </ui-prop>
+          <ui-prop name="H" id="h-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+          </ui-prop>
+        </ui-prop>
+    
+          <ui-prop name="Color" type="cc.Color" tooltip="节点的颜色，会影响节点上的渲染组件的颜色显示" tabindex="-1">
+          <ui-color class="flex-1" tabindex="-1"></ui-color>
+        </ui-prop>
+    
+          <ui-prop name="Opacity" type="number" min="0" max="255" step="1" slidable="" tooltip="节点的不透明度，会影响本节点和所有子节点上渲染组件的不透明度" tabindex="-1">
+            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+          </ui-prop>
+    
+          <ui-prop name="Skew" type="cc.Vec2" step="1" tabindex="-1">
+            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          
+            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          </ui-prop>
+    
+          <ui-prop name="Group" tooltip="节点的分组，会影响节点的 碰撞或其他 信息。分组的配置可以在 项目设置 中进行详细设置。" tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1">
+              <option value="default">default</option>
+            </ui-select>
+            <ui-button class="tiny blue" tabindex="-1">
+              编辑
+            </ui-button>
+          </ui-prop>
         </ui-section>
       </div>
       

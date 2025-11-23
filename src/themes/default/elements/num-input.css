@@ -7,12 +7,14 @@ input:focus {
   display: inline-flex;
   position: relative;
   box-sizing: border-box;
-  contain: content;
   flex-direction: row;
   width: auto;
   margin: 0 0.25em 0 0;
   outline: 0;
   cursor: default;
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid #171717;
 }
 :host(:last-child) {
   margin-right: 0;
@@ -23,23 +25,24 @@ input {
     -apple-system,
     BlinkMacSystemFont,
     "Helvetica Neue",
+    Arial,
     "Segoe UI",
     Oxygen,
     Ubuntu,
     Cantarell,
     "Open Sans",
+    SourceHanSansCN-Normal,
     sans-serif;
+  border: none;
   margin: 0;
-  padding: 0.2em 0.6em;
+  padding: 0 0.5em;
   width: 100%;
   display: inline-block;
   outline: 0;
-  border-top-left-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border: 1px solid #888;
-  border-right: none;
-  box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.3);
-  background: #252525;
+  background: #262626;
+  transition:
+    padding-right 0.15s,
+    margin-right 0.15s;
 }
 input::-webkit-input-placeholder {
   font-style: italic;
@@ -56,133 +59,168 @@ input::selection {
   outline: 0;
   box-sizing: border-box;
   color: #171717;
-  border-top-right-radius: 3px;
-  border-bottom-right-radius: 3px;
-  border: 1px solid #888;
-  border-left: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 0;
+  transition: width 0.15s;
 }
 .spin {
   flex: 1;
   justify-content: center;
   text-align: center;
-  background-color: #4e4e4e;
+  background-color: #454545;
   cursor: pointer;
 }
 .spin:hover {
-  color: #bababa;
+  color: #888;
 }
 .spin[pressed] {
   color: #fd942b;
-  background-color: #3a3a3a;
+  background-color: #313131;
 }
 .spin-div {
   flex: none;
   border-top: 1px solid #353535;
-  border-bottom: 1px solid #595959;
-}
-.spin.up {
-  border-top-right-radius: 3px;
-}
-.spin.down {
-  border-bottom-right-radius: 3px;
 }
 [class*=" icon-"]:before,
 [class^="icon-"]:before {
   width: 0.8em;
 }
-:host(:hover) input {
-  border-color: #bababa;
+:host(:hover) {
+  border-color: #888;
 }
-:host(:hover) .spin-wrapper {
-  border-color: #bababa;
-}
-:host([focused]) input {
+:host([focused]) {
   border-color: #fd942b;
 }
-:host([focused]) .spin-wrapper {
-  border-color: #fd942b;
-}
-:host([unnavigable]) input {
-  border: 0;
+:host([unnavigable]) {
+  border: none;
   border-bottom: 1px solid rgba(255, 255, 255, 0.23);
-}
-:host([unnavigable]) .spin-wrapper {
-  border-color: #575757;
 }
 :host([is-disabled]) {
   pointer-events: none;
 }
 :host([is-disabled]) input {
   color: #636363;
-  border-color: #565656;
-  background: #393939;
+  background: #3a3a3a;
 }
 :host([is-disabled]) .spin-wrapper {
-  border-color: #565656;
+  width: 0;
 }
-:host([is-disabled]) .spin {
-  opacity: 0.5;
-}
-:host([is-disabled]) .spin-div {
-  opacity: 0.5;
+:host([readonly]) .spin-wrapper {
+  width: 0;
 }
 :host(.mini) input {
   font-size: 0.66666667rem;
+  height: 0.91666733rem;
 }
 :host(.mini) .spin-wrapper {
   font-size: 0.46666667rem;
 }
+:host(.mini:hover) input {
+  padding-right: 0.58333333rem;
+  margin-right: -0.08333333em;
+}
+:host(.mini:hover) .spin-wrapper {
+  width: 0.58333333rem;
+}
 :host(.tiny) input {
   font-size: 0.83333333rem;
+  height: 1.25000067rem;
 }
 :host(.tiny) .spin-wrapper {
   font-size: 0.63333333rem;
 }
+:host(.tiny:hover) input {
+  padding-right: 0.79166667rem;
+  margin-right: -0.29166667em;
+}
+:host(.tiny:hover) .spin-wrapper {
+  width: 0.79166667rem;
+}
 :host(.small) input {
   font-size: 0.91666667rem;
+  height: 1.41666733rem;
 }
 :host(.small) .spin-wrapper {
   font-size: 0.71666667rem;
 }
+:host(.small:hover) input {
+  padding-right: 0.89583333rem;
+  margin-right: -0.39583333em;
+}
+:host(.small:hover) .spin-wrapper {
+  width: 0.89583333rem;
+}
 :host input {
   font-size: 1rem;
+  height: 1.583334rem;
 }
 :host .spin-wrapper {
   font-size: 0.8rem;
 }
+:host(:hover) input {
+  padding-right: 1rem;
+  margin-right: -0.5em;
+}
+:host(:hover) .spin-wrapper {
+  width: 1rem;
+}
 :host(.large) input {
   font-size: 1.16666667rem;
+  height: 1.91666733rem;
 }
 :host(.large) .spin-wrapper {
   font-size: 0.96666667rem;
 }
+:host(.large:hover) input {
+  padding-right: 1.20833333rem;
+  margin-right: -0.70833333em;
+}
+:host(.large:hover) .spin-wrapper {
+  width: 1.20833333rem;
+}
 :host(.big) input {
   font-size: 1.33333333rem;
+  height: 2.25000067rem;
 }
 :host(.big) .spin-wrapper {
   font-size: 1.13333333rem;
 }
+:host(.big:hover) input {
+  padding-right: 1.41666667rem;
+  margin-right: -0.91666667em;
+}
+:host(.big:hover) .spin-wrapper {
+  width: 1.41666667rem;
+}
 :host(.huge) input {
   font-size: 1.5rem;
+  height: 2.583334rem;
 }
 :host(.huge) .spin-wrapper {
   font-size: 1.3rem;
 }
+:host(.huge:hover) input {
+  padding-right: 1.625rem;
+  margin-right: -1.125em;
+}
+:host(.huge:hover) .spin-wrapper {
+  width: 1.625rem;
+}
 :host(.massive) input {
   font-size: 1.83333333rem;
+  height: 3.25000067rem;
 }
 :host(.massive) .spin-wrapper {
   font-size: 1.63333333rem;
 }
-:host([highlighted]) .type {
-  color: #6b9e51;
-  border-color: #6b9e51;
+:host(.massive:hover) input {
+  padding-right: 2.04166667rem;
+  margin-right: -1.54166667em;
 }
-:host([highlighted]) input {
-  background: #6b9e51;
-}
-:host([highlighted]) .name {
-  background: #6b9e51;
+:host(.massive:hover) .spin-wrapper {
+  width: 2.04166667rem;
 }
 :host([invalid]) .type {
   color: #b54344;

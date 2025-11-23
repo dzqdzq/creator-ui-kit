@@ -7,7 +7,6 @@
 :host {
   display: inline-block;
   position: relative;
-  contain: content;
   flex: none;
   outline: 0;
   margin: 0 0.25em 0 0;
@@ -28,9 +27,9 @@
   height: 15px;
   min-width: 15px;
   min-height: 15px;
-  border: 1px solid #888;
-  box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.3);
-  background: #252525;
+  border: 1px solid #171717;
+  border-radius: 3px;
+  background: #262626;
 }
 .checker {
   position: absolute;
@@ -49,7 +48,7 @@
   color: #d1d1d1;
 }
 :host(:hover) .box {
-  border-color: #bababa;
+  border-color: #888;
 }
 :host([focused]) {
   color: #fd942b;
@@ -85,8 +84,8 @@
   color: #636363;
 }
 :host([is-disabled]) .box {
-  border-color: #565656;
-  background: #393939;
+  border-color: #000;
+  background: #3a3a3a;
 }
 :host([multi-values]) {
   opacity: 0.2;

@@ -50,10 +50,18 @@ let t = {
     });
   },
   _getFirstFocusableElement() {
+    if (!this._focusELs) {
+      this._focusELs = [];
+    }
     return this._focusELs.length > 0 ? this._focusELs[0] : null;
   },
   _setFocused(t) {
     if (this.focused !== t) {
+      // 确保 _focusELs 已初始化
+      if (!this._focusELs) {
+        this._focusELs = [];
+      }
+
       if (t) {
         this.setAttribute("focused", "");
 

@@ -1,21 +1,137 @@
 import chroma from "chroma-js";
 import elementUtils from "./utils.js";
-import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 import { fire, acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 
-// 创建占位符类（Electron remote 在浏览器中不可用）
-class Menu {
+// 浏览器兼容的设置存储系统（使用 localStorage）
+const SettingsStorage = {
+  STORAGE_KEY: "ui-color-picker-settings",
+  
+  load() {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (e) {
+      console.warn("[color-picker] Failed to load settings:", e);
+    }
+    return null;
+  },
+  
+  save(settings) {
+    try {
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(settings));
+    } catch (e) {
+      console.warn("[color-picker] Failed to save settings:", e);
+    }
+  },
+  
+  get(key) {
+    const settings = this.load();
+    return settings ? settings[key] : null;
+  },
+  
+  set(key, value) {
+    const settings = this.load() || {};
+    settings[key] = value;
+    this.save(settings);
+  }
+};
+
+// 浏览器版本的右键菜单
+class ContextMenu {
   constructor() {
+    this.menu = null;
     this.items = [];
   }
+  
   append(item) {
     this.items.push(item);
   }
-  popup() {
-    // 在浏览器环境中不执行任何操作
+  
+  popup(event) {
+    // 移除已存在的菜单
+    this._removeMenu();
+    
+    // 创建菜单元素
+    this.menu = document.createElement("div");
+    this.menu.className = "ui-color-picker-context-menu";
+    this.menu.style.cssText = `
+      position: fixed;
+      z-index: 10000;
+      background: #2d2d2d;
+      border: 1px solid #555;
+      border-radius: 4px;
+      padding: 4px 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      min-width: 120px;
+      font-size: 12px;
+    `;
+    
+    // 创建菜单项
+    this.items.forEach((item) => {
+      const menuItem = document.createElement("div");
+      menuItem.className = "ui-color-picker-menu-item";
+      menuItem.textContent = item.options.label;
+      menuItem.style.cssText = `
+        padding: 6px 16px;
+        cursor: pointer;
+        color: #e0e0e0;
+        user-select: none;
+      `;
+      
+      menuItem.addEventListener("mouseenter", () => {
+        menuItem.style.backgroundColor = "#3d3d3d";
+      });
+      
+      menuItem.addEventListener("mouseleave", () => {
+        menuItem.style.backgroundColor = "transparent";
+      });
+      
+      menuItem.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (item.options.click) {
+          item.options.click();
+        }
+        this._removeMenu();
+      });
+      
+      this.menu.appendChild(menuItem);
+    });
+    
+    // 定位菜单
+    const x = event.clientX;
+    const y = event.clientY;
+    this.menu.style.left = `${x}px`;
+    this.menu.style.top = `${y}px`;
+    
+    // 添加到文档
+    document.body.appendChild(this.menu);
+    
+    // 点击外部关闭菜单
+    const closeHandler = (e) => {
+      if (!this.menu.contains(e.target)) {
+        this._removeMenu();
+        document.removeEventListener("click", closeHandler);
+        document.removeEventListener("contextmenu", closeHandler);
+      }
+    };
+    
+    // 使用 setTimeout 确保当前事件处理完成后再添加监听器
+    setTimeout(() => {
+      document.addEventListener("click", closeHandler);
+      document.addEventListener("contextmenu", closeHandler);
+    }, 0);
+  }
+  
+  _removeMenu() {
+    if (this.menu && this.menu.parentNode) {
+      this.menu.parentNode.removeChild(this.menu);
+      this.menu = null;
+    }
   }
 }
 
@@ -24,9 +140,6 @@ class MenuItem {
     this.options = options;
   }
 }
-
-const Menu_export = Menu;
-const MenuItem_export = MenuItem;
 
 export default elementUtils.registerElement("ui-color-picker", {
   get value() {
@@ -77,9 +190,8 @@ export default elementUtils.registerElement("ui-color-picker", {
     let t = this.getAttribute("value");
     this._value = t !== null ? chroma(t).rgba() : [255, 255, 255, 1];
     this._lastAssigned = this._value.slice(0);
-    let i = Editor.Profile.load("global://settings.json").get(
-      "ui-color-picker"
-    );
+    // 使用浏览器兼容的设置存储
+    let i = SettingsStorage.get("ui-color-picker");
     this._settings = i || { colors: [] };
     this._initPalette();
     this._updateColorDiff();
@@ -334,7 +446,7 @@ export default elementUtils.registerElement("ui-color-picker", {
 
     a.addEventListener("contextmenu", (l) => {
       l.preventDefault();
-      const o = new Menu();
+      const o = new ContextMenu();
 
       o.append(
         new MenuItem({
@@ -361,8 +473,8 @@ export default elementUtils.registerElement("ui-color-picker", {
         })
       );
 
-      // 在浏览器环境中，右键菜单功能不可用
-      // o.popup(t.getCurrentWindow());
+      // 在浏览器环境中显示自定义右键菜单
+      o.popup(l);
     });
 
     a.addEventListener("mousedown", (t) => {
@@ -385,9 +497,8 @@ export default elementUtils.registerElement("ui-color-picker", {
     return a;
   },
   _saveSettings() {
-    let t = Editor.Profile.load("global://settings.json");
-    t.set("ui-color-picker", this._settings);
-    t.save();
+    // 使用浏览器兼容的设置存储
+    SettingsStorage.set("ui-color-picker", this._settings);
   },
   _updateColorDiff() {
     this.$oldColor.style.backgroundColor = chroma(this._lastAssigned).css();

@@ -2,17 +2,17 @@
   display: inline-flex;
   position: relative;
   box-sizing: border-box;
-  contain: content;
   outline: 0;
   flex: none;
   flex-direction: row;
   margin: 0 0.25em 0 0;
   width: auto;
   min-width: 20px;
-  border: 1px solid #171717;
-  border-radius: 3px;
+  border: 1px solid #2e2e2e;
+  border-bottom-color: #232323;
+  border-radius: 100px;
   cursor: pointer;
-  background-image: linear-gradient(#585858, #444);
+  background-color: #2e2e2e;
 }
 :host(:last-child) {
   margin-right: 0;
@@ -28,6 +28,7 @@ select {
     Ubuntu,
     Cantarell,
     "Open Sans",
+    SourceHanSansCN-Normal,
     sans-serif;
   -webkit-appearance: none;
   display: flex;
@@ -35,10 +36,7 @@ select {
   outline: 0;
   border: 0;
   margin: 0;
-  padding: 0.2em 2em 0.2em 0.8em;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 3px;
+  padding: 0 1.8em 2px 0.8em;
   text-decoration: none;
   text-overflow: ellipsis;
   cursor: pointer;
@@ -48,11 +46,11 @@ select {
 }
 select option {
   color: #bdbdbd;
-  background: #4e4e4e;
+  background: #2e2e2e;
 }
 select optgroup {
   color: #bdbdbd;
-  background: #585858;
+  background: #383838;
 }
 :host::after {
   display: block;
@@ -69,7 +67,7 @@ select optgroup {
   margin-top: -3px;
 }
 :host(:hover) {
-  background-image: linear-gradient(#626262, #4e4e4e);
+  border-color: #888;
 }
 :host(:hover) select {
   color: #d1d1d1;
@@ -86,7 +84,6 @@ select optgroup {
 :host([is-disabled]) {
   pointer-events: none;
   border-color: #2b2b2b;
-  background-image: linear-gradient(#4e4e4e, #3a3a3a);
 }
 :host([is-disabled]) select {
   color: #636363;
@@ -94,33 +91,65 @@ select optgroup {
 :host([is-disabled])::after {
   border-top-color: #636363;
 }
+:host(.mini) {
+  height: initial;
+}
 :host(.mini) select {
   font-size: 0.66666667rem;
+  align-items: initial;
 }
 :host(.mini)::after {
   right: 0.5em;
 }
+:host(.tiny) {
+  height: initial;
+}
 :host(.tiny) select {
   font-size: 0.83333333rem;
+  align-items: initial;
 }
 :host(.tiny)::after {
   right: 0.6em;
 }
+:host(.small) {
+  height: initial;
+}
 :host(.small) select {
   font-size: 0.91666667rem;
+  align-items: initial;
+}
+:host {
+  height: 21px;
 }
 :host select {
   font-size: 1rem;
+  align-items: flex-end;
+}
+:host(.large) {
+  height: initial;
 }
 :host(.large) select {
   font-size: 1.16666667rem;
+  align-items: initial;
+}
+:host(.big) {
+  height: initial;
 }
 :host(.big) select {
   font-size: 1.33333333rem;
+  align-items: initial;
+}
+:host(.huge) {
+  height: initial;
 }
 :host(.huge) select {
   font-size: 1.5rem;
+  align-items: initial;
+}
+:host(.massive) {
+  height: initial;
 }
 :host(.massive) select {
   font-size: 1.83333333rem;
+  align-items: initial;
 }

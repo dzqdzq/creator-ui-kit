@@ -1,59 +1,81 @@
+/*
+    Paraíso (dark)
+    Created by Jan T. Sott (http://github.com/idleberg)
+    Inspired by the art of Rubens LP (http://www.rubenslp.com.br)
+*/
+
+/* Paraíso Comment */
 .hljs-comment,
 .hljs-title {
   color: #8d8687;
 }
-.css .hljs-class,
-.css .hljs-id,
-.css .hljs-pseudo,
-.hljs-attribute,
-.hljs-name,
-.hljs-regexp,
-.hljs-tag,
+
+/* Paraíso Red */
 .hljs-variable,
-.html .hljs-doctype,
+.hljs-attribute,
+.hljs-tag,
+.hljs-regexp,
+.hljs-name,
 .ruby .hljs-constant,
-.xml .hljs-doctype,
+.xml .hljs-tag .hljs-title,
 .xml .hljs-pi,
-.xml .hljs-tag .hljs-title {
+.xml .hljs-doctype,
+.html .hljs-doctype,
+.css .hljs-id,
+.css .hljs-class,
+.css .hljs-pseudo {
   color: #ef6155;
 }
-.hljs-built_in,
-.hljs-constant,
-.hljs-literal,
+
+/* Paraíso Orange */
 .hljs-number,
+.hljs-preprocessor,
+.hljs-built_in,
+.hljs-literal,
 .hljs-params,
-.hljs-preprocessor {
+.hljs-constant {
   color: #f99b15;
 }
-.css .hljs-rule .hljs-attribute,
-.ruby .hljs-class .hljs-title {
+
+/* Paraíso Yellow */
+.ruby .hljs-class .hljs-title,
+.css .hljs-rule .hljs-attribute {
   color: #fec418;
 }
-.hljs-header,
-.hljs-inheritance,
+
+/* Paraíso Green */
 .hljs-string,
 .hljs-value,
+.hljs-inheritance,
+.hljs-header,
 .ruby .hljs-symbol,
 .xml .hljs-cdata {
   color: #48b685;
 }
+
+/* Paraíso Aqua */
 .css .hljs-hexcolor {
   color: #5bc4bf;
 }
-.coffeescript .hljs-title,
+
+/* Paraíso Blue */
 .hljs-function,
-.javascript .hljs-title,
-.perl .hljs-sub,
 .python .hljs-decorator,
 .python .hljs-title,
 .ruby .hljs-function .hljs-title,
-.ruby .hljs-title .hljs-keyword {
+.ruby .hljs-title .hljs-keyword,
+.perl .hljs-sub,
+.javascript .hljs-title,
+.coffeescript .hljs-title {
   color: #06b6ef;
 }
+
+/* Paraíso Purple */
 .hljs-keyword,
 .javascript .hljs-function {
   color: #815ba4;
 }
+
 .hljs {
   display: block;
   overflow-x: auto;
@@ -62,12 +84,13 @@
   padding: 0.5em;
   -webkit-text-size-adjust: none;
 }
+
 .coffeescript .javascript,
 .javascript .xml,
 .tex .hljs-formula,
-.xml .css,
-.xml .hljs-cdata,
 .xml .javascript,
-.xml .vbscript {
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
   opacity: 0.5;
 }
