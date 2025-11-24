@@ -7,6 +7,13 @@ import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import inputStateBehavior from "../behaviors/input-state.js";
 
+const template = /*html*/ `
+    <div class="back">
+      <span>⌘ + enter</span>
+    </div>
+    <textarea></textarea>
+  `;
+
 export default elementUtils.registerElement("ui-text-area", {
   get value() {
     return this._value;
@@ -89,7 +96,7 @@ export default elementUtils.registerElement("ui-text-area", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
-  template: `\n    <div class="back">\n      <span>⌘ + enter</span>\n    </div>\n    <textarea></textarea>\n  `,
+  template,
   style: getElementStyleSync("text-area"),
   $: { input: "textarea", span: "span" },
   factoryImpl(e) {

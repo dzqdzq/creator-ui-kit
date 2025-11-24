@@ -20,6 +20,19 @@ function promisify(fn) {
 
 const e = {};
 
+const template = /*html*/ `
+    <input></input>
+    <div class="spin-wrapper" tabindex="-1">
+      <div class="spin up">
+        <i class="icon-up-dir"></i>
+      </div>
+      <div class="spin-div"></div>
+      <div class="spin down">
+        <i class="icon-down-dir"></i>
+      </div>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-num-input", {
   get type() {
     return this._type;
@@ -185,8 +198,7 @@ export default elementUtils.registerElement("ui-num-input", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
-  template:
-    '\n    <input></input>\n    <div class="spin-wrapper" tabindex="-1">\n      <div class="spin up">\n        <i class="icon-up-dir"></i>\n      </div>\n      <div class="spin-div"></div>\n      <div class="spin down">\n        <i class="icon-down-dir"></i>\n      </div>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("num-input"),
   $: {
     input: "input",

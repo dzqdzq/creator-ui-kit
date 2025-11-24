@@ -19,6 +19,29 @@ if (document) {
   });
 }
 
+const template = /*html*/ `
+    <div class="wrapper">
+      <div class="label">
+        <i class="move icon-braille"></i>
+        <i class="fold icon-fold-up"></i>
+        <span class="text"></span>
+        <div class="resizer">
+            <i class="resizer-icon"></i>
+        </div>
+        <div class="lock">
+          <i class="icon-lock"></i>
+        </div>
+      </div>
+      <div class="wrapper-content">
+        <slot></slot>
+      </div>
+      <div class="remove">
+        <i class="icon-trash-empty"></i>
+      </div>
+    </div>
+    <slot name="child"></slot>
+  `;
+
 let m = elementUtils.registerElement("ui-prop", {
   get name() {
     return this._name;
@@ -248,8 +271,7 @@ let m = elementUtils.registerElement("ui-prop", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
-  template:
-    '\n    <div class="wrapper">\n      <div class="label">\n        <i class="move icon-braille"></i>\n        <i class="fold icon-fold-up"></i>\n        <span class="text"></span>\n        <div class="resizer">\n            <i class="resizer-icon"></i>\n        </div>\n        <div class="lock">\n          <i class="icon-lock"></i>\n        </div>\n      </div>\n      <div class="wrapper-content">\n        <slot></slot>\n      </div>\n      <div class="remove">\n        <i class="icon-trash-empty"></i>\n      </div>\n    </div>\n    <slot name="child"></slot>\n  ',
+  template,
   style: getElementStyleSync("prop"),
   $: {
     label: ".label",

@@ -1,6 +1,13 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 
+const template = /*html*/ `
+    <div class="box">
+      <slot></slot>
+      <div class="arrow"></div>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-hint", {
   get position() {
     return this._position;
@@ -20,8 +27,7 @@ export default elementUtils.registerElement("ui-hint", {
             : (this.$arrow.style.top = this._position));
     }
   },
-  template:
-    '\n    <div class="box">\n      <slot></slot>\n      <div class="arrow"></div>\n    </div>\n  ',
+  template,
   $: { arrow: ".arrow" },
   style: getElementStyleSync("hint"),
   factoryImpl(t) {

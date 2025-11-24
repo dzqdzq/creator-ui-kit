@@ -19,6 +19,14 @@ function removeHitGhost() {
   // 目前作为占位符，不执行任何操作
 }
 
+const template = /*html*/ `
+    <div class="inner">
+      <div class="rgb"></div>
+      <div class="alpha"></div>
+    </div>
+    <div class="mask"></div>
+  `;
+
 export default elementUtils.registerElement("ui-color", {
   get value() {
     return this._value;
@@ -89,8 +97,7 @@ export default elementUtils.registerElement("ui-color", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
-  template:
-    '\n    <div class="inner">\n      <div class="rgb"></div>\n      <div class="alpha"></div>\n    </div>\n    <div class="mask"></div>\n  ',
+  template,
   style: getElementStyleSync("color"),
   $: { rgb: ".rgb", alpha: ".alpha" },
   factoryImpl(e) {

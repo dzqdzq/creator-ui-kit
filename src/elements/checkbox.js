@@ -6,6 +6,15 @@ import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import buttonStateBehavior from "../behaviors/button-state.js";
 
+const template = /*html*/ `
+    <div class="box">
+      <i class="checker icon-ok"></i>
+    </div>
+    <span class="label">
+      <slot></slot>
+    </span>
+  `;
+
 export default elementUtils.registerElement("ui-checkbox", {
   get checked() {
     return this.getAttribute("checked") !== null;
@@ -50,8 +59,7 @@ export default elementUtils.registerElement("ui-checkbox", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, buttonStateBehavior],
-  template:
-    '\n    <div class="box">\n      <i class="checker icon-ok"></i>\n    </div>\n    <span class="label">\n      <slot></slot>\n    </span>\n  ',
+  template,
   style: getElementStyleSync("checkbox"),
   factoryImpl(checked, label) {
     if (label) {

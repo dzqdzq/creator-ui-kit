@@ -6,6 +6,10 @@ import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 
+const template = /*html*/ `
+    <select></select>
+  `;
+
 export default elementUtils.registerElement("ui-select", {
   get value() {
     return this._value;
@@ -78,7 +82,7 @@ export default elementUtils.registerElement("ui-select", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
-  template: "\n    <select></select>\n  ",
+  template,
   style: getElementStyleSync("select"),
   $: { select: "select" },
   factoryImpl(value) {

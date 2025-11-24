@@ -2,6 +2,13 @@ import chroma from "chroma-js";
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 
+const template = /*html*/ `
+    <div class="animate"></div>
+    <div class="label">
+      <slot></slot>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-loader", {
   get inline() {
     return this.getAttribute("inline") !== null;
@@ -24,8 +31,7 @@ export default elementUtils.registerElement("ui-loader", {
       this.style.backgroundColor = chroma(s).css();
     }
   },
-  template:
-    '\n    <div class="animate"></div>\n    <div class="label">\n      <slot></slot>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("loader"),
   factoryImpl(e) {
     if (e) {

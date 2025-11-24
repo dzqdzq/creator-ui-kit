@@ -1,8 +1,10 @@
 import elementUtils from "./utils.js";
 
+const template = /*html*/ "";
+
 export default elementUtils.registerElement("ui-shadow", {
   style: "\n    :host {\n      display: block;\n    }\n  ",
-  template: "",
+  template,
   factoryImpl(t) {
     this.shadowRoot.innerHTML = t;
   },

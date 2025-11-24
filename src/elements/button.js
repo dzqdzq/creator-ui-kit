@@ -5,9 +5,15 @@ import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 import buttonStateBehavior from "../behaviors/button-state.js";
 
+const template = /*html*/ `
+    <div class="inner">
+      <slot></slot>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-button", {
   behaviors: [focusableBehavior, disableBehavior, buttonStateBehavior],
-  template: '\n    <div class="inner">\n      <slot></slot>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("button"),
   factoryImpl(text) {
     if (text) {

@@ -5,6 +5,14 @@ import { getElementStyleSync } from "../utils/css-loader.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 
+const template = /*html*/ `
+    <div class="wrapper">
+      <i class="fold icon-fold-up"></i>
+      <slot name="header"></slot>
+    </div>
+    <slot class="content"></slot>
+  `;
+
 export default elementUtils.registerElement("ui-section", {
   get hovering() {
     return this.getAttribute("hovering") !== null;
@@ -17,8 +25,7 @@ export default elementUtils.registerElement("ui-section", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior],
-  template:
-    '\n    <div class="wrapper">\n      <i class="fold icon-fold-up"></i>\n      <slot name="header"></slot>\n    </div>\n    <slot class="content"></slot>\n  ',
+  template,
   style: getElementStyleSync("section"),
   $: { wrapper: ".wrapper", foldIcon: ".fold" },
   factoryImpl(e) {

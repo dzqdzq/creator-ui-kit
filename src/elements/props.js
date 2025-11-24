@@ -6,15 +6,22 @@ export default t;
 
 let { parseString, parseBoolean, parseColor, parseArray } = elementUtils;
 
+const stringTemplate = (t) => {
+  if (t.multiline) {
+    return /*html*/ `
+      <ui-text-area class="flex-1" resize-v></ui-text-area>
+    `;
+  }
+
+  return /*html*/ `
+    <ui-input class="flex-1"></ui-input>
+  `;
+};
+
 t.string = {
   value: parseString,
   attrs: { multiline: parseBoolean },
-  template(t) {
-    let i;
-    return (i = t.multiline
-      ? '\n        <ui-text-area class="flex-1" resize-v></ui-text-area>\n      '
-      : '\n        <ui-input class="flex-1"></ui-input>\n      ');
-  },
+  template: stringTemplate,
   ready() {
     if (this.attrs.multiline) {
       this.autoHeight = true;
@@ -67,6 +74,18 @@ t.string = {
   },
 };
 
+const numberTemplate = (t) => {
+  if (t.slide) {
+    return /*html*/ `
+      <ui-slider class="flex-1"></ui-slider>
+    `;
+  }
+
+  return /*html*/ `
+    <ui-num-input class="flex-1"></ui-num-input>
+  `;
+};
+
 t.number = {
   value: parseFloat,
   attrs: {
@@ -77,12 +96,7 @@ t.number = {
     step: parseFloat,
     precision: parseInt,
   },
-  template(t) {
-    let i;
-    return (i = t.slide
-      ? '\n        <ui-slider class="flex-1"></ui-slider>\n      '
-      : '\n        <ui-num-input class="flex-1"></ui-num-input>\n      ');
-  },
+  template: numberTemplate,
   ready() {
     this.slidable = true;
     this.$input = this.children[0];
@@ -153,9 +167,13 @@ t.number = {
   },
 };
 
+const booleanTemplate = /*html*/ `
+    <ui-checkbox class="flex-1"></ui-checkbox>
+  `;
+
 t.boolean = {
   value: (t) => t !== "false" && t !== "0" && (t === "true" || t !== null),
-  template: '\n    <ui-checkbox class="flex-1"></ui-checkbox>\n  ',
+  template: booleanTemplate,
   ready() {
     this.$input = this.children[0];
     this.$input.value = this.value;
@@ -198,9 +216,13 @@ t.boolean = {
   },
 };
 
+const objectTemplate = /*html*/ `
+    <div class="child" slot="child"></div>
+  `;
+
 t.object = {
   value: (t) => JSON.parse(t),
-  template: '\n    <div class="child" slot="child"></div>\n  ',
+  template: objectTemplate,
   ready() {
     this.foldable = true;
     this.$child = this.querySelector(".child");
@@ -224,10 +246,14 @@ t.object = {
   },
 };
 
+const arrayTemplate = /*html*/ `
+    <ui-num-input class="flex-1"></ui-num-input>
+    <div slot="child"></div>
+  `;
+
 t.array = {
   value: parseArray,
-  template:
-    '\n    <ui-num-input class="flex-1"></ui-num-input>\n    <div slot="child"></div>\n  ',
+  template: arrayTemplate,
   ready() {
     this.foldable = true;
     this.$input = this.children[0];
@@ -257,11 +283,15 @@ t.array = {
   },
 };
 
+const enumTemplate = /*html*/ `
+    <ui-select class="flex-1"></ui-select>
+  `;
+
 t.enum = {
   hasUserContent: true,
   value: parseInt,
   attrs: { options: parseArray },
-  template: '\n    <ui-select class="flex-1"></ui-select>\n  ',
+  template: enumTemplate,
   ready(t) {
     this.$input = this.querySelector("ui-select");
     this.installStandardEvents(this.$input);
@@ -318,9 +348,13 @@ t.enum = {
   },
 };
 
+const colorTemplate = /*html*/ `
+    <ui-color class="flex-1"></ui-color>
+  `;
+
 t.color = {
   value: parseColor,
-  template: '\n    <ui-color class="flex-1"></ui-color>\n  ',
+  template: colorTemplate,
   ready() {
     this.$input = this.children[0];
     this.$input.value = this.value;
@@ -362,10 +396,18 @@ t.color = {
   },
 };
 
+const vec2Template = /*html*/ `
+    <ui-prop name="X" id="x-comp" slidable class="fixed-label red flex-1">
+      <ui-num-input class="flex-1"></ui-num-input>
+    </ui-prop>
+    <ui-prop name="Y" id="y-comp" slidable class="fixed-label green flex-1">
+      <ui-num-input class="flex-1"></ui-num-input>
+    </ui-prop>
+  `;
+
 t.vec2 = {
   value: parseArray,
-  template:
-    '\n    <ui-prop name="X" id="x-comp" slidable class="fixed-label red flex-1">\n      <ui-num-input class="flex-1"></ui-num-input>\n    </ui-prop>\n    <ui-prop name="Y" id="y-comp" slidable class="fixed-label green flex-1">\n      <ui-num-input class="flex-1"></ui-num-input>\n    </ui-prop>\n  ',
+  template: vec2Template,
   ready() {
     this.$propX = this.querySelector("#x-comp");
     this.$inputX = this.$propX.children[0];
@@ -474,10 +516,21 @@ t.vec2 = {
   },
 };
 
+const vec3Template = /*html*/ `
+    <ui-prop name="X" id="x-comp" slidable class="fixed-label red flex-1">
+      <ui-num-input class="flex-1"></ui-num-input>
+    </ui-prop>
+    <ui-prop name="Y" id="y-comp" slidable class="fixed-label green flex-1">
+      <ui-num-input class="flex-1"></ui-num-input>
+    </ui-prop>
+    <ui-prop name="Z" id="z-comp" slidable class="fixed-label blue flex-1">
+      <ui-num-input class="flex-1"></ui-num-input>
+    </ui-prop>
+  `;
+
 t.vec3 = {
   value: parseArray,
-  template:
-    '\n    <ui-prop name="X" id="x-comp" slidable class="fixed-label red flex-1">\n      <ui-num-input class="flex-1"></ui-num-input>\n    </ui-prop>\n    <ui-prop name="Y" id="y-comp" slidable class="fixed-label green flex-1">\n      <ui-num-input class="flex-1"></ui-num-input>\n    </ui-prop>\n    <ui-prop name="Z" id="z-comp" slidable class="fixed-label blue flex-1">\n      <ui-num-input class="flex-1"></ui-num-input>\n    </ui-prop>\n  ',
+  template: vec3Template,
   ready() {
     this.$propX = this.querySelector("#x-comp");
     this.$inputX = this.$propX.children[0];

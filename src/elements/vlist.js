@@ -2,9 +2,13 @@ import elementUtils from "./utils.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
 
+const template = /*html*/ `
+    <slot></slot>
+  `;
+
 export default elementUtils.registerElement("ui-vlist", {
   behaviors: [focusableBehavior, disableBehavior],
-  template: "\n    <slot></slot>\n  ",
+  template,
   factoryImpl(e) {
     if (e) {
       this._items = e;

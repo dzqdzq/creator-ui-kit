@@ -13,6 +13,14 @@ import inputStateBehavior from "../behaviors/input-state.js";
 // 创建占位符
 const settings = {};
 
+const template = /*html*/ `
+    <div class="wrapper">
+      <div class="track"></div>
+      <div class="nubbin"></div>
+    </div>
+    <input></input>
+  `;
+
 export default elementUtils.registerElement("ui-slider", {
   get value() {
     return this._value;
@@ -117,8 +125,7 @@ export default elementUtils.registerElement("ui-slider", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
-  template:
-    '\n    <div class="wrapper">\n      <div class="track"></div>\n      <div class="nubbin"></div>\n    </div>\n    <input></input>\n  ',
+  template,
   style: getElementStyleSync("slider"),
   $: {
     wrapper: ".wrapper",

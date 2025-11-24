@@ -7,6 +7,10 @@ import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 import inputStateBehavior from "../behaviors/input-state.js";
 
+const template = /*html*/ `
+    <input></input>
+  `;
+
 export default elementUtils.registerElement("ui-input", {
   get value() {
     return this.$input.value;
@@ -93,7 +97,7 @@ export default elementUtils.registerElement("ui-input", {
     }
   },
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
-  template: "\n    <input></input>\n  ",
+  template,
   style: getElementStyleSync("input"),
   $: { input: "input" },
   factoryImpl(value) {

@@ -15,9 +15,13 @@ function u(e) {
   return t;
 }
 
+const template = /*html*/ `
+    <table></table>
+  `;
+
 export default elementUtils.registerElement("ui-prop-table", {
   style: getElementStyleSync("prop-table"),
-  template: "\n    <table></table>\n  ",
+  template,
   $: { table: "table" },
   ready() {
     let e = this.querySelector("template");

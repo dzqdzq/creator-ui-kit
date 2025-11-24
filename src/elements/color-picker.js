@@ -141,6 +141,64 @@ class MenuItem {
   }
 }
 
+const template = /*html*/ `
+    <div class="hbox">
+      <div class="hue ctrl" tabindex="-1">
+        <div class="hue-handle">
+          <i class="icon-right-dir"></i>
+        </div>
+      </div>
+      <div class="color ctrl" tabindex="-1">
+        <div class="color-handle">
+          <i class="icon-circle-empty"></i>
+        </div>
+      </div>
+      <div class="alpha ctrl" tabindex="-1">
+        <div class="alpha-handle">
+          <i class="icon-left-dir"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="vbox">
+      <div class="prop">
+        <span class="red tag">R</span>
+        <ui-slider id="r-slider" step=1 precision=0 min=0 max=255></ui-slider>
+      </div>
+      <div class="prop">
+        <span class="green">G</span>
+        <ui-slider id="g-slider" step=1 precision=0 min=0 max=255></ui-slider>
+      </div>
+      <div class="prop">
+        <span class="blue">B</span>
+        <ui-slider id="b-slider" step=1 precision=0 min=0 max=255></ui-slider>
+      </div>
+      <div class="prop">
+        <span class="gray">A</span>
+        <ui-slider id="a-slider" step=1 precision=0 min=0 max=255></ui-slider>
+      </div>
+      <div class="hex-field">
+        <div class="color-block old">
+          <div id="old-color" class="color-inner"></div>
+        </div>
+        <div class="color-block new">
+          <div id="new-color" class="color-inner"></div>
+        </div>
+        <span class="space"></span>
+        <div class="label">Hex Color</div>
+        <ui-input id="hex-input"></ui-input>
+      </div>
+
+      <div class="title">
+        <div>Presets</div>
+          <ui-button id="btn-add" class="transparent tiny">
+            <i class="icon-plus"></i>
+          </ui-button>
+        </div>
+      <div class="hbox palette"></div>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-color-picker", {
   get value() {
     return this._value;
@@ -160,8 +218,7 @@ export default elementUtils.registerElement("ui-color-picker", {
     }
   },
   behaviors: [focusableBehavior],
-  template:
-    '\n    <div class="hbox">\n      <div class="hue ctrl" tabindex="-1">\n        <div class="hue-handle">\n          <i class="icon-right-dir"></i>\n        </div>\n      </div>\n      <div class="color ctrl" tabindex="-1">\n        <div class="color-handle">\n          <i class="icon-circle-empty"></i>\n        </div>\n      </div>\n      <div class="alpha ctrl" tabindex="-1">\n        <div class="alpha-handle">\n          <i class="icon-left-dir"></i>\n        </div>\n      </div>\n    </div>\n\n    <div class="vbox">\n      <div class="prop">\n        <span class="red tag">R</span>\n        <ui-slider id="r-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="green">G</span>\n        <ui-slider id="g-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="blue">B</span>\n        <ui-slider id="b-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="prop">\n        <span class="gray">A</span>\n        <ui-slider id="a-slider" step=1 precision=0 min=0 max=255></ui-slider>\n      </div>\n      <div class="hex-field">\n        <div class="color-block old">\n          <div id="old-color" class="color-inner"></div>\n        </div>\n        <div class="color-block new">\n          <div id="new-color" class="color-inner"></div>\n        </div>\n        <span class="space"></span>\n        <div class="label">Hex Color</div>\n        <ui-input id="hex-input"></ui-input>\n      </div>\n\n      <div class="title">\n        <div>Presets</div>\n          <ui-button id="btn-add" class="transparent tiny">\n            <i class="icon-plus"></i>\n          </ui-button>\n        </div>\n      <div class="hbox palette"></div>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("color-picker"),
   $: {
     hueHandle: ".hue-handle",

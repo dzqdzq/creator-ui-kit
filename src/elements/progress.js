@@ -2,6 +2,12 @@ import elementUtils from "./utils.js";
 import mathUtils from "../utils/math.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
 
+const template = /*html*/ `
+    <div class="bar">
+      <div class="label"></div>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-progress", {
   get value() {
     return this._value;
@@ -18,8 +24,7 @@ export default elementUtils.registerElement("ui-progress", {
       this._updateProgressBar();
     }
   },
-  template:
-    '\n    <div class="bar">\n      <div class="label"></div>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("progress"),
   $: { bar: ".bar", label: ".label" },
   factoryImpl(e) {

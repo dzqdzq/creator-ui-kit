@@ -5,9 +5,15 @@ import { getElementStyleSync } from "../utils/css-loader.js";
 // 临时占位符
 const resizableBehavior = {};
 
+const template = /*html*/ `
+    <div class="content">
+      <slot></slot>
+    </div>
+  `;
+
 export default elementUtils.registerElement("ui-splitter", {
   behaviors: [resizableBehavior],
-  template: '\n    <div class="content">\n      <slot></slot>\n    </div>\n  ',
+  template,
   style: getElementStyleSync("splitter"),
   ready() {
     this._initResizable();
