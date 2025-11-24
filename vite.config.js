@@ -291,39 +291,48 @@ function cssInjectPlugin() {
         };
       }
       
-      // 同时处理 index.js，注入全局字体加载逻辑
+      // 同时处理 index.js，注入全局样式加载逻辑
       if (id.endsWith('src/index.js') || id.endsWith('/index.js')) {
         const themeName = 'default';
         const cssMap = collectAllStyles(themeName);
-        const fontFace = extractFontFace(cssMap);
         
-        if (fontFace) {
-          const fontFaceStr = JSON.stringify(fontFace);
-          const fontFaceCode = `
-// 全局字体加载：在文档级别注入字体定义，确保 Shadow DOM 中的元素也能使用
+        // 收集所有 globals 样式
+        const globalStyles = [];
+        const globalNames = ['common', 'fontello', 'layout'];
+        globalNames.forEach(name => {
+          const key = `globals/${name}`;
+          if (cssMap[key]) {
+            globalStyles.push(cssMap[key]);
+          }
+        });
+        
+        if (globalStyles.length > 0) {
+          const globalStylesStr = JSON.stringify(globalStyles.join('\n'));
+          const globalStylesCode = `
+// 全局样式加载：在文档级别注入 globals 目录下的所有样式
 if (typeof document !== 'undefined') {
-  const fontStyleId = 'ui-kit-global-fonts';
-  if (!document.getElementById(fontStyleId)) {
-    const fontStyle = document.createElement('style');
-    fontStyle.id = fontStyleId;
-    fontStyle.type = 'text/css';
-    fontStyle.textContent = ${fontFaceStr};
+  const globalStyleId = 'ui-kit-global-styles';
+  if (!document.getElementById(globalStyleId)) {
+    const globalStyle = document.createElement('style');
+    globalStyle.id = globalStyleId;
+    globalStyle.type = 'text/css';
+    globalStyle.textContent = ${globalStylesStr};
     if (document.head) {
-      document.head.appendChild(fontStyle);
+      document.head.appendChild(globalStyle);
     } else if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        document.head.appendChild(fontStyle);
+        document.head.appendChild(globalStyle);
       });
     } else {
       const head = document.getElementsByTagName('head')[0];
-      if (head) head.appendChild(fontStyle);
+      if (head) head.appendChild(globalStyle);
     }
   }
 }
 `;
-          // 在文件开头注入字体加载代码
+          // 在文件开头注入全局样式加载代码
           return {
-            code: fontFaceCode + code,
+            code: globalStylesCode + code,
             map: null
           };
         }
