@@ -8,15 +8,36 @@ import disableBehavior from "../behaviors/disable.js";
 import readonlyBehavior from "../behaviors/readonly.js";
 let e;
 
-// 占位符函数，用于替代可能的外部 API
+// 浏览器环境下的点击外部关闭功能
+let hitGhostHandler = null;
+
 function addHitGhost(type, zIndex, callback) {
-  // 如果这些方法来自外部 API（如 Electron），可以在这里调用
-  // 目前作为占位符，不执行任何操作
+  // 移除之前的事件监听器（如果存在）
+  removeHitGhost();
+  
+  // 创建一个点击事件处理器
+  hitGhostHandler = (event) => {
+    // 检查点击是否在颜色选择器面板外部
+    if (e && !e.contains(event.target)) {
+      // 也要检查是否点击在触发按钮上（ui-color 元素）
+      if (e._target && !e._target.contains(event.target)) {
+        callback();
+      }
+    }
+  };
+  
+  // 使用 setTimeout 确保当前事件处理完成后再添加监听器
+  // 避免立即触发关闭
+  setTimeout(() => {
+    document.addEventListener("mousedown", hitGhostHandler, true);
+  }, 0);
 }
 
 function removeHitGhost() {
-  // 如果这些方法来自外部 API（如 Electron），可以在这里调用
-  // 目前作为占位符，不执行任何操作
+  if (hitGhostHandler) {
+    document.removeEventListener("mousedown", hitGhostHandler, true);
+    hitGhostHandler = null;
+  }
 }
 
 const template = /*html*/ `
