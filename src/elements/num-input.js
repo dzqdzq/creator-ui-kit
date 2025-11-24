@@ -18,7 +18,11 @@ function promisify(fn) {
   });
 }
 
-const e = {};
+// 默认配置对象
+const e = {
+  stepInt: 1,      // 整数默认步长
+  stepFloat: 0.1   // 浮点数默认步长
+};
 
 const template = /*html*/ `
     <input></input>
@@ -229,7 +233,8 @@ export default elementUtils.registerElement("ui-num-input", {
     this._max = n !== null ? this._parseFn(n) : null;
     this.multiValues = this.getAttribute("multi-values");
     let h = this.getAttribute("value");
-    this._value = h !== null ? this._parseFn(h) : null;
+    // 如果没有设置 value 属性，默认为 0
+    this._value = h !== null ? this._parseFn(h) : 0;
     this._value = this._clampValue(this._value);
     let l = this.getAttribute("step");
 
@@ -419,9 +424,15 @@ export default elementUtils.registerElement("ui-num-input", {
       : jsUtils.toFixed(t, this._precision, this._precision);
   },
   _clampValue(t) {
-    Math.max(this._min, t);
-
-    Math.min(this._max, t);
+    // 限制最小值
+    if (this._min !== null && this._min !== undefined) {
+      t = Math.max(this._min, t);
+    }
+    
+    // 限制最大值
+    if (this._max !== null && this._max !== undefined) {
+      t = Math.min(this._max, t);
+    }
 
     return t;
   },
