@@ -1,9 +1,6 @@
 import elementUtils from "./utils.js";
-// import i from "../behaviors/resizable"; // 需要创建此文件
+import resizableBehavior from "../behaviors/resizable"; // 需要创建此文件
 import { getElementStyleSync } from "../utils/css-loader.js";
-
-// 临时占位符
-const resizableBehavior = {};
 
 const template = /*html*/ `
     <div class="content">

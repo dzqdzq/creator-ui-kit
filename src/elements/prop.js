@@ -1,6 +1,6 @@
 import elementUtils from "./utils.js";
 import { getElementStyleSync } from "../utils/css-loader.js";
-import { walk, fire } from "../utils/dom-utils.js";
+import { walk, fire, acceptEvent } from "../utils/dom-utils.js";
 import focusMgr from "../utils/focus-mgr.js";
 import focusableBehavior from "../behaviors/focusable.js";
 import disableBehavior from "../behaviors/disable.js";
@@ -528,7 +528,7 @@ let m = elementUtils.registerElement("ui-prop", {
     });
 
     this.addEventListener("mousedown", (t) => {
-      i.acceptEvent(t);
+      acceptEvent(t);
 
       if (this.disabled) {
         s._setFocusElement(this);
@@ -552,11 +552,11 @@ let m = elementUtils.registerElement("ui-prop", {
           this._sliding;
           break;
         case 37:
-          i.acceptEvent(t);
+          acceptEvent(t);
           this.fold();
           break;
         case 39:
-          i.acceptEvent(t);
+          acceptEvent(t);
           this.foldup();
           break;
       }
