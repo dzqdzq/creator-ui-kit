@@ -486,7 +486,7 @@ let m = elementUtils.registerElement("ui-prop", {
         let t = this._getFirstFocusableElement();
 
         if (t) {
-          s._setFocusElement(t);
+          focusMgr._setFocusElement(t);
         }
       }
     });
@@ -531,17 +531,17 @@ let m = elementUtils.registerElement("ui-prop", {
       acceptEvent(t);
 
       if (this.disabled) {
-        s._setFocusElement(this);
+        focusMgr._setFocusElement(this);
         return undefined;
       }
 
-      s._setFocusElement(null);
+      focusMgr._setFocusElement(null);
       let e = this._getFirstFocusableElement();
 
       if (e) {
-        s._setFocusElement(e);
+        focusMgr._setFocusElement(e);
       } else {
-        s._setFocusElement(this);
+        focusMgr._setFocusElement(this);
       }
     });
 

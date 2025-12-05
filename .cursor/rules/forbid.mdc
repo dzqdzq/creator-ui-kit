@@ -2,5 +2,4 @@
 alwaysApply: true
 ---
 
-- 禁止修改 src/themes/default 目录下的所有文件
 - 使用 pnpm 包管理器

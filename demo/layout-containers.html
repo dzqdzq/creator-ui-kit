@@ -1,322 +1,355 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>布局与容器 - UI-Kit Demo</title>
-  <script type="importmap">
-    {
-      "imports": {
-        "chroma-js": "../node_modules/chroma-js/index.js"
-      }
-    }
-  </script>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #1a1a1a;
-      color: #ddd;
-      padding: 20px;
-      margin: 0;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .header h1 {
-      color: #fff;
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-    .header a {
-      color: #4a9eff;
-      text-decoration: none;
-      font-size: 1.1em;
-    }
-    .section {
-      margin: 30px 0;
-      padding: 25px;
-      background: #222;
-      border-radius: 8px;
-      border-left: 4px solid #ffd93d;
-    }
-    .section h2 {
-      color: #ffd93d;
-      margin-top: 0;
-      margin-bottom: 20px;
-      font-size: 1.5em;
-    }
-    .demo-group {
-      margin: 25px 0;
-    }
-    .demo-group label {
-      display: block;
-      margin-bottom: 10px;
-      color: #aaa;
-      font-size: 0.9em;
-    }
-    .section-content {
-      padding: 15px;
-      background: #2a2a2a;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-    .box-container-demo {
-      padding: 20px;
-      background: #2a2a2a;
-      border-radius: 5px;
-      margin: 10px 0;
-    }
-    .splitter-demo {
-      height: 300px;
-      background: #2a2a2a;
-      border-radius: 5px;
-      padding: 10px;
-    }
-    .splitter-panel {
-      padding: 20px;
-      background: #333;
-      border-radius: 3px;
-      height: 100%;
-      overflow: auto;
-    }
-    .info-box {
-      margin-top: 15px;
-      padding: 15px;
-      background: #2a2a2a;
-      border-radius: 5px;
-      border-left: 3px solid #ffd93d;
-    }
-  </style>
-  <script type="module">
-    import '../dist/ui-kit.js';
-    
-    await customElements.whenDefined('ui-section');
-    await customElements.whenDefined('ui-box-container');
-    
-  </script>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>📦 布局与容器</h1>
-      <a href="index.html">← 返回首页</a>
-    </div>
-    
-    <div class="section">
-      <h2>可折叠区域 (ui-section)</h2>
-      
-      <div class="demo-group">
-        <label>展开状态的可折叠区域：</label>
-        <ui-section tabindex="-1">
-          <div slot="header" class="flex-1 layout horizontal center-center">
-            <span draggable="true">Node</span>
-            <span class="flex-1"></span>
-            <ui-button class="tiny transparent" title="" tabindex="-1">
-              <i class="fa fa-cog"></i>
-            </ui-button>
-          </div>
-    
-          <ui-prop name="Position" step="1" type="cc.Vec2" tooltip="相对父节点的位置坐标，以像素为单位" tabindex="-1">
-            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          
-            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          </ui-prop>
-    
-          <ui-prop name="Rotation" type="number" step="1" slidable="" tooltip="相对父节点的旋转，以度为单位，输入正值时逆时针旋转" tabindex="-1">
-            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-          </ui-prop>
-    
-          <ui-prop name="Scale" step="0.1" type="cc.Vec2" tooltip="节点的整体缩放比例，会影响所有子节点" tabindex="-1">
-            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          
-            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          </ui-prop>
-    
-          <ui-prop name="Anchor" type="cc.Vec2" step="0.1" tooltip="节点位置和旋转的基准点，(0,0)表示左下角，(1,1)表示右上角" tabindex="-1">
-            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          
-            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          </ui-prop>
-    
-          <ui-prop name="Size" type="cc.Size" step="1" tooltip="节点的内容尺寸，以像素为单位，在排版中至关重要。修改 size 不会影响子节点。" tabindex="-1">
-          <ui-prop name="W" id="w-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-          </ui-prop>
-          <ui-prop name="H" id="h-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-          </ui-prop>
-        </ui-prop>
-    
-          <ui-prop name="Color" type="cc.Color" tooltip="节点的颜色，会影响节点上的渲染组件的颜色显示" tabindex="-1">
-          <ui-color class="flex-1" tabindex="-1"></ui-color>
-        </ui-prop>
-    
-          <ui-prop name="Opacity" type="number" min="0" max="255" step="1" slidable="" tooltip="节点的不透明度，会影响本节点和所有子节点上渲染组件的不透明度" tabindex="-1">
-            <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-          </ui-prop>
-    
-          <ui-prop name="Skew" type="cc.Vec2" step="1" tabindex="-1">
-            <ui-prop name="X" id="x-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          
-            <ui-prop name="Y" id="y-comp" subset="" slidable="" class="fixed-label flex-1" tabindex="-1">
-              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
-            </ui-prop>
-          </ui-prop>
-    
-          <ui-prop name="Group" tooltip="节点的分组，会影响节点的 碰撞或其他 信息。分组的配置可以在 项目设置 中进行详细设置。" tabindex="-1">
-            <ui-select class="flex-1" tabindex="-1">
-              <option value="default">default</option>
-            </ui-select>
-            <ui-button class="tiny blue" tabindex="-1">
-              编辑
-            </ui-button>
-          </ui-prop>
-        </ui-section>
-      </div>
-      
-      <div class="demo-group">
-        <label>默认折叠的区域：</label>
-        <ui-section folded>
-          <span slot="header">高级设置</span>
-          <div class="section-content">
-            <p>这个区域默认是折叠的。</p>
-            <ui-checkbox>启用高级功能</ui-checkbox>
-            <ui-checkbox>显示调试信息</ui-checkbox>
-          </div>
-        </ui-section>
-      </div>
-      
-      <div class="demo-group">
-        <label>多个可折叠区域组合：</label>
-        <ui-section>
-          <span slot="header">外观设置</span>
-          <div class="section-content">
-            <label style="display: block; margin-bottom: 10px;">主题颜色：</label>
-            <ui-color value="100,150,255,1"></ui-color>
-            <label style="display: block; margin: 15px 0 10px 0;">字体大小：</label>
-            <ui-slider min="12" max="24" step="1" precision="0" value="16" style="width: 100%;"></ui-slider>
-          </div>
-        </ui-section>
-        
-        <ui-section>
-          <span slot="header">功能设置</span>
-          <div class="section-content">
-            <ui-checkbox checked>自动保存</ui-checkbox>
-            <ui-checkbox>启用通知</ui-checkbox>
-            <ui-checkbox>显示工具栏</ui-checkbox>
-          </div>
-        </ui-section>
-      </div>
-      
-      <div class="info-box">
-        <strong>💡 提示：</strong> 点击标题栏可以折叠/展开区域，也可以使用左右箭头键控制。
-      </div>
-    </div>
-    
-    <div class="section">
-      <h2>容器 (ui-box-container)</h2>
-      
-      <div class="demo-group">
-        <label>基础容器：</label>
-        <ui-box-container class="box-container-demo">
-          <p>这是一个容器组件，可以包含其他元素。</p>
-          <ui-button>容器内的按钮</ui-button>
-          <ui-input placeholder="容器内的输入框" style="margin-top: 10px; display: block;"></ui-input>
-        </ui-box-container>
-      </div>
-      
-      <div class="demo-group">
-        <label>嵌套容器：</label>
-        <ui-box-container class="box-container-demo">
-          <p>外层容器</p>
-          <ui-box-container style="margin-top: 15px; padding: 15px; background: #333; border-radius: 3px;">
-            <p>内层容器</p>
-            <ui-checkbox>嵌套的复选框</ui-checkbox>
-          </ui-box-container>
-        </ui-box-container>
-      </div>
-    </div>
-    
-    <div class="section">
-      <h2>分割器 (ui-splitter)</h2>
-      
-      <div class="demo-group">
-        <label>水平分割器（左右布局）：</label>
-        <div class="splitter-demo">
-          <ui-splitter style="display: flex; height: 100%;">
-            <ui-splitter style="flex: 1;">
-              <div class="splitter-panel">
-                <h3 style="margin-top: 0; color: #ffd93d;">左侧面板</h3>
-                <p>这是左侧的内容区域。</p>
-                <ui-button>左侧按钮</ui-button>
-              </div>
-            </ui-splitter>
-            <ui-splitter style="flex: 1;">
-              <div class="splitter-panel">
-                <h3 style="margin-top: 0; color: #ffd93d;">右侧面板</h3>
-                <p>这是右侧的内容区域。</p>
-                <ui-input placeholder="右侧输入框"></ui-input>
-              </div>
-            </ui-splitter>
-          </ui-splitter>
-        </div>
-      </div>
-      
-      <div class="info-box">
-        <strong>💡 提示：</strong> 分割器允许用户调整面板大小。拖动分割线可以调整左右或上下面板的宽度/高度。
-      </div>
-    </div>
-    
-    <div class="section">
-      <h2>组合示例：设置面板</h2>
-      
-      <ui-section>
-        <span slot="header">用户偏好设置</span>
-        <div style="padding: 15px;">
-          <ui-section style="margin-bottom: 15px;">
-            <span slot="header">界面设置</span>
-            <div class="section-content">
-              <label style="display: block; margin-bottom: 10px;">主题：</label>
-              <ui-select>
-                <option value="dark">深色主题</option>
-                <option value="light">浅色主题</option>
-                <option value="auto">自动</option>
-              </ui-select>
-            </div>
-          </ui-section>
-          
-          <ui-section>
-            <span slot="header">编辑器设置</span>
-            <div class="section-content">
-              <label style="display: block; margin-bottom: 10px;">字体大小：</label>
-              <ui-slider min="10" max="20" step="1" precision="0" value="14" style="width: 100%;"></ui-slider>
-              <ui-checkbox checked style="margin-top: 15px;">显示行号</ui-checkbox>
-              <ui-checkbox>自动换行</ui-checkbox>
-            </div>
-          </ui-section>
-        </div>
-      </ui-section>
-    </div>
-  </div>
-</body>
-</html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>布局与容器 - UI-Kit Demo</title>
+    <script type="module">
+      import "../dist/ui-kit.js";
 
+      await customElements.whenDefined("ui-section");
+      await customElements.whenDefined("ui-box-container");
+    </script>
+  </head>
+  <body>
+    <div id="view" class="flex-1">
+      <div class="fit layout vertical">
+        <div
+          style="
+            flex: 0 0 auto;
+            padding-bottom: 2px;
+            margin: 5px 10px 3px;
+            overflow: hidden;
+          "
+        >
+          <div class="layout horizontal center-center">
+            <ui-checkbox
+              checked=""
+              tooltip="该节点是否处于激活状态"
+              tabindex="-1"
+            ></ui-checkbox>
+            <ui-input
+              class="flex-1"
+              tooltip="节点在场景和层级中的名称"
+              tabindex="-1"
+            >
+            </ui-input>
+            <ui-button
+              class="tiny transparent"
+              title="TODO"
+              tabindex="-1"
+              style="
+                font-weight: normal;
+                font-size: 0.8rem;
+                color: rgb(170, 170, 170);
+                width: 29px;
+              "
+            >
+              3D
+            </ui-button>
+          </div>
+        </div>
+
+        <div class="props flex-1">
+          <ui-section tabindex="-1">
+            <div
+              slot="header"
+              class="header flex-1 layout horizontal center-center"
+            >
+              <span draggable="true">Node</span>
+              <span class="flex-1"></span>
+              <ui-button class="tiny transparent" title="" tabindex="-1">
+                <i class="fa fa-cog"></i>
+              </ui-button>
+            </div>
+
+            <ui-prop
+              name="Position"
+              step="1"
+              type="cc.Vec2"
+              tooltip="相对父节点的位置坐标，以像素为单位"
+              tabindex="-1"
+            >
+              <ui-prop
+                name="X"
+                id="x-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+
+              <ui-prop
+                name="Y"
+                id="y-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+            </ui-prop>
+
+            <ui-prop
+              name="Rotation"
+              type="number"
+              step="1"
+              slidable=""
+              tooltip="相对父节点的旋转，以度为单位，输入正值时逆时针旋转"
+              tabindex="-1"
+            >
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+
+            <ui-prop
+              name="Scale"
+              step="0.1"
+              type="cc.Vec2"
+              tooltip="节点的整体缩放比例，会影响所有子节点"
+              tabindex="-1"
+            >
+              <ui-prop
+                name="X"
+                id="x-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+
+              <ui-prop
+                name="Y"
+                id="y-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+            </ui-prop>
+
+            <ui-prop
+              name="Anchor"
+              type="cc.Vec2"
+              step="0.1"
+              tooltip="节点位置和旋转的基准点，(0,0)表示左下角，(1,1)表示右上角"
+              tabindex="-1"
+            >
+              <ui-prop
+                name="X"
+                id="x-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+
+              <ui-prop
+                name="Y"
+                id="y-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+            </ui-prop>
+
+            <ui-prop
+              name="Size"
+              type="cc.Size"
+              step="1"
+              tooltip="节点的内容尺寸，以像素为单位，在排版中至关重要。修改 size 不会影响子节点。"
+              tabindex="-1"
+            >
+              <ui-prop
+                name="W"
+                id="w-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+              <ui-prop
+                name="H"
+                id="h-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+            </ui-prop>
+
+            <ui-prop
+              name="Color"
+              type="cc.Color"
+              tooltip="节点的颜色，会影响节点上的渲染组件的颜色显示"
+              tabindex="-1"
+            >
+              <ui-color class="flex-1" tabindex="-1"></ui-color>
+            </ui-prop>
+
+            <ui-prop
+              name="Opacity"
+              type="number"
+              min="0"
+              max="255"
+              step="1"
+              slidable=""
+              tooltip="节点的不透明度，会影响本节点和所有子节点上渲染组件的不透明度"
+              tabindex="-1"
+            >
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+
+            <ui-prop name="Skew" type="cc.Vec2" step="1" tabindex="-1">
+              <ui-prop
+                name="X"
+                id="x-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+
+              <ui-prop
+                name="Y"
+                id="y-comp"
+                subset=""
+                slidable=""
+                class="fixed-label flex-1"
+                tabindex="-1"
+              >
+                <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+              </ui-prop>
+            </ui-prop>
+
+            <ui-prop
+              name="Group"
+              tooltip="节点的分组，会影响节点的 碰撞或其他 信息。分组的配置可以在 项目设置 中进行详细设置。"
+              tabindex="-1"
+            >
+              <ui-select class="flex-1" tabindex="-1">
+                <option value="default">default</option>
+              </ui-select>
+              <ui-button class="tiny blue" tabindex="-1"> 编辑 </ui-button>
+            </ui-prop>
+          </ui-section>
+
+          <ui-section tabindex="-1">
+            <div slot="header" class="header flex-1 layout horizontal center-center">
+              <ui-checkbox checked="" tabindex="-1"></ui-checkbox>
+              <span draggable="true">Label</span>
+              <span class="flex-1"></span>
+              <ui-button class="tiny transparent" title="帮助文档" tabindex="-1">
+                <i class="fa fa-book"></i>
+              </ui-button>
+              <ui-button class="tiny transparent" title="" tabindex="-1">
+                <i class="fa fa-cog"></i>
+              </ui-button>
+            </div>
+      
+            
+          <ui-prop auto-height="" tabindex="-1" selected="">
+              <ui-text-area class="flex-1" resize-v="" tabindex="-1" focused=""></ui-text-area>
+            </ui-prop>
+          <ui-prop tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">LEFT</option><option value="1">CENTER</option><option value="2">RIGHT</option></ui-select>
+          </ui-prop>
+          <ui-prop tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">TOP</option><option value="1">CENTER</option><option value="2">BOTTOM</option></ui-select>
+          </ui-prop>
+      
+          <ui-prop readonly="" is-readonly="" slidable="" tabindex="-1" style="display: none;">
+              <ui-num-input class="flex-1" is-readonly="" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          <ui-prop type="number" slidable="" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          <ui-prop readonly="" is-readonly="" slidable="" tabindex="-1" style="display: none;">
+              <ui-num-input class="flex-1" is-readonly="" tabindex="-1"></ui-num-input>
+            </ui-prop>
+      
+          <ui-prop slidable="" tabindex="-1">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          <ui-prop slidable="" tabindex="-1" style="display: none;">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          <ui-prop tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">NONE</option><option value="1">CLAMP</option><option value="2">SHRINK</option><option value="3">RESIZE_HEIGHT</option></ui-select>
+          </ui-prop>
+          <ui-prop tabindex="-1" style="display: none;">
+          <ui-checkbox class="flex-1" checked="" tabindex="-1"></ui-checkbox>
+        </ui-prop>
+          <ui-prop tabindex="-1" style="padding-top: 8px;">
+              <ui-asset class="flex-1" type="cc.Font" droppable="asset" empty="" tabindex="-1"></ui-asset>
+            </ui-prop>
+          <ui-prop tabindex="-1">
+              <ui-input class="flex-1" tabindex="-1"></ui-input>
+            </ui-prop>
+          <ui-prop tabindex="-1">
+          <ui-checkbox class="flex-1" tabindex="-1"></ui-checkbox>
+        </ui-prop>
+          <ui-prop tabindex="-1">
+          <ui-checkbox class="flex-1" tabindex="-1"></ui-checkbox>
+        </ui-prop>
+          <ui-prop tabindex="-1">
+          <ui-checkbox class="flex-1" tabindex="-1"></ui-checkbox>
+        </ui-prop>
+          <ui-prop slidable="" indent="1" tabindex="-1" style="display: none;">
+              <ui-num-input class="flex-1" tabindex="-1"></ui-num-input>
+            </ui-prop>
+          <ui-prop tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">NONE</option><option value="1">BITMAP</option><option value="2">CHAR</option></ui-select>
+          </ui-prop>
+          <ui-prop tabindex="-1">
+          <ui-checkbox class="flex-1" checked="" tabindex="-1"></ui-checkbox>
+        </ui-prop>
+      
+          <ui-prop name="Blend" tabindex="-1">
+              <div slot="child">
+                  <ui-prop indent="1" tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">ZERO</option><option value="1">ONE</option><option value="768">SRC_COLOR</option><option value="769">ONE_MINUS_SRC_COLOR</option><option value="770">SRC_ALPHA</option><option value="771">ONE_MINUS_SRC_ALPHA</option><option value="772">DST_ALPHA</option><option value="773">ONE_MINUS_DST_ALPHA</option><option value="774">DST_COLOR</option><option value="775">ONE_MINUS_DST_COLOR</option></ui-select>
+          </ui-prop>
+                  <ui-prop indent="1" tabindex="-1">
+            <ui-select class="flex-1" tabindex="-1"><option value="0">ZERO</option><option value="1">ONE</option><option value="768">SRC_COLOR</option><option value="769">ONE_MINUS_SRC_COLOR</option><option value="770">SRC_ALPHA</option><option value="771">ONE_MINUS_SRC_ALPHA</option><option value="772">DST_ALPHA</option><option value="773">ONE_MINUS_DST_ALPHA</option><option value="774">DST_COLOR</option><option value="775">ONE_MINUS_DST_COLOR</option></ui-select>
+          </ui-prop>
+              </div>
+          </ui-prop>
+          <ui-prop foldable="" name="Materials" indent="0" tabindex="-1">
+            <ui-num-input class="flex-1" type="int" min="0" droppable="node,asset" multi="" value="1" resourcetype="material" elementtype="cc.Asset" attrtype="cc.Material" tabindex="-1"></ui-num-input>
+              <div slot="child">
+                <ui-prop indent="1" tabindex="-1" style="padding-top: 8px;">
+              <ui-asset class="flex-1" type="cc.Material" droppable="asset" tabindex="-1"></ui-asset>
+            </ui-prop>
+              </div>
+            
+          </ui-prop></ui-section>
+
+          <div
+            style="margin-top: 20px; margin-bottom: 20px"
+            class="layout horizontal center-center"
+          >
+            <ui-button style="width: 240px" tabindex="-1">添加组件</ui-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

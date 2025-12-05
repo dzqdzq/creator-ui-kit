@@ -61,15 +61,20 @@ input::selection {
   position: absolute;
   right: 0;
   top: 0;
+  height: 100%;
   width: 0;
+  overflow: hidden;
   transition: width 0.15s;
 }
 .spin {
   flex: 1;
+  min-height: 0;
   justify-content: center;
   text-align: center;
   background-color: #454545;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 .spin:hover {
   color: #888;
