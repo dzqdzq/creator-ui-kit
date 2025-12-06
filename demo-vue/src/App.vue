@@ -125,11 +125,11 @@ function editGroup() {
         :value="nodeName"
         @change="nodeName = ($event as CustomEvent).detail.value"
         class="node-name-input"
-        tooltip="节点在场景和层级中的名称"
-        placeholder="Node Name"
+            tooltip="节点在场景和层级中的名称" 
+            placeholder="Node Name"
       ></ui-input>
       <ui-button class="btn-3d" transparent>3D</ui-button>
-    </div>
+      </div>
 
     <!-- ========================================== -->
     <!-- 属性面板内容区 -->
@@ -140,11 +140,11 @@ function editGroup() {
       <ui-section :folded="!nodeExpanded">
         <div slot="header" class="section-header">
           <span class="section-title" @click="toggleSection('node')">Node</span>
-          <span class="flex-1"></span>
+              <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="设置">⚙</ui-button>
-        </div>
+            </div>
 
-        <!-- Position -->
+          <!-- Position -->
         <ui-prop name="Position" tooltip="相对父节点的位置坐标，以像素为单位">
           <span class="axis-label">X</span>
           <ui-num-input 
@@ -160,7 +160,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Rotation -->
+          <!-- Rotation -->
         <ui-prop name="Rotation" tooltip="相对父节点的旋转，以度为单位">
           <ui-num-input 
             :value="rotation" 
@@ -169,7 +169,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Scale -->
+          <!-- Scale -->
         <ui-prop name="Scale" tooltip="节点的整体缩放比例">
           <span class="axis-label">X</span>
           <ui-num-input 
@@ -185,7 +185,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Anchor -->
+          <!-- Anchor -->
         <ui-prop name="Anchor" tooltip="节点位置和旋转的基准点">
           <span class="axis-label">X</span>
           <ui-num-input 
@@ -203,7 +203,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Size -->
+          <!-- Size -->
         <ui-prop name="Size" tooltip="节点的内容尺寸">
           <span class="axis-label">W</span>
           <ui-num-input 
@@ -219,7 +219,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Color -->
+          <!-- Color -->
         <ui-prop name="Color" tooltip="节点的颜色">
           <ui-color 
             :value="nodeColor" 
@@ -228,7 +228,7 @@ function editGroup() {
           ></ui-color>
         </ui-prop>
 
-        <!-- Opacity -->
+          <!-- Opacity -->
         <ui-prop name="Opacity" tooltip="节点的不透明度">
           <ui-num-input 
             :value="opacity" 
@@ -240,7 +240,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Skew -->
+          <!-- Skew -->
         <ui-prop name="Skew" tooltip="节点的倾斜角度">
           <span class="axis-label">X</span>
           <ui-num-input 
@@ -256,7 +256,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Group -->
+          <!-- Group -->
         <ui-prop name="Group" tooltip="节点的分组">
           <ui-select 
             :value="group"
@@ -277,10 +277,10 @@ function editGroup() {
             @change="labelActive = ($event as CustomEvent).detail.value"
           ></ui-checkbox>
           <span class="section-title" @click="toggleSection('label')">Label</span>
-          <span class="flex-1"></span>
+              <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="帮助文档">📖</ui-button>
           <ui-button transparent class="btn-icon" tooltip="设置">⚙</ui-button>
-        </div>
+            </div>
 
         <!-- String (多行文本) -->
         <ui-prop name="String" tooltip="Label 显示的文本内容" auto-height>
@@ -291,7 +291,7 @@ function editGroup() {
           ></ui-text-area>
         </ui-prop>
 
-        <!-- Horizontal Align -->
+          <!-- Horizontal Align -->
         <ui-prop name="Horizontal Align">
           <ui-select 
             :value="horizontalAlign"
@@ -302,7 +302,7 @@ function editGroup() {
           </ui-select>
         </ui-prop>
 
-        <!-- Vertical Align -->
+          <!-- Vertical Align -->
         <ui-prop name="Vertical Align">
           <ui-select 
             :value="verticalAlign"
@@ -313,7 +313,7 @@ function editGroup() {
           </ui-select>
         </ui-prop>
 
-        <!-- Font Size -->
+          <!-- Font Size -->
         <ui-prop name="Font Size">
           <ui-num-input 
             :value="fontSize" 
@@ -323,7 +323,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Line Height -->
+          <!-- Line Height -->
         <ui-prop name="Line Height">
           <ui-num-input 
             :value="lineHeight" 
@@ -333,7 +333,7 @@ function editGroup() {
           ></ui-num-input>
         </ui-prop>
 
-        <!-- Overflow -->
+          <!-- Overflow -->
         <ui-prop name="Overflow">
           <ui-select 
             :value="overflow"
@@ -358,7 +358,7 @@ function editGroup() {
           </div>
         </ui-prop>
 
-        <!-- Font Family -->
+          <!-- Font Family -->
         <ui-prop name="Font Family" :class="{ highlighted: !useSystemFont }">
           <ui-input 
             :value="fontFamily"
@@ -368,7 +368,7 @@ function editGroup() {
           ></ui-input>
         </ui-prop>
 
-        <!-- Enable Bold -->
+          <!-- Enable Bold -->
         <ui-prop name="Enable Bold">
           <ui-checkbox 
             :value="enableBold" 
@@ -376,7 +376,7 @@ function editGroup() {
           ></ui-checkbox>
         </ui-prop>
 
-        <!-- Enable Italic -->
+          <!-- Enable Italic -->
         <ui-prop name="Enable Italic">
           <ui-checkbox 
             :value="enableItalic" 
@@ -392,7 +392,7 @@ function editGroup() {
           ></ui-checkbox>
         </ui-prop>
 
-        <!-- Cache Mode -->
+          <!-- Cache Mode -->
         <ui-prop name="Cache Mode">
           <ui-select 
             :value="cacheMode"
@@ -477,7 +477,7 @@ function editGroup() {
           ></ui-checkbox>
         </ui-prop>
 
-        <!-- Blend -->
+          <!-- Blend -->
         <ui-prop name="Src Blend Factor">
           <ui-select 
             :value="srcBlendFactor"
@@ -498,7 +498,7 @@ function editGroup() {
           </ui-select>
         </ui-prop>
 
-        <!-- Materials -->
+          <!-- Materials -->
         <ui-prop name="Material" class="asset-prop">
           <div class="asset-field flex-1">
             <span class="asset-type">material</span>
