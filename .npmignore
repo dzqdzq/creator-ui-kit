@@ -1,0 +1,33 @@
+# 源代码（已打包到 dist）
+src/
+
+# 开发相关
+demo/
+demo-vue/
+*.config.js
+*.config.ts
+tsconfig.json
+.vscode/
+.idea/
+
+# 测试
+__tests__/
+*.test.js
+*.spec.js
+
+# 构建工具
+node_modules/
+.cache/
+.parcel-cache/
+
+# Git
+.git/
+.gitignore
+
+# 其他
+*.md
+!README.md
+*.log
+.DS_Store
+Thumbs.db
+

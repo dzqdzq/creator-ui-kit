@@ -1,4 +1,11 @@
-/* 全局样式 - 仿 Cocos Creator 编辑器风格 */
+/**
+ * Demo Vue 样式
+ * 
+ * 注意：基础 UI 样式由 @aspect/creator-ui-kit 库提供
+ * 这里只定义额外的演示页面样式
+ */
+
+/* 全局重置 */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -35,6 +42,7 @@ body {
   width: 100%;
 }
 
+/* 文本选择样式 */
 ::selection {
   background: #09f;
   color: #fff;
@@ -111,11 +119,3 @@ body {
   bottom: 0;
   left: 0;
 }
-
-/* Props 容器 */
-.props {
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0 10px;
-}
-

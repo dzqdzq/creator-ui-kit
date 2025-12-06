@@ -9,7 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "vue": "^3.4.21",
+    "@aspect/creator-ui-kit": "workspace:*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
@@ -18,4 +19,3 @@
     "vue-tsc": "^2.0.6"
   }
 }
-

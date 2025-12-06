@@ -1,30 +1,86 @@
 {
-  "name": "ui-kit",
+  "name": "@aspect/creator-ui-kit",
   "version": "1.0.0",
-  "description": "UI Kit extracted from Cocos Creator Editor",
+  "description": "UI Kit extracted from Cocos Creator Editor - Web Components & Vue 3 components",
   "type": "module",
-  "main": "src/index.js",
+  "main": "./dist/ui-kit.cjs",
+  "module": "./dist/ui-kit.js",
+  "types": "./dist/types/ui-kit.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/ui-kit.d.ts",
+      "import": "./dist/ui-kit.js",
+      "require": "./dist/ui-kit.cjs"
+    },
+    "./vue": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/vue/index.js",
+      "require": "./dist/vue/index.cjs"
+    },
+    "./elements": {
+      "types": "./dist/types/elements/index.d.ts",
+      "import": "./dist/elements/index.js",
+      "require": "./dist/elements/index.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
+    "dev": "vite",
     "build": "vite build",
+    "build:lib": "vite build",
     "preview": "vite preview",
     "demo": "node demo/server.js",
-    "demo:python": "cd demo && python3 -m http.server 3000",
-    "demo:python2": "cd demo && python -m SimpleHTTPServer 3000"
+    "demo:vue": "cd demo-vue && pnpm run dev",
+    "lint": "eslint src --ext .ts,.js,.vue",
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [
     "web-components",
     "ui",
-    "custom-elements"
+    "custom-elements",
+    "cocos-creator",
+    "vue3",
+    "editor-ui"
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aspect/creator-ui-kit.git"
+  },
+  "homepage": "https://github.com/aspect/creator-ui-kit#readme",
+  "bugs": {
+    "url": "https://github.com/aspect/creator-ui-kit/issues"
+  },
+  "sideEffects": [
+    "*.css",
+    "./dist/ui-kit.js",
+    "./dist/ui-kit.cjs"
+  ],
   "dependencies": {
-    "chroma-js": "^3.1.2",
-    "font-awesome": "4.7.0"
+    "chroma-js": "^3.1.2"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@types/chroma-js": "^2.4.4",
+    "@vitejs/plugin-vue": "^5.0.4",
     "glob": "^13.0.0",
     "prettier": "^3.6.2",
-    "vite": "^5.0.0"
+    "typescript": "^5.4.2",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.9.1",
+    "vue": "^3.4.21"
   }
 }

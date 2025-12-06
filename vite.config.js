@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { readFileSync, existsSync } from 'fs';
 import { globSync } from 'glob';
+import vue from '@vitejs/plugin-vue';
+import dts from 'vite-plugin-dts';
 
 /**
  * 收集 Font Awesome 4.7.0 样式并内联字体
@@ -471,27 +473,61 @@ function cssInjectPlugin() {
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.js'),
-      name: 'UIKit',
-      fileName: 'ui-kit',
-      formats: ['es']
+      // 多入口支持
+      entry: {
+        'ui-kit': resolve(__dirname, 'src/index.js'),
+        'vue/index': resolve(__dirname, 'src/cc/index.ts'),
+        'elements/index': resolve(__dirname, 'src/elements-entry.js')
+      },
+      name: 'UIKit'
     },
     rollupOptions: {
-      // 移除 chroma-js 的 external，让它被打包进去
-      output: {
-        inlineDynamicImports: true
-      }
+      // Vue 作为外部依赖
+      external: ['vue'],
+      output: [
+        {
+          format: 'es',
+          entryFileNames: (chunkInfo) => {
+            if (chunkInfo.name === 'ui-kit') return 'ui-kit.js';
+            return '[name].js';
+          },
+          chunkFileNames: 'chunks/[name]-[hash].js',
+          globals: { vue: 'Vue' }
+        },
+        {
+          format: 'cjs',
+          entryFileNames: (chunkInfo) => {
+            if (chunkInfo.name === 'ui-kit') return 'ui-kit.cjs';
+            return '[name].cjs';
+          },
+          chunkFileNames: 'chunks/[name]-[hash].cjs',
+          globals: { vue: 'Vue' }
+        }
+      ]
     },
     outDir: 'dist',
     emptyOutDir: true,
     cssCodeSplit: false,
-    target: 'es2022'
+    target: 'es2022',
+    sourcemap: true
   },
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
     }
   },
-  plugins: [cssInjectPlugin()]
+  plugins: [
+    vue(),
+    cssInjectPlugin(),
+    dts({
+      include: ['src/**/*.ts', 'src/**/*.vue'],
+      outDir: 'dist/types',
+      // 跳过诊断以避免 Vue 文件类型错误
+      skipDiagnostics: true,
+      // 为 Vue 文件生成类型
+      staticImport: true,
+      insertTypesEntry: true,
+    })
+  ]
 });
 
