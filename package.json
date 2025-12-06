@@ -17,11 +17,6 @@
       "import": "./dist/vue/index.js",
       "require": "./dist/vue/index.cjs"
     },
-    "./elements": {
-      "types": "./dist/types/elements/index.d.ts",
-      "import": "./dist/elements/index.js",
-      "require": "./dist/elements/index.cjs"
-    },
     "./style.css": "./dist/style.css"
   },
   "files": [

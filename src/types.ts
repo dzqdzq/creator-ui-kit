@@ -153,22 +153,31 @@ export interface DroppableElement extends HTMLElement {
  * Behavior 类型定义
  */
 export interface FocusableBehavior {
+  get focusable(): boolean;
   get focused(): boolean;
-  set focused(value: boolean);
   get unnavigable(): boolean;
   set unnavigable(value: boolean);
   _focusedChangedCallbacks?: Array<(focused: boolean) => void>;
+  _focusELs?: HTMLElement[];
+  _navELs?: HTMLElement[];
+  _curFocus?: HTMLElement;
   _setFocused(focused: boolean): void;
-  _losingFocus(): void;
-  _initFocusable(el?: HTMLElement): void;
+  _initFocusable(focusEls?: HTMLElement | HTMLElement[], navEls?: HTMLElement | HTMLElement[]): void;
+  _getFirstFocusableElement(): HTMLElement | null;
   [key: string]: unknown;
 }
 
 export interface DisableBehavior {
+  get canBeDisable(): boolean;
   get disabled(): boolean;
   set disabled(value: boolean);
+  _disabled?: boolean;
+  _disabledNested?: boolean;
   _initDisable(nested?: boolean): void;
-  _propDisableToChild(disabled: boolean): void;
+  _propgateDisable(): void;
+  _isDisabledInHierarchy(excludeSelf?: boolean): boolean;
+  _isDisabledSelf(): boolean;
+  _setIsDisabledAttribute(disabled: boolean): void;
   [key: string]: unknown;
 }
 
@@ -180,9 +189,11 @@ export interface ReadonlyBehavior {
 }
 
 export interface ButtonStateBehavior {
-  get pressed(): boolean;
-  set pressed(value: boolean);
-  _initButtonState(el?: HTMLElement): void;
+  _canceledByEsc?: boolean;
+  _enterTimeoutID?: ReturnType<typeof setTimeout> | null;
+  _onButtonClick?(el: HTMLElement, event: MouseEvent): void;
+  _initButtonState(el: HTMLElement): void;
+  _setPressed(el: HTMLElement, pressed: boolean): void;
   [key: string]: unknown;
 }
 
@@ -194,35 +205,65 @@ export interface InputStateBehavior {
 
 export interface DockableBehavior {
   _dockable: boolean;
-  noCollapse: boolean;
-  _preferredWidth: number | "auto";
-  _preferredHeight: number | "auto";
-  _computedMinWidth: number;
-  _computedMinHeight: number;
-  _computedMaxWidth: number | "auto";
-  _computedMaxHeight: number | "auto";
+  get noCollapse(): boolean;
+  set noCollapse(value: boolean);
+  _preferredWidth?: number | "auto";
+  _preferredHeight?: number | "auto";
+  _computedMinWidth?: number;
+  _computedMinHeight?: number;
+  _computedMaxWidth?: number | "auto";
+  _computedMaxHeight?: number | "auto";
   _initDockable(): void;
-  addDock(el: HTMLElement, before?: HTMLElement | null): void;
-  removeDock(el: HTMLElement): void;
-  _collapse(): void;
+  addDock(position: string, element: HTMLElement, noResize?: boolean): void;
+  removeDock(element: HTMLElement): boolean;
+  _collapse(): boolean;
+  _notifyResize(): void;
+  _makeRoomForNewComer(position: string, element: HTMLElement): void;
   [key: string]: unknown;
 }
 
 export interface ResizableBehavior {
-  row: boolean;
-  _initWidth: number;
-  _initHeight: number;
-  _minWidth: number;
-  _maxWidth: number;
-  _minHeight: number;
-  _maxHeight: number;
+  _resizable: boolean;
+  get row(): boolean;
+  set row(value: boolean);
+  _initWidth?: number | "auto";
+  _initHeight?: number | "auto";
+  _initMinWidth?: number;
+  _initMinHeight?: number;
+  _initMaxWidth?: number | "auto";
+  _initMaxHeight?: number | "auto";
+  _preferredWidth?: number | "auto";
+  _preferredHeight?: number | "auto";
+  _computedMinWidth?: number;
+  _computedMinHeight?: number;
+  _computedMaxWidth?: number | "auto";
+  _computedMaxHeight?: number | "auto";
+  _needEvaluateSize?: boolean;
   _initResizable(): void;
+  _notifyResize(): void;
+  calcWidth(width: number): number;
+  calcHeight(height: number): number;
+  _finalizePreferredSizeRecursively(): void;
+  _finalizeMinMaxRecursively(): void;
+  _finalizeStyleRecursively(): void;
+  _reflowRecursively(): void;
+  _finalizeMinMax(): void;
+  _finalizePreferredSize(): void;
+  _finalizeStyle(): void;
+  _reflow(): void;
   [key: string]: unknown;
 }
 
 export interface DroppableBehavior {
-  _droppable: boolean;
-  _initDroppable(): void;
+  _droppable?: boolean;
+  _dragenterCnt?: number;
+  _canDrop?: boolean;
+  get droppable(): string | null;
+  set droppable(value: string | null);
+  get multi(): boolean;
+  set multi(value: boolean);
+  get canDrop(): boolean;
+  _initDroppable(element: HTMLElement): void;
   [key: string]: unknown;
 }
 

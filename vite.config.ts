@@ -534,7 +534,6 @@ export default defineConfig({
       entry: {
         "ui-kit": resolve(__dirname, "src/index.ts"),
         "vue/index": resolve(__dirname, "src/cc/index.ts"),
-        "elements/index": resolve(__dirname, "src/elements-entry.ts"),
       },
       name: "UIKit",
     },

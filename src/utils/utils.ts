@@ -8,14 +8,20 @@ import type { ElementConfig, Behavior } from '../types';
 // 用于存储属性生成器
 const propertyGenerators: Map<string, (prop: HTMLElement, regenerate?: boolean) => void> = new Map();
 
+// 扩展 ElementConfig 以包含额外属性
+interface ExtendedElementConfig extends ElementConfig {
+  observedAttributes?: string[];
+  factoryImpl?: (this: HTMLElement, ...args: any[]) => void;
+}
+
 interface ElementUtils {
-  registerElement<T extends HTMLElement>(tagName: string, config: ElementConfig): { new (...args: any[]): T };
+  registerElement<T extends HTMLElement>(tagName: string, config: ExtendedElementConfig): { new (...args: any[]): T };
   registerProperty(type: string, generator: (prop: HTMLElement, regenerate?: boolean) => void): void;
   regenProperty(prop: HTMLElement, regenerate?: boolean): void;
 }
 
 const elementUtils: ElementUtils = {
-  registerElement<T extends HTMLElement>(tagName: string, config: ElementConfig): { new (...args: any[]): T } {
+  registerElement<T extends HTMLElement>(tagName: string, config: ExtendedElementConfig): { new (...args: any[]): T } {
     const {
       template,
       style,
@@ -25,7 +31,7 @@ const elementUtils: ElementUtils = {
       factoryImpl,
     } = config;
 
-    const observedAttributes = config.observedAttributes || [];
+    const observedAttributes: string[] = config.observedAttributes || [];
     const useShadowDOM = config.shadowDOM !== undefined ? !!config.shadowDOM : true;
 
     class CustomElement extends HTMLElement {
