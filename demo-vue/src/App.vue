@@ -116,153 +116,97 @@ function editGroup() {
     <!-- 顶部标题栏：节点名称 -->
     <!-- ========================================== -->
     <div class="inspector-header">
-      <ui-checkbox 
-        :value="nodeActive" 
-        @change="nodeActive = ($event as CustomEvent).detail.value"
-        tooltip="该节点是否处于激活状态"
-      ></ui-checkbox>
-      <ui-input 
-        :value="nodeName"
-        @change="nodeName = ($event as CustomEvent).detail.value"
-        class="node-name-input"
-            tooltip="节点在场景和层级中的名称" 
-            placeholder="Node Name"
-      ></ui-input>
+      <ui-checkbox :value="nodeActive" @change="nodeActive = ($event as CustomEvent).detail.value"
+        tooltip="该节点是否处于激活状态"></ui-checkbox>
+      <ui-input :value="nodeName" @change="nodeName = ($event as CustomEvent).detail.value" class="node-name-input"
+        tooltip="节点在场景和层级中的名称" placeholder="Node Name"></ui-input>
       <ui-button class="btn-3d" transparent>3D</ui-button>
-      </div>
+    </div>
 
     <!-- ========================================== -->
     <!-- 属性面板内容区 -->
     <!-- ========================================== -->
     <div class="inspector-content">
-      
+
       <!-- ====== Node Section ====== -->
       <ui-section :folded="!nodeExpanded">
         <div slot="header" class="section-header">
           <span class="section-title" @click="toggleSection('node')">Node</span>
-              <span class="flex-1"></span>
+          <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="设置">⚙</ui-button>
-            </div>
+        </div>
 
-          <!-- Position -->
+        <!-- Position -->
         <ui-prop name="Position" tooltip="相对父节点的位置坐标，以像素为单位">
           <span class="axis-label">X</span>
-          <ui-num-input 
-            :value="position.x" 
-            @change="position.x = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="position.x" @change="position.x = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
           <span class="axis-label">Y</span>
-          <ui-num-input 
-            :value="position.y" 
-            @change="position.y = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="position.y" @change="position.y = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Rotation -->
+        <!-- Rotation -->
         <ui-prop name="Rotation" tooltip="相对父节点的旋转，以度为单位">
-          <ui-num-input 
-            :value="rotation" 
-            @change="rotation = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="rotation" @change="rotation = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Scale -->
+        <!-- Scale -->
         <ui-prop name="Scale" tooltip="节点的整体缩放比例">
           <span class="axis-label">X</span>
-          <ui-num-input 
-            :value="scale.x" 
-            @change="scale.x = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="scale.x" @change="scale.x = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
           <span class="axis-label">Y</span>
-          <ui-num-input 
-            :value="scale.y" 
-            @change="scale.y = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="scale.y" @change="scale.y = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Anchor -->
+        <!-- Anchor -->
         <ui-prop name="Anchor" tooltip="节点位置和旋转的基准点">
           <span class="axis-label">X</span>
-          <ui-num-input 
-            :value="anchor.x" 
-            @change="anchor.x = ($event as CustomEvent).detail.value"
-            :step="0.1"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="anchor.x" @change="anchor.x = ($event as CustomEvent).detail.value" :step="0.1"
+            class="flex-1"></ui-num-input>
           <span class="axis-label">Y</span>
-          <ui-num-input 
-            :value="anchor.y" 
-            @change="anchor.y = ($event as CustomEvent).detail.value"
-            :step="0.1"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="anchor.y" @change="anchor.y = ($event as CustomEvent).detail.value" :step="0.1"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Size -->
+        <!-- Size -->
         <ui-prop name="Size" tooltip="节点的内容尺寸">
           <span class="axis-label">W</span>
-          <ui-num-input 
-            :value="size.w" 
-            @change="size.w = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="size.w" @change="size.w = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
           <span class="axis-label">H</span>
-          <ui-num-input 
-            :value="size.h" 
-            @change="size.h = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="size.h" @change="size.h = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Color -->
+        <!-- Color -->
         <ui-prop name="Color" tooltip="节点的颜色">
-          <ui-color 
-            :value="nodeColor" 
-            @change="nodeColor = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-color>
+          <ui-color :value="nodeColor" @change="nodeColor = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-color>
         </ui-prop>
 
-          <!-- Opacity -->
+        <!-- Opacity -->
         <ui-prop name="Opacity" tooltip="节点的不透明度">
-          <ui-num-input 
-            :value="opacity" 
-            @change="opacity = ($event as CustomEvent).detail.value"
-            :min="0"
-            :max="255"
-            :step="1"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="opacity" @change="opacity = ($event as CustomEvent).detail.value" :min="0" :max="255"
+            :step="1" class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Skew -->
+        <!-- Skew -->
         <ui-prop name="Skew" tooltip="节点的倾斜角度">
           <span class="axis-label">X</span>
-          <ui-num-input 
-            :value="skew.x" 
-            @change="skew.x = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="skew.x" @change="skew.x = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
           <span class="axis-label">Y</span>
-          <ui-num-input 
-            :value="skew.y" 
-            @change="skew.y = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="skew.y" @change="skew.y = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Group -->
+        <!-- Group -->
         <ui-prop name="Group" tooltip="节点的分组">
-          <ui-select 
-            :value="group"
-            @change="group = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          >
+          <ui-select :value="group" @change="group = ($event as CustomEvent).detail.value" class="flex-1">
             <option v-for="opt in groupOptions" :key="opt" :value="opt">{{ opt }}</option>
           </ui-select>
           <ui-button class="btn-edit" @click="editGroup">编辑</ui-button>
@@ -272,74 +216,50 @@ function editGroup() {
       <!-- ====== Label Section ====== -->
       <ui-section :folded="!labelExpanded">
         <div slot="header" class="section-header">
-          <ui-checkbox 
-            :value="labelActive" 
-            @change="labelActive = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="labelActive" @change="labelActive = ($event as CustomEvent).detail.value"></ui-checkbox>
           <span class="section-title" @click="toggleSection('label')">Label</span>
-              <span class="flex-1"></span>
+          <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="帮助文档">📖</ui-button>
           <ui-button transparent class="btn-icon" tooltip="设置">⚙</ui-button>
-            </div>
+        </div>
 
         <!-- String (多行文本) -->
         <ui-prop name="String" tooltip="Label 显示的文本内容" auto-height>
-          <ui-text-area 
-            :value="labelText"
-            @change="labelText = ($event as CustomEvent).detail.value"
-            class="flex-1"
-          ></ui-text-area>
+          <ui-text-area :value="labelText" @change="labelText = ($event as CustomEvent).detail.value"
+            class="flex-1"></ui-text-area>
         </ui-prop>
 
-          <!-- Horizontal Align -->
+        <!-- Horizontal Align -->
         <ui-prop name="Horizontal Align">
-          <ui-select 
-            :value="horizontalAlign"
-            @change="horizontalAlign = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="horizontalAlign" @change="horizontalAlign = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in hAlignOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
-          <!-- Vertical Align -->
+        <!-- Vertical Align -->
         <ui-prop name="Vertical Align">
-          <ui-select 
-            :value="verticalAlign"
-            @change="verticalAlign = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="verticalAlign" @change="verticalAlign = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in vAlignOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
-          <!-- Font Size -->
+        <!-- Font Size -->
         <ui-prop name="Font Size">
-          <ui-num-input 
-            :value="fontSize" 
-            @change="fontSize = ($event as CustomEvent).detail.value"
-            :min="1"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="fontSize" @change="fontSize = ($event as CustomEvent).detail.value" :min="1"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Line Height -->
+        <!-- Line Height -->
         <ui-prop name="Line Height">
-          <ui-num-input 
-            :value="lineHeight" 
-            @change="lineHeight = ($event as CustomEvent).detail.value"
-            :min="1"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-num-input :value="lineHeight" @change="lineHeight = ($event as CustomEvent).detail.value" :min="1"
+            class="flex-1"></ui-num-input>
         </ui-prop>
 
-          <!-- Overflow -->
+        <!-- Overflow -->
         <ui-prop name="Overflow">
-          <ui-select 
-            :value="overflow"
-            @change="overflow = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="overflow" @change="overflow = Number(($event as CustomEvent).detail.value)" class="flex-1">
             <option v-for="(opt, idx) in overflowOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
@@ -349,76 +269,53 @@ function editGroup() {
           <div class="asset-field flex-1">
             <span class="asset-type">font</span>
             <span class="asset-icon">↗</span>
-            <ui-input 
-              :value="font"
-              class="flex-1"
-              placeholder="None"
-              readonly
-            ></ui-input>
+            <ui-input :value="font" class="flex-1" placeholder="None" readonly></ui-input>
           </div>
         </ui-prop>
 
-          <!-- Font Family -->
+        <!-- Font Family -->
         <ui-prop name="Font Family" :class="{ highlighted: !useSystemFont }">
-          <ui-input 
-            :value="fontFamily"
-            @change="fontFamily = ($event as CustomEvent).detail.value"
-            class="flex-1"
-            placeholder="Arial"
-          ></ui-input>
+          <ui-input :value="fontFamily" @change="fontFamily = ($event as CustomEvent).detail.value" class="flex-1"
+            placeholder="Arial"></ui-input>
         </ui-prop>
 
-          <!-- Enable Bold -->
+        <!-- Enable Bold -->
         <ui-prop name="Enable Bold">
-          <ui-checkbox 
-            :value="enableBold" 
-            @change="enableBold = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="enableBold" @change="enableBold = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
 
-          <!-- Enable Italic -->
+        <!-- Enable Italic -->
         <ui-prop name="Enable Italic">
-          <ui-checkbox 
-            :value="enableItalic" 
-            @change="enableItalic = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="enableItalic"
+            @change="enableItalic = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
 
         <!-- Enable Underline -->
         <ui-prop name="Enable Underline">
-          <ui-checkbox 
-            :value="enableUnderline" 
-            @change="enableUnderline = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="enableUnderline"
+            @change="enableUnderline = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
 
-          <!-- Cache Mode -->
+        <!-- Cache Mode -->
         <ui-prop name="Cache Mode">
-          <ui-select 
-            :value="cacheMode"
-            @change="cacheMode = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="cacheMode" @change="cacheMode = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in cacheModeOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
         <!-- Use System Font -->
         <ui-prop name="Use System Font">
-          <ui-checkbox 
-            :value="useSystemFont" 
-            @change="useSystemFont = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="useSystemFont"
+            @change="useSystemFont = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
       </ui-section>
 
       <!-- ====== Sprite Section ====== -->
       <ui-section :folded="!spriteExpanded">
         <div slot="header" class="section-header">
-          <ui-checkbox 
-            :value="spriteActive" 
-            @change="spriteActive = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="spriteActive"
+            @change="spriteActive = ($event as CustomEvent).detail.value"></ui-checkbox>
           <span class="section-title" @click="toggleSection('sprite')">Sprite</span>
           <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="帮助文档">📖</ui-button>
@@ -430,84 +327,56 @@ function editGroup() {
           <div class="asset-field flex-1">
             <span class="asset-type">spriteFrame</span>
             <span class="asset-icon">↗</span>
-            <ui-input 
-              :value="spriteFrame"
-              class="flex-1"
-              placeholder="None"
-              readonly
-            ></ui-input>
+            <ui-input :value="spriteFrame" class="flex-1" placeholder="None" readonly></ui-input>
           </div>
         </ui-prop>
 
         <!-- Type -->
         <ui-prop name="Type">
-          <ui-select 
-            :value="spriteType"
-            @change="spriteType = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="spriteType" @change="spriteType = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in spriteTypeOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
         <!-- Size Mode -->
         <ui-prop name="Size Mode">
-          <ui-select 
-            :value="sizeMode"
-            @change="sizeMode = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="sizeMode" @change="sizeMode = Number(($event as CustomEvent).detail.value)" class="flex-1">
             <option v-for="(opt, idx) in sizeModeOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
         <!-- Trim -->
         <ui-prop name="Trim">
-          <ui-checkbox 
-            :value="trim" 
-            @change="trim = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="trim" @change="trim = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
 
         <!-- Grayscale -->
         <ui-prop name="Grayscale">
-          <ui-checkbox 
-            :value="grayscale" 
-            @change="grayscale = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="grayscale" @change="grayscale = ($event as CustomEvent).detail.value"></ui-checkbox>
         </ui-prop>
 
-          <!-- Blend -->
+        <!-- Blend -->
         <ui-prop name="Src Blend Factor">
-          <ui-select 
-            :value="srcBlendFactor"
-            @change="srcBlendFactor = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="srcBlendFactor" @change="srcBlendFactor = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in blendOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
         <ui-prop name="Dst Blend Factor">
-          <ui-select 
-            :value="dstBlendFactor"
-            @change="dstBlendFactor = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="dstBlendFactor" @change="dstBlendFactor = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in blendOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>
 
-          <!-- Materials -->
+        <!-- Materials -->
         <ui-prop name="Material" class="asset-prop">
           <div class="asset-field flex-1">
             <span class="asset-type">material</span>
             <span class="asset-icon">↗</span>
-            <ui-input 
-              :value="material0"
-              class="flex-1"
-              readonly
-            ></ui-input>
+            <ui-input :value="material0" class="flex-1" readonly></ui-input>
           </div>
         </ui-prop>
       </ui-section>
@@ -515,10 +384,8 @@ function editGroup() {
       <!-- ====== Widget Section ====== -->
       <ui-section :folded="!widgetExpanded">
         <div slot="header" class="section-header">
-          <ui-checkbox 
-            :value="widgetActive" 
-            @change="widgetActive = ($event as CustomEvent).detail.value"
-          ></ui-checkbox>
+          <ui-checkbox :value="widgetActive"
+            @change="widgetActive = ($event as CustomEvent).detail.value"></ui-checkbox>
           <span class="section-title" @click="toggleSection('widget')">Widget</span>
           <span class="flex-1"></span>
           <ui-button transparent class="btn-icon" tooltip="帮助文档">📖</ui-button>
@@ -527,71 +394,40 @@ function editGroup() {
 
         <!-- Top -->
         <ui-prop name="Top">
-          <ui-checkbox 
-            :value="isAlignTop" 
-            @change="isAlignTop = ($event as CustomEvent).detail.value"
-            class="widget-checkbox"
-          ></ui-checkbox>
-          <ui-num-input 
-            :value="alignTop" 
-            @change="alignTop = ($event as CustomEvent).detail.value"
-            :disabled="!isAlignTop"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-checkbox :value="isAlignTop" @change="isAlignTop = ($event as CustomEvent).detail.value"
+            class="widget-checkbox"></ui-checkbox>
+          <ui-num-input :value="alignTop" @change="alignTop = ($event as CustomEvent).detail.value"
+            :disabled="!isAlignTop" class="flex-1"></ui-num-input>
         </ui-prop>
 
         <!-- Bottom -->
         <ui-prop name="Bottom">
-          <ui-checkbox 
-            :value="isAlignBottom" 
-            @change="isAlignBottom = ($event as CustomEvent).detail.value"
-            class="widget-checkbox"
-          ></ui-checkbox>
-          <ui-num-input 
-            :value="alignBottom" 
-            @change="alignBottom = ($event as CustomEvent).detail.value"
-            :disabled="!isAlignBottom"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-checkbox :value="isAlignBottom" @change="isAlignBottom = ($event as CustomEvent).detail.value"
+            class="widget-checkbox"></ui-checkbox>
+          <ui-num-input :value="alignBottom" @change="alignBottom = ($event as CustomEvent).detail.value"
+            :disabled="!isAlignBottom" class="flex-1"></ui-num-input>
         </ui-prop>
 
         <!-- Left -->
         <ui-prop name="Left">
-          <ui-checkbox 
-            :value="isAlignLeft" 
-            @change="isAlignLeft = ($event as CustomEvent).detail.value"
-            class="widget-checkbox"
-          ></ui-checkbox>
-          <ui-num-input 
-            :value="alignLeft" 
-            @change="alignLeft = ($event as CustomEvent).detail.value"
-            :disabled="!isAlignLeft"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-checkbox :value="isAlignLeft" @change="isAlignLeft = ($event as CustomEvent).detail.value"
+            class="widget-checkbox"></ui-checkbox>
+          <ui-num-input :value="alignLeft" @change="alignLeft = ($event as CustomEvent).detail.value"
+            :disabled="!isAlignLeft" class="flex-1"></ui-num-input>
         </ui-prop>
 
         <!-- Right -->
         <ui-prop name="Right">
-          <ui-checkbox 
-            :value="isAlignRight" 
-            @change="isAlignRight = ($event as CustomEvent).detail.value"
-            class="widget-checkbox"
-          ></ui-checkbox>
-          <ui-num-input 
-            :value="alignRight" 
-            @change="alignRight = ($event as CustomEvent).detail.value"
-            :disabled="!isAlignRight"
-            class="flex-1"
-          ></ui-num-input>
+          <ui-checkbox :value="isAlignRight" @change="isAlignRight = ($event as CustomEvent).detail.value"
+            class="widget-checkbox"></ui-checkbox>
+          <ui-num-input :value="alignRight" @change="alignRight = ($event as CustomEvent).detail.value"
+            :disabled="!isAlignRight" class="flex-1"></ui-num-input>
         </ui-prop>
 
         <!-- Align Mode -->
         <ui-prop name="Align Mode">
-          <ui-select 
-            :value="alignMode"
-            @change="alignMode = Number(($event as CustomEvent).detail.value)"
-            class="flex-1"
-          >
+          <ui-select :value="alignMode" @change="alignMode = Number(($event as CustomEvent).detail.value)"
+            class="flex-1">
             <option v-for="(opt, idx) in alignModeOptions" :key="idx" :value="idx">{{ opt }}</option>
           </ui-select>
         </ui-prop>

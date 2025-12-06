@@ -34,8 +34,7 @@
     "build": "vite build",
     "build:lib": "vite build",
     "preview": "vite preview",
-    "demo": "node demo/server.js",
-    "demo:vue": "cd demo-vue && pnpm run dev",
+    "demo": "cd demo-vue && pnpm run dev",
     "lint": "eslint src --ext .ts,.js,.vue",
     "prepublishOnly": "pnpm run build"
   },
@@ -75,7 +74,9 @@
   },
   "devDependencies": {
     "@types/chroma-js": "^2.4.4",
+    "@types/node": "^20.11.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "font-awesome": "^4.7.0",
     "glob": "^13.0.0",
     "prettier": "^3.6.2",
     "typescript": "^5.4.2",

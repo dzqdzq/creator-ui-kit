@@ -11,7 +11,7 @@
  * ```
  */
 
-import type { App, Plugin } from 'vue'
+import type { App, Plugin, Component } from 'vue'
 
 // 导入所有组件
 import CcBlockInputEvents from './CcBlockInputEvents.vue'
@@ -38,8 +38,34 @@ import CcLight from './CcLight.vue'
 import CcPhysicsJoint from './CcPhysicsJoint.vue'
 import CcPointsBaseCollider from './CcPointsBaseCollider.vue'
 
-// 组件映射
-const components = {
+// 组件名称类型
+export type ComponentName = 
+  | 'CcBlockInputEvents'
+  | 'CcSafeArea'
+  | 'CcMissingScript'
+  | 'CcTiledLayer'
+  | 'CcSprite'
+  | 'CcLabel'
+  | 'CcRichText'
+  | 'CcMask'
+  | 'CcButton'
+  | 'CcToggle'
+  | 'CcEditBox'
+  | 'CcScrollView'
+  | 'CcPageView'
+  | 'CcLayout'
+  | 'CcWidget'
+  | 'CcSkeletonAnimation'
+  | 'CcSkeleton2d'
+  | 'CcParticleSystem'
+  | 'CcVideoPlayer'
+  | 'CcCamera'
+  | 'CcLight'
+  | 'CcPhysicsJoint'
+  | 'CcPointsBaseCollider'
+
+// 组件映射（使用显式类型避免类型推断问题）
+const components: Record<ComponentName, Component> = {
   CcBlockInputEvents,
   CcSafeArea,
   CcMissingScript,
@@ -64,8 +90,6 @@ const components = {
   CcPhysicsJoint,
   CcPointsBaseCollider,
 }
-
-export type ComponentName = keyof typeof components
 
 /**
  * 安装所有 Cocos Creator 组件
