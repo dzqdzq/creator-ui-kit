@@ -297,7 +297,7 @@ class Resizer extends HTMLElement {
     const prevElement = children[prevIndex];
     const prevSize = sizeList[prevIndex];
 
-    let newPrevSize = prevSize + adjustedDelta * sign;
+    const newPrevSize = prevSize + adjustedDelta * sign;
     let clampedPrevSize = isVertical
       ? clampWidth(prevElement, newPrevSize)
       : clampHeight(prevElement, newPrevSize);

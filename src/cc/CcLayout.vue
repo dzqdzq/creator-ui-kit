@@ -132,44 +132,46 @@ const isShowCellSize = computed(() => {
       />
       
       <ui-prop name="Padding" v-show="isPaddingEnabled">
-        <div slot="child" class="layout vertical">
-          <ui-prop
-            name="Left"
-            type="number"
-            :indent="1"
-            :value="target.paddingLeft?.value"
-            :values="target.paddingLeft?.values"
-            :multi-values="multi"
-            v-show="isPaddingHorizontalEnabled"
-          />
-          <ui-prop
-            name="Right"
-            type="number"
-            :indent="1"
-            :value="target.paddingRight?.value"
-            :values="target.paddingRight?.values"
-            :multi-values="multi"
-            v-show="isPaddingHorizontalEnabled"
-          />
-          <ui-prop
-            name="Top"
-            type="number"
-            :indent="1"
-            :value="target.paddingTop?.value"
-            :values="target.paddingTop?.values"
-            :multi-values="multi"
-            v-show="isPaddingVerticalEnabled"
-          />
-          <ui-prop
-            name="Bottom"
-            type="number"
-            :indent="1"
-            :value="target.paddingBottom?.value"
-            :values="target.paddingBottom?.values"
-            :multi-values="multi"
-            v-show="isPaddingVerticalEnabled"
-          />
-        </div>
+        <template #child>
+          <div class="layout vertical">
+            <ui-prop
+              name="Left"
+              type="number"
+              :indent="1"
+              :value="target.paddingLeft?.value"
+              :values="target.paddingLeft?.values"
+              :multi-values="multi"
+              v-show="isPaddingHorizontalEnabled"
+            />
+            <ui-prop
+              name="Right"
+              type="number"
+              :indent="1"
+              :value="target.paddingRight?.value"
+              :values="target.paddingRight?.values"
+              :multi-values="multi"
+              v-show="isPaddingHorizontalEnabled"
+            />
+            <ui-prop
+              name="Top"
+              type="number"
+              :indent="1"
+              :value="target.paddingTop?.value"
+              :values="target.paddingTop?.values"
+              :multi-values="multi"
+              v-show="isPaddingVerticalEnabled"
+            />
+            <ui-prop
+              name="Bottom"
+              type="number"
+              :indent="1"
+              :value="target.paddingBottom?.value"
+              :values="target.paddingBottom?.values"
+              :multi-values="multi"
+              v-show="isPaddingVerticalEnabled"
+            />
+          </div>
+        </template>
       </ui-prop>
 
       <ui-prop

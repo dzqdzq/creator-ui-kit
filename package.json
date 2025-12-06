@@ -30,7 +30,8 @@
     "build:lib": "vite build",
     "preview": "vite preview",
     "demo": "cd demo-vue && pnpm run dev",
-    "lint": "eslint src --ext .ts,.js,.vue",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "prepublishOnly": "pnpm run build"
   },
   "keywords": [
@@ -68,13 +69,18 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/chroma-js": "^2.4.4",
     "@types/node": "^20.11.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "eslint": "^9.39.1",
+    "eslint-plugin-vue": "^10.6.2",
     "font-awesome": "^4.7.0",
     "glob": "^13.0.0",
+    "globals": "^16.5.0",
     "prettier": "^3.6.2",
     "typescript": "^5.4.2",
+    "typescript-eslint": "^8.48.1",
     "vite": "^5.0.0",
     "vite-plugin-dts": "^3.9.1",
     "vue": "^3.4.21"

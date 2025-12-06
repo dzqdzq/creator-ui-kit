@@ -50,7 +50,7 @@ const resizableBehavior: ResizableBehavior &
     ];
 
     attrs.forEach((attr) => {
-      let value: string | null = this.getAttribute(attr.name);
+      const value: string | null = this.getAttribute(attr.name);
       if (value === 'auto') {
         (this as any)[attr.prop] = attr.defaultValue;
         return;

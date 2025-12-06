@@ -150,7 +150,7 @@ export default elementUtils.registerElement('ui-color', {
   ready(): void {
     this._showing = false;
 
-    let attrValue = this.getAttribute('value');
+    const attrValue = this.getAttribute('value');
     let initialValue: number[] | string;
 
     if (attrValue !== null) {
