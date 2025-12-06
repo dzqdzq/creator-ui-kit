@@ -2,19 +2,19 @@
  * UI Select 组件
  */
 
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { acceptEvent, fire, clear } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { acceptEvent, fire, clear } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
 
 const template = /*html*/ `
     <select></select>
   `;
 
-export default elementUtils.registerElement("ui-select", {
+export default elementUtils.registerElement('ui-select', {
   get value(): string {
     return this._value;
   },
@@ -45,7 +45,7 @@ export default elementUtils.registerElement("ui-select", {
     }
 
     if (this.multiValues) {
-      this.$select.value = "";
+      this.$select.value = '';
     }
   },
 
@@ -58,7 +58,7 @@ export default elementUtils.registerElement("ui-select", {
   },
 
   get selectedText(): string {
-    return this.$select.item(this.$select.selectedIndex)?.text || "";
+    return this.$select.item(this.$select.selectedIndex)?.text || '';
   },
 
   get multiValues(): boolean {
@@ -69,11 +69,11 @@ export default elementUtils.registerElement("ui-select", {
     const boolValue = !(value == null || value === false);
     if (boolValue !== this._multiValues) {
       if (boolValue) {
-        this.$select.value = "";
-        this.setAttribute("multi-values", "");
+        this.$select.value = '';
+        this.setAttribute('multi-values', '');
       } else {
         this.$select.value = this._value;
-        this.removeAttribute("multi-values");
+        this.removeAttribute('multi-values');
       }
 
       this._multiValues = boolValue;
@@ -81,15 +81,13 @@ export default elementUtils.registerElement("ui-select", {
   },
 
   get observedAttributes(): string[] {
-    return ["selectedIndex", "selectedText", "multi-values"];
+    return ['selectedIndex', 'selectedText', 'multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (
       oldValue !== newValue &&
-      (name === "selectedIndex" ||
-        name === "selectedText" ||
-        name === "multi-values")
+      (name === 'selectedIndex' || name === 'selectedText' || name === 'multi-values')
     ) {
       const propertyName = name.replace(/-(\w)/g, (_match, letter) => letter.toUpperCase());
       (this as any)[propertyName] = newValue;
@@ -98,8 +96,8 @@ export default elementUtils.registerElement("ui-select", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template,
-  style: getElementStyleSync("select"),
-  $: { select: "select" },
+  style: getElementStyleSync('select'),
+  $: { select: 'select' },
 
   factoryImpl(value: string): void {
     if (!isNaN(Number(value))) {
@@ -120,7 +118,7 @@ export default elementUtils.registerElement("ui-select", {
         this.$select.add(cloned as HTMLOptionElement | HTMLOptGroupElement, null);
       }
     }
-    const valueAttr = this.getAttribute("value");
+    const valueAttr = this.getAttribute('value');
 
     if (valueAttr !== null) {
       this._value = valueAttr;
@@ -129,13 +127,13 @@ export default elementUtils.registerElement("ui-select", {
       this._value = this.$select.value;
     }
 
-    this.multiValues = this.getAttribute("multi-values") as any;
+    this.multiValues = this.getAttribute('multi-values') as any;
     this._initFocusable(this.$select);
     this._initDisable(false);
     this._initReadonly(false);
-    this.addEventListener("mousedown", this._mouseDownHandler);
+    this.addEventListener('mousedown', this._mouseDownHandler);
 
-    this.$select.addEventListener("keydown", (event: KeyboardEvent) => {
+    this.$select.addEventListener('keydown', (event: KeyboardEvent) => {
       if (this.disabled) {
         event.preventDefault();
         return;
@@ -153,12 +151,12 @@ export default elementUtils.registerElement("ui-select", {
       event.preventDefault();
     });
 
-    this.$select.addEventListener("change", (event: Event) => {
+    this.$select.addEventListener('change', (event: Event) => {
       acceptEvent(event);
       this._value = this.$select.value;
       this.multiValues = false;
 
-      fire(this, "change", {
+      fire(this, 'change', {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -167,7 +165,7 @@ export default elementUtils.registerElement("ui-select", {
         },
       });
 
-      fire(this, "confirm", {
+      fire(this, 'confirm', {
         bubbles: true,
         detail: {
           index: this.selectedIndex,
@@ -207,7 +205,7 @@ export default elementUtils.registerElement("ui-select", {
   },
 
   addItem(value: string, text: string, index?: number): void {
-    const option = document.createElement("option");
+    const option = document.createElement('option');
     option.value = value;
     option.text = text;
     this.addElement(option, index);
@@ -227,8 +225,11 @@ export default elementUtils.registerElement("ui-select", {
       this.appendChild(element);
     }
 
-    beforeElement = index !== undefined ? this.$select.item(index) as HTMLOptionElement : null;
-    this.$select.add(element.cloneNode(true) as HTMLOptionElement | HTMLOptGroupElement, beforeElement);
+    beforeElement = index !== undefined ? (this.$select.item(index) as HTMLOptionElement) : null;
+    this.$select.add(
+      element.cloneNode(true) as HTMLOptionElement | HTMLOptGroupElement,
+      beforeElement,
+    );
     this._observer.observe(this, { childList: true });
   },
 
@@ -238,12 +239,11 @@ export default elementUtils.registerElement("ui-select", {
 
   clear(): void {
     clear(this.$select);
-    this._value = "";
-    this.$select.value = "";
+    this._value = '';
+    this.$select.value = '';
   },
 
   // 可选的回调函数
   valueChanged: undefined as ((oldValue: string, newValue: string) => void) | undefined,
   valuesChanged: undefined as ((oldValues: string[], newValues: string[]) => void) | undefined,
 });
-

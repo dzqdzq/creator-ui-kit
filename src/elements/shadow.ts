@@ -2,11 +2,11 @@
  * UI Shadow 组件
  */
 
-import elementUtils from "../utils/utils";
+import elementUtils from '../utils/utils';
 
-const template = /*html*/ "";
+const template = /*html*/ '';
 
-export default elementUtils.registerElement("ui-shadow", {
+export default elementUtils.registerElement('ui-shadow', {
   style: `
     :host {
       display: block;
@@ -25,4 +25,3 @@ export default elementUtils.registerElement("ui-shadow", {
     }
   },
 });
-

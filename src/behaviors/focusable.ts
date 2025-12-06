@@ -2,7 +2,7 @@
  * 可聚焦行为
  */
 
-import domUtils from "../utils/dom-utils";
+import domUtils from '../utils/dom-utils';
 import type { FocusableBehavior, FocusableElement } from '../types';
 
 const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBehavior> = {
@@ -11,24 +11,24 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
   },
 
   get focused(): boolean {
-    return this.getAttribute("focused") !== null;
+    return this.getAttribute('focused') !== null;
   },
 
   get unnavigable(): boolean {
-    return this.getAttribute("unnavigable") !== null;
+    return this.getAttribute('unnavigable') !== null;
   },
 
   set unnavigable(value: boolean) {
     if (value) {
-      this.setAttribute("unnavigable", "");
+      this.setAttribute('unnavigable', '');
     } else {
-      this.removeAttribute("unnavigable");
+      this.removeAttribute('unnavigable');
     }
   },
 
   _initFocusable(
     focusEls?: HTMLElement | HTMLElement[],
-    navEls?: HTMLElement | HTMLElement[]
+    navEls?: HTMLElement | HTMLElement[],
   ): void {
     if (focusEls) {
       if (Array.isArray(focusEls)) {
@@ -56,7 +56,7 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
       for (const el of this._focusELs!) {
         el.tabIndex = -1;
 
-        el.addEventListener("focus", () => {
+        el.addEventListener('focus', () => {
           this._curFocus = el;
         });
       }
@@ -78,7 +78,7 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
       }
 
       if (focused) {
-        this.setAttribute("focused", "");
+        this.setAttribute('focused', '');
 
         if (this._focusELs.length > 0) {
           const el = this._focusELs[0] as FocusableElement;
@@ -92,7 +92,7 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
           }
         }
       } else {
-        this.removeAttribute("focused");
+        this.removeAttribute('focused');
 
         this._focusELs.forEach((el) => {
           const focusEl = el as FocusableElement;
@@ -102,7 +102,7 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
         });
       }
 
-      domUtils.fire(this, "focus-changed", {
+      domUtils.fire(this, 'focus-changed', {
         bubbles: true,
         detail: { focused: this.focused },
       });
@@ -111,4 +111,3 @@ const focusableBehavior: FocusableBehavior & ThisType<HTMLElement & FocusableBeh
 };
 
 export default focusableBehavior;
-

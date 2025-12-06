@@ -2,14 +2,14 @@
  * UI Text Area 组件
  */
 
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { fire } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
-import inputStateBehavior from "../behaviors/input-state";
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { fire } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
+import inputStateBehavior from '../behaviors/input-state';
 
 const template = /*html*/ `
     <div class="back">
@@ -22,17 +22,17 @@ interface ExtendedTextarea extends HTMLTextAreaElement {
   _initValue?: string;
 }
 
-export default elementUtils.registerElement("ui-text-area", {
+export default elementUtils.registerElement('ui-text-area', {
   get value(): string {
     return this._value;
   },
 
   set value(value: string | null | undefined) {
     if (value === null || value === undefined) {
-      value = "";
+      value = '';
     }
 
-    value += "";
+    value += '';
     this._value = value;
 
     if (!this._multiValues) {
@@ -52,7 +52,7 @@ export default elementUtils.registerElement("ui-text-area", {
     this._values = values;
 
     if (this.multiValues) {
-      this.$input.value = "-";
+      this.$input.value = '-';
     }
   },
 
@@ -95,25 +95,25 @@ export default elementUtils.registerElement("ui-text-area", {
       this._multiValues = boolValue;
 
       if (boolValue) {
-        this.$input.value = "-";
-        this.setAttribute("multi-values", "");
+        this.$input.value = '-';
+        this.setAttribute('multi-values', '');
       } else {
         this.$input.value = this._value;
-        this.removeAttribute("multi-values");
+        this.removeAttribute('multi-values');
       }
     }
   },
 
   get observedAttributes(): string[] {
-    return ["placeholder", "max-length", "multi-values"];
+    return ['placeholder', 'max-length', 'multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue !== newValue) {
       switch (name) {
-        case "multi-values":
-        case "placeholder":
-        case "max-length": {
+        case 'multi-values':
+        case 'placeholder':
+        case 'max-length': {
           const propertyName = name.replace(/-(\w)/g, (_e, t) => t.toUpperCase());
           (this as any)[propertyName] = newValue;
         }
@@ -123,8 +123,8 @@ export default elementUtils.registerElement("ui-text-area", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template,
-  style: getElementStyleSync("text-area"),
-  $: { input: "textarea", span: "span" },
+  style: getElementStyleSync('text-area'),
+  $: { input: 'textarea', span: 'span' },
 
   factoryImpl(value: string): void {
     if (value) {
@@ -133,12 +133,12 @@ export default elementUtils.registerElement("ui-text-area", {
   },
 
   ready(): void {
-    this._value = "";
-    this._values = [""];
-    this.value = this.getAttribute("value") || "";
-    this.placeholder = this.getAttribute("placeholder") || "";
-    this.maxLength = this.getAttribute("max-length");
-    this.multiValues = this.getAttribute("multi-values") as any;
+    this._value = '';
+    this._values = [''];
+    this.value = this.getAttribute('value') || '';
+    this.placeholder = this.getAttribute('placeholder') || '';
+    this.maxLength = this.getAttribute('max-length');
+    this.multiValues = this.getAttribute('multi-values') as any;
     this._initFocusable(this, this.$input);
     this._initDisable(false);
     this._initReadonly(false);
@@ -148,9 +148,9 @@ export default elementUtils.registerElement("ui-text-area", {
   },
 
   clear(): void {
-    this._value = "";
-    this._values = [""];
-    this.$input.value = "";
+    this._value = '';
+    this._values = [''];
+    this.$input.value = '';
     this.confirm();
   },
 
@@ -163,14 +163,14 @@ export default elementUtils.registerElement("ui-text-area", {
   },
 
   _initEvents(): void {
-    this.addEventListener("mousedown", this._mouseDownHandler);
-    this.addEventListener("focus-changed", this._focusChangedHandler);
-    this.$input.addEventListener("focus", () => {
-      this.$span.style.display = "inline-block";
+    this.addEventListener('mousedown', this._mouseDownHandler);
+    this.addEventListener('focus-changed', this._focusChangedHandler);
+    this.$input.addEventListener('focus', () => {
+      this.$span.style.display = 'inline-block';
     });
 
-    this.$input.addEventListener("blur", () => {
-      this.$span.style.display = "none";
+    this.$input.addEventListener('blur', () => {
+      this.$span.style.display = 'none';
     });
   },
 
@@ -182,7 +182,7 @@ export default elementUtils.registerElement("ui-text-area", {
         this._value = input.value;
         this.multiValues = false;
 
-        fire(this, "confirm", {
+        fire(this, 'confirm', {
           bubbles: true,
           detail: { value: input.value, confirmByEnter },
         });
@@ -200,14 +200,14 @@ export default elementUtils.registerElement("ui-text-area", {
         this._changed = false;
 
         if (input._initValue !== input.value) {
-          this._value = input.value = input._initValue || "";
-          fire(this, "change", {
+          this._value = input.value = input._initValue || '';
+          fire(this, 'change', {
             bubbles: true,
             detail: { value: input.value },
           });
         }
 
-        fire(this, "cancel", {
+        fire(this, 'cancel', {
           bubbles: true,
           detail: { value: input.value, cancelByEsc },
         });
@@ -228,7 +228,7 @@ export default elementUtils.registerElement("ui-text-area", {
     }
 
     this._value = input.value;
-    fire(this, "change", { bubbles: true, detail: { value: input.value } });
+    fire(this, 'change', { bubbles: true, detail: { value: input.value } });
   },
 
   _mouseDownHandler(event: MouseEvent): void {
@@ -244,4 +244,3 @@ export default elementUtils.registerElement("ui-text-area", {
     }
   },
 });
-

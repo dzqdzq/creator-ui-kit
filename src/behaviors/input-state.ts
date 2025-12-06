@@ -2,8 +2,8 @@
  * 输入状态行为
  */
 
-import domUtils from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
+import domUtils from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
 import type { InputStateBehavior, FocusableElement } from '../types';
 
 interface ExtendedInput extends HTMLInputElement {
@@ -20,21 +20,15 @@ interface InputStateElement extends HTMLElement {
 const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & InputStateBehavior> = {
   _initInputState(input: HTMLInputElement | HTMLTextAreaElement): void {
     const extInput = input as ExtendedInput;
-    
+
     if (!this._onInputConfirm) {
-      throw new Error(
-        "Failed to init input-state: please implement _onInputConfirm"
-      );
+      throw new Error('Failed to init input-state: please implement _onInputConfirm');
     }
     if (!this._onInputCancel) {
-      throw new Error(
-        "Failed to init input-state: please implement _onInputCancel"
-      );
+      throw new Error('Failed to init input-state: please implement _onInputCancel');
     }
     if (!this._onInputChange) {
-      throw new Error(
-        "Failed to init input-state: please implement _onInputChange"
-      );
+      throw new Error('Failed to init input-state: please implement _onInputChange');
     }
 
     const isTextArea = input instanceof HTMLTextAreaElement;
@@ -43,7 +37,7 @@ const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & Inpu
     extInput._selectAllWhenMouseUp = false;
     extInput._mouseStartX = -1;
 
-    input.addEventListener("focus", () => {
+    input.addEventListener('focus', () => {
       extInput._focused = true;
       extInput._initValue = extInput.value;
 
@@ -52,21 +46,21 @@ const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & Inpu
       }
     });
 
-    input.addEventListener("blur", () => {
+    input.addEventListener('blur', () => {
       extInput._focused = false;
     });
 
-    input.addEventListener("change", (e: Event) => {
+    input.addEventListener('change', (e: Event) => {
       domUtils.acceptEvent(e);
       this._onInputConfirm(input);
     });
 
-    input.addEventListener("input", (e: Event) => {
+    input.addEventListener('input', (e: Event) => {
       domUtils.acceptEvent(e);
       this._onInputChange(input);
     });
 
-    input.addEventListener("keydown", (e: Event) => {
+    input.addEventListener('keydown', (e: Event) => {
       const event = e as KeyboardEvent;
       if (!this.disabled) {
         event.stopPropagation();
@@ -83,15 +77,15 @@ const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & Inpu
       }
     });
 
-    input.addEventListener("keyup", (e: Event) => {
+    input.addEventListener('keyup', (e: Event) => {
       e.stopPropagation();
     });
 
-    input.addEventListener("keypress", (e: Event) => {
+    input.addEventListener('keypress', (e: Event) => {
       e.stopPropagation();
     });
 
-    input.addEventListener("mousedown", (e: Event) => {
+    input.addEventListener('mousedown', (e: Event) => {
       const event = e as MouseEvent;
       event.stopPropagation();
       focusMgr._setFocusElement(this as FocusableElement);
@@ -102,7 +96,7 @@ const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & Inpu
       }
     });
 
-    input.addEventListener("mouseup", (e: Event) => {
+    input.addEventListener('mouseup', (e: Event) => {
       const event = e as MouseEvent;
       event.stopPropagation();
 
@@ -120,10 +114,12 @@ const inputStateBehavior: InputStateBehavior & ThisType<InputStateElement & Inpu
   },
 
   // 这些方法需要在具体组件中实现
-  _onInputConfirm(_input: HTMLInputElement | HTMLTextAreaElement, _confirmByEnter?: boolean): void {},
+  _onInputConfirm(
+    _input: HTMLInputElement | HTMLTextAreaElement,
+    _confirmByEnter?: boolean,
+  ): void {},
   _onInputCancel(_input: HTMLInputElement | HTMLTextAreaElement, _cancelByEsc?: boolean): void {},
   _onInputChange(_input: HTMLInputElement | HTMLTextAreaElement): void {},
 };
 
 export default inputStateBehavior;
-

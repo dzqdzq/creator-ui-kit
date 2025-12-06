@@ -2,8 +2,8 @@
  * UI Webview 组件
  */
 
-import elementUtils from "../utils/utils";
-import focusableBehavior from "../behaviors/focusable";
+import elementUtils from '../utils/utils';
+import focusableBehavior from '../behaviors/focusable';
 
 const template = /*html*/ `
     <webview id="view"
@@ -21,14 +21,14 @@ interface WebviewElement extends HTMLElement {
   openDevTools?(): void;
 }
 
-export default elementUtils.registerElement("ui-webview", {
+export default elementUtils.registerElement('ui-webview', {
   get src(): string | null {
-    return this.getAttribute("src");
+    return this.getAttribute('src');
   },
 
   set src(value: string | null) {
     if (value) {
-      this.setAttribute("src", value);
+      this.setAttribute('src', value);
       (this.$view as WebviewElement).src = value;
       this.$loader.hidden = false;
     }
@@ -60,13 +60,13 @@ export default elementUtils.registerElement("ui-webview", {
     }
   `,
   template,
-  $: { view: "#view", loader: "#loader", dropArea: "#dropArea" },
+  $: { view: '#view', loader: '#loader', dropArea: '#dropArea' },
 
   ready(): void {
-    let src = this.getAttribute("src");
+    let src = this.getAttribute('src');
 
     if (src === null) {
-      src = "about:blank";
+      src = 'about:blank';
     }
 
     this.src = src;
@@ -75,9 +75,9 @@ export default elementUtils.registerElement("ui-webview", {
   },
 
   _initEvents(): void {
-    this.$view.addEventListener("console-message", () => {});
+    this.$view.addEventListener('console-message', () => {});
 
-    this.$view.addEventListener("did-finish-load", () => {
+    this.$view.addEventListener('did-finish-load', () => {
       this.$loader.hidden = true;
     });
   },
@@ -91,4 +91,3 @@ export default elementUtils.registerElement("ui-webview", {
     (this.$view as WebviewElement).openDevTools?.();
   },
 });
-

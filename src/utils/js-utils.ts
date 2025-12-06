@@ -53,8 +53,8 @@ export default {
     const result = (target || {}) as T;
     for (const source of sources) {
       if (source) {
-        if (typeof source !== "object") {
-          console.error("JS.assign called on non-object:", source);
+        if (typeof source !== 'object') {
+          console.error('JS.assign called on non-object:', source);
           continue;
         }
         for (const name in source) {
@@ -68,14 +68,10 @@ export default {
   /**
    * 将源对象的属性复制到目标对象（排除指定属性）
    */
-  assignExcept<T extends object>(
-    target: T | null,
-    source: object,
-    except: string[]
-  ): T | null {
+  assignExcept<T extends object>(target: T | null, source: object, except: string[]): T | null {
     const result = (target || {}) as T;
-    if (typeof source !== "object") {
-      console.error("JS.assignExcept called on non-object:", source);
+    if (typeof source !== 'object') {
+      console.error('JS.assignExcept called on non-object:', source);
       return null;
     }
     for (const name in source) {
@@ -118,9 +114,9 @@ export default {
     let result = (Math.round(value * multiplier) / multiplier).toFixed(decimals);
     if (trimZeros) {
       const zeroPattern = new RegExp(`0{1,${trimZeros}}$`);
-      result = result.replace(zeroPattern, "");
+      result = result.replace(zeroPattern, '');
 
-      if (trimZeros >= decimals && result[result.length - 1] === ".") {
+      if (trimZeros >= decimals && result[result.length - 1] === '.') {
         result = result.slice(0, -1);
       }
     }
@@ -132,15 +128,15 @@ export default {
    */
   formatFrame(frame: number, frameRate: number): string {
     const digitCount = Math.floor(Math.log10(frameRate)) + 1;
-    let sign = "";
+    let sign = '';
     let absFrame = frame;
 
     if (frame < 0) {
-      sign = "-";
+      sign = '-';
       absFrame = -frame;
     }
 
-    return `${sign + Math.floor(absFrame / frameRate)}:${padLeft(absFrame % frameRate, digitCount, "0")}`;
+    return `${sign + Math.floor(absFrame / frameRate)}:${padLeft(absFrame % frameRate, digitCount, '0')}`;
   },
 
   /**
@@ -200,12 +196,7 @@ export default {
   /**
    * 适应尺寸
    */
-  fitSize(
-    width: number,
-    height: number,
-    maxWidth: number,
-    maxHeight: number
-  ): [number, number] {
+  fitSize(width: number, height: number, maxWidth: number, maxHeight: number): [number, number] {
     let finalWidth: number;
     let finalHeight: number;
 
@@ -234,11 +225,11 @@ export default {
    * 格式化字节数
    */
   prettyBytes(bytes: number): string {
-    if (typeof bytes !== "number" || Number.isNaN(bytes)) {
+    if (typeof bytes !== 'number' || Number.isNaN(bytes)) {
       throw new TypeError(`Expected a number, got ${typeof bytes}`);
     }
     const isNegative = bytes < 0;
-    const units = ["B", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    const units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     let absBytes = bytes;
 
     if (isNegative) {
@@ -246,15 +237,12 @@ export default {
     }
 
     if (absBytes < 1) {
-      return `${(isNegative ? "-" : "") + absBytes} B`;
+      return `${(isNegative ? '-' : '') + absBytes} B`;
     }
 
-    const unitIndex = Math.min(
-      Math.floor(Math.log(absBytes) / Math.log(1000)),
-      units.length - 1
-    );
+    const unitIndex = Math.min(Math.floor(Math.log(absBytes) / Math.log(1000)), units.length - 1);
     const value = Number((absBytes / 1000 ** unitIndex).toFixed(2));
-    return `${isNegative ? "-" : ""}${value} ${units[unitIndex]}`;
+    return `${isNegative ? '-' : ''}${value} ${units[unitIndex]}`;
   },
 
   /**
@@ -262,9 +250,8 @@ export default {
    */
   run(command: string, ...args: string[]): void {
     if (typeof require !== 'undefined') {
-      const { spawn } = require("child_process");
+      const { spawn } = require('child_process');
       spawn(command, args, { detached: true }).unref();
     }
   },
 };
-

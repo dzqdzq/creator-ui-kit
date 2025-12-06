@@ -2,12 +2,12 @@
  * UI Section 组件
  */
 
-import elementUtils from "../utils/utils";
-import { acceptEvent } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import { getElementStyleSync } from "../utils/css-loader";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
+import elementUtils from '../utils/utils';
+import { acceptEvent } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import { getElementStyleSync } from '../utils/css-loader';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
 
 const template = /*html*/ `
     <div class="wrapper">
@@ -17,32 +17,32 @@ const template = /*html*/ `
     <slot class="content"></slot>
   `;
 
-export default elementUtils.registerElement("ui-section", {
+export default elementUtils.registerElement('ui-section', {
   get hovering(): boolean {
-    return this.getAttribute("hovering") !== null;
+    return this.getAttribute('hovering') !== null;
   },
 
   set hovering(value: boolean) {
     if (value) {
-      this.setAttribute("hovering", "");
+      this.setAttribute('hovering', '');
     } else {
-      this.removeAttribute("hovering");
+      this.removeAttribute('hovering');
     }
   },
 
   behaviors: [focusableBehavior, disableBehavior],
   template,
-  style: getElementStyleSync("section"),
-  $: { wrapper: ".wrapper", foldIcon: ".fold" },
+  style: getElementStyleSync('section'),
+  $: { wrapper: '.wrapper', foldIcon: '.fold' },
 
   factoryImpl(text: string): void {
-    const span = document.createElement("span");
+    const span = document.createElement('span');
     span.innerText = text;
     this.appendChild(span);
   },
 
   ready(): void {
-    if (this.getAttribute("folded") !== null) {
+    if (this.getAttribute('folded') !== null) {
       this.fold();
     } else {
       this.foldup();
@@ -53,21 +53,21 @@ export default elementUtils.registerElement("ui-section", {
     this._initEvents();
 
     if (this.querySelector('[slot="header"]') === null) {
-      const header = this.querySelector(".header");
+      const header = this.querySelector('.header');
 
       if (header) {
-        header.setAttribute("slot", "header");
+        header.setAttribute('slot', 'header');
       }
     }
   },
 
   _initEvents(): void {
-    this.$wrapper.addEventListener("mousedown", (event: Event) => {
+    this.$wrapper.addEventListener('mousedown', (event: Event) => {
       event.stopPropagation();
       focusMgr._setFocusElement(this);
     });
 
-    this.$wrapper.addEventListener("click", () => {
+    this.$wrapper.addEventListener('click', () => {
       if (this._folded) {
         this.foldup();
       } else {
@@ -75,17 +75,17 @@ export default elementUtils.registerElement("ui-section", {
       }
     });
 
-    this.$wrapper.addEventListener("mouseover", (event: Event) => {
+    this.$wrapper.addEventListener('mouseover', (event: Event) => {
       event.stopImmediatePropagation();
       this.hovering = true;
     });
 
-    this.$wrapper.addEventListener("mouseout", (event: Event) => {
+    this.$wrapper.addEventListener('mouseout', (event: Event) => {
       event.stopImmediatePropagation();
       this.hovering = false;
     });
 
-    this.$wrapper.addEventListener("keydown", (event: Event) => {
+    this.$wrapper.addEventListener('keydown', (event: Event) => {
       const e = event as KeyboardEvent;
       if (e.keyCode === 37) {
         acceptEvent(e);
@@ -100,19 +100,18 @@ export default elementUtils.registerElement("ui-section", {
   fold(): void {
     if (!this._folded) {
       this._folded = true;
-      this.$foldIcon.classList.remove("icon-fold-up");
-      this.$foldIcon.classList.add("icon-fold");
-      this.setAttribute("folded", "");
+      this.$foldIcon.classList.remove('icon-fold-up');
+      this.$foldIcon.classList.add('icon-fold');
+      this.setAttribute('folded', '');
     }
   },
 
   foldup(): void {
     if (this._folded) {
       this._folded = false;
-      this.$foldIcon.classList.remove("icon-fold");
-      this.$foldIcon.classList.add("icon-fold-up");
-      this.removeAttribute("folded");
+      this.$foldIcon.classList.remove('icon-fold');
+      this.$foldIcon.classList.add('icon-fold-up');
+      this.removeAttribute('folded');
     }
   },
 });
-

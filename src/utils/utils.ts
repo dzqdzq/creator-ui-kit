@@ -2,11 +2,12 @@
  * 元素工具函数
  */
 
-import jsUtils from "./js-utils";
+import jsUtils from './js-utils';
 import type { ElementConfig, Behavior } from '../types';
 
 // 用于存储属性生成器
-const propertyGenerators: Map<string, (prop: HTMLElement, regenerate?: boolean) => void> = new Map();
+const propertyGenerators: Map<string, (prop: HTMLElement, regenerate?: boolean) => void> =
+  new Map();
 
 // 扩展 ElementConfig 以包含额外属性
 interface ExtendedElementConfig extends ElementConfig {
@@ -15,21 +16,23 @@ interface ExtendedElementConfig extends ElementConfig {
 }
 
 interface ElementUtils {
-  registerElement<T extends HTMLElement>(tagName: string, config: ExtendedElementConfig): { new (...args: any[]): T };
-  registerProperty(type: string, generator: (prop: HTMLElement, regenerate?: boolean) => void): void;
+  registerElement<T extends HTMLElement>(
+    tagName: string,
+    config: ExtendedElementConfig,
+  ): { new (...args: any[]): T };
+  registerProperty(
+    type: string,
+    generator: (prop: HTMLElement, regenerate?: boolean) => void,
+  ): void;
   regenProperty(prop: HTMLElement, regenerate?: boolean): void;
 }
 
 const elementUtils: ElementUtils = {
-  registerElement<T extends HTMLElement>(tagName: string, config: ExtendedElementConfig): { new (...args: any[]): T } {
-    const {
-      template,
-      style,
-      listeners,
-      behaviors,
-      $,
-      factoryImpl,
-    } = config;
+  registerElement<T extends HTMLElement>(
+    tagName: string,
+    config: ExtendedElementConfig,
+  ): { new (...args: any[]): T } {
+    const { template, style, listeners, behaviors, $, factoryImpl } = config;
 
     const observedAttributes: string[] = config.observedAttributes || [];
     const useShadowDOM = config.shadowDOM !== undefined ? !!config.shadowDOM : true;
@@ -47,7 +50,7 @@ const elementUtils: ElementUtils = {
         let root: HTMLElement | ShadowRoot = this;
 
         if (useShadowDOM) {
-          root = this.attachShadow({ mode: "open" });
+          root = this.attachShadow({ mode: 'open' });
         }
 
         if (template) {
@@ -56,8 +59,8 @@ const elementUtils: ElementUtils = {
 
         if (style) {
           if (useShadowDOM) {
-            const styleEl = document.createElement("style");
-            styleEl.type = "text/css";
+            const styleEl = document.createElement('style');
+            styleEl.type = 'text/css';
             styleEl.textContent = style;
             if (root.firstChild) {
               root.insertBefore(styleEl, root.firstChild);
@@ -65,7 +68,7 @@ const elementUtils: ElementUtils = {
               root.appendChild(styleEl);
             }
           } else {
-            console.warn("Can not use style in light DOM");
+            console.warn('Can not use style in light DOM');
           }
         }
 
@@ -83,7 +86,7 @@ const elementUtils: ElementUtils = {
         if (listeners) {
           for (const eventName in listeners) {
             const handler = listeners[eventName].bind(this);
-            const options = eventName === "mousewheel" ? { passive: true } : {};
+            const options = eventName === 'mousewheel' ? { passive: true } : {};
             if (root !== this) {
               root.addEventListener(eventName, handler, options);
             }
@@ -101,20 +104,16 @@ const elementUtils: ElementUtils = {
       }
     }
 
-    jsUtils.assignExcept(
-      CustomElement.prototype,
-      config,
-      [
-        "shadowDOM",
-        "dependencies",
-        "factoryImpl",
-        "template",
-        "style",
-        "listeners",
-        "behaviors",
-        "$",
-      ]
-    );
+    jsUtils.assignExcept(CustomElement.prototype, config, [
+      'shadowDOM',
+      'dependencies',
+      'factoryImpl',
+      'template',
+      'style',
+      'listeners',
+      'behaviors',
+      '$',
+    ]);
 
     if (behaviors) {
       behaviors.forEach((behavior: Behavior) => {
@@ -129,7 +128,10 @@ const elementUtils: ElementUtils = {
   /**
    * 注册属性生成器
    */
-  registerProperty(type: string, generator: (prop: HTMLElement, regenerate?: boolean) => void): void {
+  registerProperty(
+    type: string,
+    generator: (prop: HTMLElement, regenerate?: boolean) => void,
+  ): void {
     propertyGenerators.set(type, generator);
   },
 
@@ -146,4 +148,3 @@ const elementUtils: ElementUtils = {
 };
 
 export default elementUtils;
-

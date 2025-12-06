@@ -1,5 +1,4 @@
 const sectionData = {
-    
   node: {
     name: 'Node',
     icon: 'node',
@@ -10,7 +9,7 @@ const sectionData = {
     icon: 'label',
     color: '#000000',
   },
-}
+};
 const nodeData = {
   nodeActive: true,
   nodeName: 'label',
@@ -23,4 +22,4 @@ const nodeData = {
   opacity: 255,
   skew: { x: 0, y: 0 },
   group: 'default',
-}
+};

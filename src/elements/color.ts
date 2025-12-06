@@ -2,28 +2,30 @@
  * UI Color 组件
  */
 
-import chroma from "chroma-js";
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { acceptEvent, fire } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
+import chroma from 'chroma-js';
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { acceptEvent, fire } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
 
 // 颜色选择器元素引用
-let colorPicker: HTMLElement & {
-  value?: number[];
-  hide?(confirm: boolean): void;
-  _target?: HTMLElement | null;
-} | null = null;
+let colorPicker:
+  | (HTMLElement & {
+      value?: number[];
+      hide?(confirm: boolean): void;
+      _target?: HTMLElement | null;
+    })
+  | null = null;
 
 // 点击外部关闭功能
 let hitGhostHandler: ((event: MouseEvent) => void) | null = null;
 
 function addHitGhost(_type: string, _zIndex: number, callback: () => void): void {
   removeHitGhost();
-  
+
   hitGhostHandler = (event: MouseEvent) => {
     if (colorPicker && !colorPicker.contains(event.target as Node)) {
       if (colorPicker._target && !colorPicker._target.contains(event.target as Node)) {
@@ -31,15 +33,15 @@ function addHitGhost(_type: string, _zIndex: number, callback: () => void): void
       }
     }
   };
-  
+
   setTimeout(() => {
-    document.addEventListener("mousedown", hitGhostHandler!, true);
+    document.addEventListener('mousedown', hitGhostHandler!, true);
   }, 0);
 }
 
 function removeHitGhost(): void {
   if (hitGhostHandler) {
-    document.removeEventListener("mousedown", hitGhostHandler, true);
+    document.removeEventListener('mousedown', hitGhostHandler, true);
     hitGhostHandler = null;
   }
 }
@@ -52,7 +54,7 @@ const template = /*html*/ `
     <div class="mask"></div>
   `;
 
-export default elementUtils.registerElement("ui-color", {
+export default elementUtils.registerElement('ui-color', {
   get value(): number[] | string {
     return this._value;
   },
@@ -110,10 +112,10 @@ export default elementUtils.registerElement("ui-color", {
         if (this._values) {
           color = this._values[0];
         }
-        this.setAttribute("multi-values", "");
+        this.setAttribute('multi-values', '');
       } else {
         color = this._value;
-        this.removeAttribute("multi-values");
+        this.removeAttribute('multi-values');
       }
 
       if (color) {
@@ -124,11 +126,11 @@ export default elementUtils.registerElement("ui-color", {
   },
 
   get observedAttributes(): string[] {
-    return ["multi-values"];
+    return ['multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue !== newValue && name === "multi-values") {
+    if (oldValue !== newValue && name === 'multi-values') {
       const propertyName = name.replace(/-(\w)/g, (_e, t) => t.toUpperCase());
       (this as any)[propertyName] = newValue;
     }
@@ -136,8 +138,8 @@ export default elementUtils.registerElement("ui-color", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior],
   template,
-  style: getElementStyleSync("color"),
-  $: { rgb: ".rgb", alpha: ".alpha" },
+  style: getElementStyleSync('color'),
+  $: { rgb: '.rgb', alpha: '.alpha' },
 
   factoryImpl(value: number[] | string): void {
     if (value) {
@@ -147,13 +149,13 @@ export default elementUtils.registerElement("ui-color", {
 
   ready(): void {
     this._showing = false;
-    
-    let attrValue = this.getAttribute("value");
+
+    let attrValue = this.getAttribute('value');
     let initialValue: number[] | string;
-    
+
     if (attrValue !== null) {
       if (typeof attrValue === 'string' && attrValue.includes(',')) {
-        const parts = attrValue.split(',').map(p => parseFloat(p.trim()));
+        const parts = attrValue.split(',').map((p) => parseFloat(p.trim()));
         if (parts.length >= 3) {
           initialValue = parts.length === 4 ? parts : [...parts, 1];
         } else {
@@ -165,21 +167,26 @@ export default elementUtils.registerElement("ui-color", {
     } else {
       initialValue = [255, 255, 255, 1];
     }
-    
+
     if (Array.isArray(initialValue) && initialValue.length >= 3) {
       const r = initialValue[0];
       const g = initialValue[1];
       const b = initialValue[2];
-      const a = initialValue.length === 4 ? (initialValue[3] > 1 ? initialValue[3] / 255 : initialValue[3]) : 1;
+      const a =
+        initialValue.length === 4
+          ? initialValue[3] > 1
+            ? initialValue[3] / 255
+            : initialValue[3]
+          : 1;
       this._draw = [r, g, b, a];
       this._value = initialValue;
     } else {
       this._draw = chroma(initialValue as any).rgba();
       this._value = this._draw;
     }
-    
-    this.multiValues = this.getAttribute("multi-values") as any;
-    
+
+    this.multiValues = this.getAttribute('multi-values') as any;
+
     requestAnimationFrame(() => {
       if (!this.$rgb || !this.$alpha) {
         console.error('[ui-color] $rgb 或 $alpha 未找到');
@@ -188,17 +195,17 @@ export default elementUtils.registerElement("ui-color", {
       this._updateRGB();
       this._updateAlpha();
     });
-    
+
     this._initFocusable(this);
     this._initDisable(false);
     this._initReadonly(false);
     this._initEvents();
 
     if (!colorPicker) {
-      colorPicker = document.createElement("ui-color-picker") as any;
-      colorPicker!.style.position = "fixed";
-      colorPicker!.style.zIndex = "999";
-      colorPicker!.style.display = "none";
+      colorPicker = document.createElement('ui-color-picker') as any;
+      colorPicker!.style.position = 'fixed';
+      colorPicker!.style.zIndex = '999';
+      colorPicker!.style.display = 'none';
     }
   },
 
@@ -207,7 +214,7 @@ export default elementUtils.registerElement("ui-color", {
   },
 
   _initEvents(): void {
-    this.addEventListener("mousedown", (event: MouseEvent) => {
+    this.addEventListener('mousedown', (event: MouseEvent) => {
       if (!this.disabled) {
         acceptEvent(event);
         focusMgr._setFocusElement(this);
@@ -225,12 +232,8 @@ export default elementUtils.registerElement("ui-color", {
       }
     });
 
-    this.addEventListener("keydown", (event: KeyboardEvent) => {
-      if (
-        !this.readonly &&
-        !this.disabled &&
-        (event.keyCode === 13 || event.keyCode === 32)
-      ) {
+    this.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (!this.readonly && !this.disabled && (event.keyCode === 13 || event.keyCode === 32)) {
         acceptEvent(event);
         if (colorPicker) {
           colorPicker.value = this._draw;
@@ -245,19 +248,19 @@ export default elementUtils.registerElement("ui-color", {
 
         if (e.detail.confirm) {
           this._initValue = this._value;
-          fire(this, "confirm", {
+          fire(this, 'confirm', {
             bubbles: true,
             detail: { value: this._value },
           });
         } else {
           if (this._initValue !== this._value) {
             this.value = this._initValue;
-            fire(this, "change", {
+            fire(this, 'change', {
               bubbles: true,
               detail: { value: this._value },
             });
           }
-          fire(this, "cancel", {
+          fire(this, 'cancel', {
             bubbles: true,
             detail: { value: this._value },
           });
@@ -274,7 +277,7 @@ export default elementUtils.registerElement("ui-color", {
 
       this.value = e.detail.value.map((v: number) => v);
 
-      fire(this, "change", {
+      fire(this, 'change', {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -321,23 +324,23 @@ export default elementUtils.registerElement("ui-color", {
 
       if (show) {
         this._initValue = this._draw;
-        colorPicker!.addEventListener("hide", this._hideFn);
-        colorPicker!.addEventListener("change", this._changeFn);
-        addHitGhost("default", 998, () => {
+        colorPicker!.addEventListener('hide', this._hideFn);
+        colorPicker!.addEventListener('change', this._changeFn);
+        addHitGhost('default', 998, () => {
           colorPicker!.hide?.(true);
         });
         document.body.appendChild(colorPicker!);
         colorPicker!._target = this;
-        colorPicker!.style.display = "block";
+        colorPicker!.style.display = 'block';
         this._updateColorPickerPosition();
         focusMgr._setFocusElement(colorPicker as any);
       } else {
-        colorPicker!.removeEventListener("hide", this._hideFn);
-        colorPicker!.removeEventListener("change", this._changeFn);
+        colorPicker!.removeEventListener('hide', this._hideFn);
+        colorPicker!.removeEventListener('change', this._changeFn);
         removeHitGhost();
         colorPicker!._target = null;
         colorPicker!.remove();
-        colorPicker!.style.display = "none";
+        colorPicker!.style.display = 'none';
         focusMgr._setFocusElement(this);
       }
     }
@@ -370,4 +373,3 @@ export default elementUtils.registerElement("ui-color", {
     });
   },
 });
-

@@ -2,12 +2,12 @@
  * 按钮状态行为
  */
 
-import domUtils from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
+import domUtils from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
 import type { ButtonStateBehavior, FocusableElement } from '../types';
 
 function isPressed(el: HTMLElement): boolean {
-  return el.getAttribute("pressed") !== null;
+  return el.getAttribute('pressed') !== null;
 }
 
 interface ButtonStateElement extends HTMLElement {
@@ -22,7 +22,7 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
   _initButtonState(el: HTMLElement): void {
     domUtils.installDownUpEvent(el);
 
-    el.addEventListener("keydown", (e: Event) => {
+    el.addEventListener('keydown', (e: Event) => {
       const event = e as KeyboardEvent;
       if (!this.disabled) {
         if (event.keyCode === 32) {
@@ -49,7 +49,7 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
             domUtils.acceptEvent(event);
 
             if (isPressed(el)) {
-              domUtils.fire(el, "cancel", { bubbles: true });
+              domUtils.fire(el, 'cancel', { bubbles: true });
               this._canceledByEsc = true;
             }
 
@@ -59,7 +59,7 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
       }
     });
 
-    el.addEventListener("keyup", (e: Event) => {
+    el.addEventListener('keyup', (e: Event) => {
       const event = e as KeyboardEvent;
       if (event.keyCode === 32) {
         domUtils.acceptEvent(event);
@@ -74,19 +74,19 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
       }
     });
 
-    el.addEventListener("down", (e: Event) => {
+    el.addEventListener('down', (e: Event) => {
       domUtils.acceptEvent(e);
       focusMgr._setFocusElement(this as FocusableElement);
       this._setPressed(el, true);
       this._canceledByEsc = false;
     });
 
-    el.addEventListener("up", (e: Event) => {
+    el.addEventListener('up', (e: Event) => {
       domUtils.acceptEvent(e);
       this._setPressed(el, false);
     });
 
-    el.addEventListener("click", (e: Event) => {
+    el.addEventListener('click', (e: Event) => {
       const event = e as MouseEvent;
       this._onButtonClick?.(el, event);
 
@@ -99,7 +99,7 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
       }
     });
 
-    el.addEventListener("focus-changed", () => {
+    el.addEventListener('focus-changed', () => {
       if (!this.focused) {
         this._setPressed(el, false);
       }
@@ -108,12 +108,11 @@ const buttonStateBehavior: ButtonStateBehavior & ThisType<ButtonStateElement> = 
 
   _setPressed(el: HTMLElement, pressed: boolean): void {
     if (pressed) {
-      el.setAttribute("pressed", "");
+      el.setAttribute('pressed', '');
     } else {
-      el.removeAttribute("pressed");
+      el.removeAttribute('pressed');
     }
   },
 };
 
 export default buttonStateBehavior;
-

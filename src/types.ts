@@ -113,12 +113,12 @@ export interface InputStateElement extends HTMLElement {
 export interface DockableElement extends HTMLElement {
   _dockable?: boolean;
   noCollapse?: boolean;
-  _preferredWidth?: number | "auto";
-  _preferredHeight?: number | "auto";
+  _preferredWidth?: number | 'auto';
+  _preferredHeight?: number | 'auto';
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _initDockable?: () => void;
   addDock?: (el: HTMLElement, before?: HTMLElement | null) => void;
   removeDock?: (el: HTMLElement) => void;
@@ -162,7 +162,10 @@ export interface FocusableBehavior {
   _navELs?: HTMLElement[];
   _curFocus?: HTMLElement;
   _setFocused(focused: boolean): void;
-  _initFocusable(focusEls?: HTMLElement | HTMLElement[], navEls?: HTMLElement | HTMLElement[]): void;
+  _initFocusable(
+    focusEls?: HTMLElement | HTMLElement[],
+    navEls?: HTMLElement | HTMLElement[],
+  ): void;
   _getFirstFocusableElement(): HTMLElement | null;
   [key: string]: unknown;
 }
@@ -207,12 +210,12 @@ export interface DockableBehavior {
   _dockable: boolean;
   get noCollapse(): boolean;
   set noCollapse(value: boolean);
-  _preferredWidth?: number | "auto";
-  _preferredHeight?: number | "auto";
+  _preferredWidth?: number | 'auto';
+  _preferredHeight?: number | 'auto';
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _initDockable(): void;
   addDock(position: string, element: HTMLElement, noResize?: boolean): void;
   removeDock(element: HTMLElement): boolean;
@@ -226,18 +229,18 @@ export interface ResizableBehavior {
   _resizable: boolean;
   get row(): boolean;
   set row(value: boolean);
-  _initWidth?: number | "auto";
-  _initHeight?: number | "auto";
+  _initWidth?: number | 'auto';
+  _initHeight?: number | 'auto';
   _initMinWidth?: number;
   _initMinHeight?: number;
-  _initMaxWidth?: number | "auto";
-  _initMaxHeight?: number | "auto";
-  _preferredWidth?: number | "auto";
-  _preferredHeight?: number | "auto";
+  _initMaxWidth?: number | 'auto';
+  _initMaxHeight?: number | 'auto';
+  _preferredWidth?: number | 'auto';
+  _preferredHeight?: number | 'auto';
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _needEvaluateSize?: boolean;
   _initResizable(): void;
   _notifyResize(): void;
@@ -266,4 +269,3 @@ export interface DroppableBehavior {
   _initDroppable(element: HTMLElement): void;
   [key: string]: unknown;
 }
-

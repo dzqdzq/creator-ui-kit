@@ -1,6 +1,6 @@
-import domUtils from "../utils/dom-utils";
-import dockUtils from "../utils/dock-utils";
-import focusMgr from "../utils/focus-mgr";
+import domUtils from '../utils/dom-utils';
+import dockUtils from '../utils/dock-utils';
+import focusMgr from '../utils/focus-mgr';
 
 /**
  * 可停靠元素接口
@@ -9,8 +9,8 @@ interface DockableElement extends HTMLElement {
   _dockable?: boolean;
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _notifyResize?: () => void;
   _reflowRecursively?: () => void;
   _updatePreferredSizeRecursively?: () => void;
@@ -39,7 +39,7 @@ function clampWidth(element: DockableElement, width: number): number {
   }
   if (
     element._computedMaxWidth !== undefined &&
-    element._computedMaxWidth !== "auto" &&
+    element._computedMaxWidth !== 'auto' &&
     width > element._computedMaxWidth
   ) {
     return element._computedMaxWidth;
@@ -56,7 +56,7 @@ function clampHeight(element: DockableElement, height: number): number {
   }
   if (
     element._computedMaxHeight !== undefined &&
-    element._computedMaxHeight !== "auto" &&
+    element._computedMaxHeight !== 'auto' &&
     height > element._computedMaxHeight
   ) {
     return element._computedMaxHeight;
@@ -69,22 +69,22 @@ function clampHeight(element: DockableElement, height: number): number {
  */
 class Resizer extends HTMLElement {
   static get tagName(): string {
-    return "ui-dock-resizer";
+    return 'ui-dock-resizer';
   }
 
   constructor() {
     super();
-    const shadowRoot = this.attachShadow({ mode: "open" });
+    const shadowRoot = this.attachShadow({ mode: 'open' });
     shadowRoot.innerHTML = `
       <div class="bar"></div>
     `;
 
     shadowRoot.insertBefore(
-      domUtils.createStyleElement("theme://elements/resizer.css"),
-      shadowRoot.firstChild
+      domUtils.createStyleElement('theme://elements/resizer.css'),
+      shadowRoot.firstChild,
     );
 
-    this.addEventListener("mousedown", this._onMouseDown.bind(this));
+    this.addEventListener('mousedown', this._onMouseDown.bind(this));
   }
 
   connectedCallback(): void {
@@ -92,26 +92,26 @@ class Resizer extends HTMLElement {
   }
 
   get vertical(): boolean {
-    return this.getAttribute("vertical") !== null;
+    return this.getAttribute('vertical') !== null;
   }
 
   set vertical(value: boolean) {
     if (value) {
-      this.setAttribute("vertical", "");
+      this.setAttribute('vertical', '');
     } else {
-      this.removeAttribute("vertical");
+      this.removeAttribute('vertical');
     }
   }
 
   get active(): boolean {
-    return this.getAttribute("active") !== null;
+    return this.getAttribute('active') !== null;
   }
 
   set active(value: boolean) {
     if (value) {
-      this.setAttribute("active", "");
+      this.setAttribute('active', '');
     } else {
-      this.removeAttribute("active");
+      this.removeAttribute('active');
     }
   }
 
@@ -141,30 +141,20 @@ class Resizer extends HTMLElement {
       prevTotalSize += sizeList[i];
       const child = parent.children[i] as DockableElement;
 
-      prevMinSize += this.vertical
-        ? child._computedMinWidth || 0
-        : child._computedMinHeight || 0;
+      prevMinSize += this.vertical ? child._computedMinWidth || 0 : child._computedMinHeight || 0;
 
-      const maxSize = this.vertical
-        ? child._computedMaxWidth
-        : child._computedMaxHeight;
-      prevMaxSize +=
-        maxSize === "auto" || maxSize === undefined ? Infinity : maxSize;
+      const maxSize = this.vertical ? child._computedMaxWidth : child._computedMaxHeight;
+      prevMaxSize += maxSize === 'auto' || maxSize === undefined ? Infinity : maxSize;
     }
 
     for (let i = resizerIndex + 1; i < parent.children.length; i += 2) {
       nextTotalSize += sizeList[i];
       const child = parent.children[i] as DockableElement;
 
-      nextMinSize += this.vertical
-        ? child._computedMinWidth || 0
-        : child._computedMinHeight || 0;
+      nextMinSize += this.vertical ? child._computedMinWidth || 0 : child._computedMinHeight || 0;
 
-      const maxSize = this.vertical
-        ? child._computedMaxWidth
-        : child._computedMaxHeight;
-      nextMaxSize +=
-        maxSize === "auto" || maxSize === undefined ? Infinity : maxSize;
+      const maxSize = this.vertical ? child._computedMaxWidth : child._computedMaxHeight;
+      nextMaxSize += maxSize === 'auto' || maxSize === undefined ? Infinity : maxSize;
     }
 
     return {
@@ -204,9 +194,7 @@ class Resizer extends HTMLElement {
     const onMouseMove = (moveEvent: MouseEvent): void => {
       moveEvent.stopPropagation();
 
-      const delta = this.vertical
-        ? moveEvent.clientX - anchorX
-        : moveEvent.clientY - anchorY;
+      const delta = this.vertical ? moveEvent.clientX - anchorX : moveEvent.clientY - anchorY;
 
       if (delta !== 0) {
         const currentRect = this.getBoundingClientRect();
@@ -239,7 +227,7 @@ class Resizer extends HTMLElement {
           snapshot.prevMaxSize,
           snapshot.nextTotalSize,
           snapshot.nextMinSize,
-          snapshot.nextMaxSize
+          snapshot.nextMaxSize,
         );
       }
     };
@@ -247,8 +235,8 @@ class Resizer extends HTMLElement {
     const onMouseUp = (upEvent: MouseEvent): void => {
       upEvent.stopPropagation();
 
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
 
       domUtils.removeDragGhost();
       this.active = false;
@@ -276,8 +264,8 @@ class Resizer extends HTMLElement {
       focusMgr._refocus();
     };
 
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 
   private _resize(
@@ -291,7 +279,7 @@ class Resizer extends HTMLElement {
     _prevMaxSize: number,
     nextTotalSize: number,
     nextMinSize: number,
-    _nextMaxSize: number
+    _nextMaxSize: number,
   ): void {
     const sign = Math.sign(delta);
     let prevIndex: number;
@@ -379,4 +367,3 @@ class Resizer extends HTMLElement {
 }
 
 export default Resizer;
-

@@ -2,9 +2,9 @@
  * UI Loader 组件
  */
 
-import chroma from "chroma-js";
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
+import chroma from 'chroma-js';
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
 
 const template = /*html*/ `
     <div class="animate"></div>
@@ -13,16 +13,16 @@ const template = /*html*/ `
     </div>
   `;
 
-export default elementUtils.registerElement("ui-loader", {
+export default elementUtils.registerElement('ui-loader', {
   get inline(): boolean {
-    return this.getAttribute("inline") !== null;
+    return this.getAttribute('inline') !== null;
   },
 
   set inline(value: boolean) {
     if (value) {
-      this.setAttribute("inline", "");
+      this.setAttribute('inline', '');
     } else {
-      this.removeAttribute("inline");
+      this.removeAttribute('inline');
     }
   },
 
@@ -40,7 +40,7 @@ export default elementUtils.registerElement("ui-loader", {
   },
 
   template,
-  style: getElementStyleSync("loader"),
+  style: getElementStyleSync('loader'),
 
   factoryImpl(text: string): void {
     if (text) {
@@ -49,7 +49,7 @@ export default elementUtils.registerElement("ui-loader", {
   },
 
   ready(): void {
-    const color = this.getAttribute("color");
+    const color = this.getAttribute('color');
     this._maskColor = color !== null ? chroma(color).rgba() : [0, 0, 0, 0.3];
   },
 
@@ -57,4 +57,3 @@ export default elementUtils.registerElement("ui-loader", {
     this.style.backgroundColor = chroma(this.maskColor).css();
   },
 });
-

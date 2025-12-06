@@ -4,12 +4,12 @@
 
 import type { FireOptions, WalkOptions } from '../types';
 
-const mouseEvents = ["mousedown", "mousemove", "mouseup", "click"];
+const mouseEvents = ['mousedown', 'mousemove', 'mouseup', 'click'];
 const buttonMapping = [0, 1, 4, 2];
 
 const supportsButtons = (() => {
   try {
-    return new MouseEvent("test", { buttons: 1 }).buttons === 1;
+    return new MouseEvent('test', { buttons: 1 }).buttons === 1;
   } catch (e) {
     return false;
   }
@@ -22,7 +22,7 @@ function isLeftMouseButton(e: MouseEvent): boolean {
   if (!mouseEvents.includes(e.type)) {
     return false;
   }
-  if (e.type === "mousemove") {
+  if (e.type === 'mousemove') {
     let buttons = e.buttons === undefined ? 1 : e.buttons;
     if (e instanceof window.MouseEvent && !supportsButtons) {
       buttons = buttonMapping[e.which] || 0;
@@ -62,11 +62,11 @@ export function acceptEvent(e: Event): void {
  */
 export function installDownUpEvent(target: HTMLElement): void {
   function cleanup(moveHandler: EventListener, upHandler: EventListener): void {
-    document.removeEventListener("mousemove", moveHandler);
-    document.removeEventListener("mouseup", upHandler);
+    document.removeEventListener('mousemove', moveHandler);
+    document.removeEventListener('mouseup', upHandler);
   }
 
-  target.addEventListener("mousedown", (e: Event) => {
+  target.addEventListener('mousedown', (e: Event) => {
     const mouseEvent = e as MouseEvent;
     acceptEvent(mouseEvent);
     if (!isLeftMouseButton(mouseEvent)) {
@@ -76,7 +76,7 @@ export function installDownUpEvent(target: HTMLElement): void {
     const moveHandler = (e: Event): void => {
       const moveEvent = e as MouseEvent;
       if (!isLeftMouseButton(moveEvent)) {
-        fire(target, "up", { detail: { sourceEvent: moveEvent }, bubbles: true });
+        fire(target, 'up', { detail: { sourceEvent: moveEvent }, bubbles: true });
         cleanup(moveHandler, upHandler);
       }
     };
@@ -84,14 +84,14 @@ export function installDownUpEvent(target: HTMLElement): void {
     const upHandler = (e: Event): void => {
       const upEvent = e as MouseEvent;
       if (isLeftMouseButton(upEvent)) {
-        fire(target, "up", { detail: { sourceEvent: upEvent }, bubbles: true });
+        fire(target, 'up', { detail: { sourceEvent: upEvent }, bubbles: true });
         cleanup(moveHandler, upHandler);
       }
     };
 
-    document.addEventListener("mousemove", moveHandler);
-    document.addEventListener("mouseup", upHandler, true);
-    fire(target, "down", { detail: { sourceEvent: mouseEvent }, bubbles: true });
+    document.addEventListener('mousemove', moveHandler);
+    document.addEventListener('mouseup', upHandler, true);
+    fire(target, 'down', { detail: { sourceEvent: mouseEvent }, bubbles: true });
   });
 }
 
@@ -101,10 +101,10 @@ export function installDownUpEvent(target: HTMLElement): void {
 export function walk(
   el: HTMLElement,
   options: WalkOptions | ((el: HTMLElement) => boolean),
-  callback?: (el: HTMLElement) => boolean
+  callback?: (el: HTMLElement) => boolean,
 ): void {
-  const opts = typeof options === "function" ? {} : options;
-  const cb = typeof options === "function" ? options : callback!;
+  const opts = typeof options === 'function' ? {} : options;
+  const cb = typeof options === 'function' ? options : callback!;
 
   if (!opts.excludeSelf) {
     if (cb(el)) {
@@ -149,16 +149,16 @@ export function walk(
  */
 export function createStyleElement(href: string): HTMLStyleElement | HTMLLinkElement {
   // 如果是 theme:// 协议，需要在运行时解析
-  if (href.startsWith("theme://")) {
+  if (href.startsWith('theme://')) {
     // 创建一个空的 style 元素，实际样式会通过 CSS 加载器注入
-    const style = document.createElement("style");
-    style.setAttribute("data-theme-href", href);
+    const style = document.createElement('style');
+    style.setAttribute('data-theme-href', href);
     return style;
   }
 
   // 普通的 CSS 链接
-  const link = document.createElement("link") as HTMLLinkElement;
-  link.rel = "stylesheet";
+  const link = document.createElement('link') as HTMLLinkElement;
+  link.rel = 'stylesheet';
   link.href = href;
   return link;
 }
@@ -171,7 +171,7 @@ let dragGhost: HTMLDivElement | null = null;
  */
 export function addDragGhost(): HTMLDivElement {
   if (!dragGhost) {
-    dragGhost = document.createElement("div");
+    dragGhost = document.createElement('div');
     dragGhost.style.cssText = `
       position: fixed;
       top: 0;
@@ -208,4 +208,3 @@ export default {
   addDragGhost,
   removeDragGhost,
 };
-

@@ -2,16 +2,16 @@
  * UI Slider 组件
  */
 
-import elementUtils from "../utils/utils";
-import jsUtils from "../utils/js-utils";
-import mathUtils from "../utils/math";
-import { getElementStyleSync } from "../utils/css-loader";
-import { acceptEvent, fire } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
-import inputStateBehavior from "../behaviors/input-state";
+import elementUtils from '../utils/utils';
+import jsUtils from '../utils/js-utils';
+import mathUtils from '../utils/math';
+import { getElementStyleSync } from '../utils/css-loader';
+import { acceptEvent, fire } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
+import inputStateBehavior from '../behaviors/input-state';
 
 // 默认配置对象
 const settings = {
@@ -31,7 +31,7 @@ interface ExtendedInput extends HTMLInputElement {
   _initValue?: string;
 }
 
-export default elementUtils.registerElement("ui-slider", {
+export default elementUtils.registerElement('ui-slider', {
   get value(): number {
     return this._value;
   },
@@ -132,30 +132,30 @@ export default elementUtils.registerElement("ui-slider", {
       this._multiValues = boolValue;
 
       if (boolValue) {
-        this.setAttribute("multi-values", "");
+        this.setAttribute('multi-values', '');
       } else {
-        this.removeAttribute("multi-values");
+        this.removeAttribute('multi-values');
       }
     }
   },
 
   get observedAttributes(): string[] {
-    return ["precision", "min", "max", "multi-values"];
+    return ['precision', 'min', 'max', 'multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue !== newValue) {
       switch (name) {
-        case "multi-values":
-        case "precision": {
+        case 'multi-values':
+        case 'precision': {
           const propertyName = name.replace(/-(\w)/g, (_t, e) => e.toUpperCase());
           (this as any)[propertyName] = newValue;
           break;
         }
-        case "min":
+        case 'min':
           this.min = newValue;
           break;
-        case "max":
+        case 'max':
           this.max = newValue;
           break;
       }
@@ -164,12 +164,12 @@ export default elementUtils.registerElement("ui-slider", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template,
-  style: getElementStyleSync("slider"),
+  style: getElementStyleSync('slider'),
   $: {
-    wrapper: ".wrapper",
-    track: ".track",
-    nubbin: ".nubbin",
-    input: "input",
+    wrapper: '.wrapper',
+    track: '.track',
+    nubbin: '.nubbin',
+    input: 'input',
   },
 
   factoryImpl(value: number): void {
@@ -179,21 +179,21 @@ export default elementUtils.registerElement("ui-slider", {
   },
 
   ready(): void {
-    const precision = this.getAttribute("precision");
+    const precision = this.getAttribute('precision');
     this._precision = precision !== null ? parseInt(precision) : 1;
-    const min = this.getAttribute("min");
+    const min = this.getAttribute('min');
     this._min = min !== null ? parseFloat(min) : 0;
-    const max = this.getAttribute("max");
+    const max = this.getAttribute('max');
     this._max = max !== null ? parseFloat(max) : 1;
-    const value = this.getAttribute("value");
+    const value = this.getAttribute('value');
     this._value = value !== null ? parseFloat(value) : 0;
 
     this._value = this._initValue = mathUtils.clamp(this._value, this._min, this._max);
 
-    const step = this.getAttribute("step");
+    const step = this.getAttribute('step');
     this._step = step !== null ? parseFloat(step) : settings.stepFloat;
     this._snap = true;
-    this.multiValues = this.getAttribute("multi-values") as any;
+    this.multiValues = this.getAttribute('multi-values') as any;
     this._updateNubbinAndInput();
     this._initFocusable([this.$wrapper, this.$input], this.$input);
     this._initDisable(false);
@@ -204,15 +204,15 @@ export default elementUtils.registerElement("ui-slider", {
   },
 
   _initEvents(): void {
-    this.addEventListener("mousedown", this._mouseDownHandler);
-    this.addEventListener("focus-changed", this._focusChangedHandler);
+    this.addEventListener('mousedown', this._mouseDownHandler);
+    this.addEventListener('focus-changed', this._focusChangedHandler);
 
-    this.$wrapper.addEventListener("keydown", this._wrapperKeyDownHandler.bind(this));
-    this.$wrapper.addEventListener("keyup", this._wrapperKeyUpHandler.bind(this));
-    this.$wrapper.addEventListener("mousedown", this._wrapperMouseDownHandler.bind(this));
-    this.$nubbin.addEventListener("mousedown", this._nubbinMouseDownHandler.bind(this));
+    this.$wrapper.addEventListener('keydown', this._wrapperKeyDownHandler.bind(this));
+    this.$wrapper.addEventListener('keyup', this._wrapperKeyUpHandler.bind(this));
+    this.$wrapper.addEventListener('mousedown', this._wrapperMouseDownHandler.bind(this));
+    this.$nubbin.addEventListener('mousedown', this._nubbinMouseDownHandler.bind(this));
 
-    this.$input.addEventListener("keydown", (event: KeyboardEvent) => {
+    this.$input.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.keyCode === 38) {
         acceptEvent(event);
         if (!this.readonly) this._stepUp(event);
@@ -261,8 +261,8 @@ export default elementUtils.registerElement("ui-slider", {
     this._dragMouseMoveHandler = this._dragMouseMoveHandler || this._onDragMove.bind(this);
     this._dragMouseUpHandler = this._dragMouseUpHandler || this._onDragEnd.bind(this);
 
-    document.addEventListener("mousemove", this._dragMouseMoveHandler);
-    document.addEventListener("mouseup", this._dragMouseUpHandler);
+    document.addEventListener('mousemove', this._dragMouseMoveHandler);
+    document.addEventListener('mouseup', this._dragMouseUpHandler);
   },
 
   _onDragMove(event: MouseEvent): void {
@@ -282,8 +282,8 @@ export default elementUtils.registerElement("ui-slider", {
     this._updateValueFromEvent(event);
     this.confirm();
 
-    document.removeEventListener("mousemove", this._dragMouseMoveHandler);
-    document.removeEventListener("mouseup", this._dragMouseUpHandler);
+    document.removeEventListener('mousemove', this._dragMouseMoveHandler);
+    document.removeEventListener('mouseup', this._dragMouseUpHandler);
   },
 
   _updateValueFromEvent(event: MouseEvent): void {
@@ -357,13 +357,13 @@ export default elementUtils.registerElement("ui-slider", {
   },
 
   _parseInput(): number {
-    if (this.$input.value === null || this.$input.value.trim() === "") {
+    if (this.$input.value === null || this.$input.value.trim() === '') {
       return this._min;
     }
     let value = parseFloat(this.$input.value);
 
     if (isNaN(value)) {
-      value = parseFloat((this.$input as ExtendedInput)._initValue || "0");
+      value = parseFloat((this.$input as ExtendedInput)._initValue || '0');
       value = parseFloat(this._formatValue(value));
     } else {
       value = parseFloat(this._formatValue(value));
@@ -388,7 +388,7 @@ export default elementUtils.registerElement("ui-slider", {
       this._changed = false;
       this._initValue = this._value;
       this._updateNubbinAndInput();
-      fire(this, "confirm", {
+      fire(this, 'confirm', {
         bubbles: true,
         detail: { value: this._value },
       });
@@ -402,13 +402,13 @@ export default elementUtils.registerElement("ui-slider", {
       if (this._value !== this._initValue) {
         this._value = this._initValue;
         this._updateNubbinAndInput();
-        fire(this, "change", {
+        fire(this, 'change', {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+      fire(this, 'cancel', { bubbles: true, detail: { value: this._value } });
     }
   },
 
@@ -422,7 +422,7 @@ export default elementUtils.registerElement("ui-slider", {
       this._initValue = value;
       this._updateNubbin();
 
-      fire(this, "confirm", {
+      fire(this, 'confirm', {
         bubbles: true,
         detail: { value: this._value, confirmByEnter },
       });
@@ -438,20 +438,20 @@ export default elementUtils.registerElement("ui-slider", {
       this._changed = false;
 
       if (input._initValue !== input.value) {
-        input.value = input._initValue || "";
+        input.value = input._initValue || '';
         const value = this._parseInput();
         input.value = String(value);
         this._value = value;
         this._initValue = value;
         this._updateNubbin();
 
-        fire(this, "change", {
+        fire(this, 'change', {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      fire(this, "cancel", {
+      fire(this, 'cancel', {
         bubbles: true,
         detail: { value: this._value, cancelByEsc },
       });
@@ -477,7 +477,7 @@ export default elementUtils.registerElement("ui-slider", {
 
   _emitChange(): void {
     this._changed = true;
-    fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    fire(this, 'change', { bubbles: true, detail: { value: this._value } });
   },
 
   _snapToStep(value: number): number {
@@ -487,12 +487,11 @@ export default elementUtils.registerElement("ui-slider", {
   },
 
   _formatValue(value: number): string {
-    if (value === null || value === undefined || String(value) === "") {
-      return "";
+    if (value === null || value === undefined || String(value) === '') {
+      return '';
     }
     return this._precision === 0
       ? jsUtils.toFixed(value, this._precision)
       : jsUtils.toFixed(value, this._precision, this._precision);
   },
 });
-

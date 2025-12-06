@@ -2,15 +2,15 @@
  * UI Num Input 组件
  */
 
-import elementUtils from "../utils/utils";
-import jsUtils from "../utils/js-utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { acceptEvent, installDownUpEvent, fire } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
-import inputStateBehavior from "../behaviors/input-state";
+import elementUtils from '../utils/utils';
+import jsUtils from '../utils/js-utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { acceptEvent, installDownUpEvent, fire } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
+import inputStateBehavior from '../behaviors/input-state';
 
 // 默认配置对象
 const settings = {
@@ -37,7 +37,7 @@ interface ExtendedInput extends HTMLInputElement {
   _initValue?: string;
 }
 
-export default elementUtils.registerElement("ui-num-input", {
+export default elementUtils.registerElement('ui-num-input', {
   get type(): 'int' | 'float' {
     return this._type;
   },
@@ -46,7 +46,7 @@ export default elementUtils.registerElement("ui-num-input", {
     if (this._type !== value) {
       this._type = value;
 
-      if (this._type === "int") {
+      if (this._type === 'int') {
         this._parseFn = parseInt;
         this._step = parseInt(String(this._step));
         this._step = this._step === 0 ? settings.stepInt : this._step;
@@ -85,31 +85,31 @@ export default elementUtils.registerElement("ui-num-input", {
     this._values = values;
 
     if (this._multiValues) {
-      this.$input.value = "-";
+      this.$input.value = '-';
     }
   },
 
   get highlighted(): boolean {
-    return this.getAttribute("highlighted") !== null;
+    return this.getAttribute('highlighted') !== null;
   },
 
   set highlighted(value: boolean) {
     if (value) {
-      this.setAttribute("highlighted", "");
+      this.setAttribute('highlighted', '');
     } else {
-      this.removeAttribute("highlighted");
+      this.removeAttribute('highlighted');
     }
   },
 
   get invalid(): boolean {
-    return this.getAttribute("invalid") !== null;
+    return this.getAttribute('invalid') !== null;
   },
 
   set invalid(value: boolean) {
     if (value) {
-      this.setAttribute("invalid", "");
+      this.setAttribute('invalid', '');
     } else {
-      this.removeAttribute("invalid");
+      this.removeAttribute('invalid');
     }
   },
 
@@ -171,7 +171,7 @@ export default elementUtils.registerElement("ui-num-input", {
       if (this._step !== numValue) {
         this._step = numValue;
 
-        if (this._type === "int") {
+        if (this._type === 'int') {
           this._step = this._step === 0 ? settings.stepInt : this._step;
         } else {
           this._step = this._step === 0 ? settings.stepFloat : this._step;
@@ -188,12 +188,12 @@ export default elementUtils.registerElement("ui-num-input", {
     const boolValue = !(value == null || value === false);
     if (boolValue !== this._multiValues) {
       if (boolValue) {
-        this.$input.value = "-";
-        this.setAttribute("multi-values", "");
+        this.$input.value = '-';
+        this.setAttribute('multi-values', '');
       } else {
         this._value = this._parseFn(String(this._clampValue(this._value)));
         this.$input.value = this._formatValue(this._value);
-        this.removeAttribute("multi-values");
+        this.removeAttribute('multi-values');
       }
 
       this._multiValues = boolValue;
@@ -201,7 +201,7 @@ export default elementUtils.registerElement("ui-num-input", {
   },
 
   get observedAttributes(): string[] {
-    return ["type", "min", "max", "precision", "step", "multi-values"];
+    return ['type', 'min', 'max', 'precision', 'step', 'multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
@@ -213,12 +213,12 @@ export default elementUtils.registerElement("ui-num-input", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template,
-  style: getElementStyleSync("num-input"),
+  style: getElementStyleSync('num-input'),
   $: {
-    input: "input",
-    spinWrapper: ".spin-wrapper",
-    spinUp: ".spin.up",
-    spinDown: ".spin.down",
+    input: 'input',
+    spinWrapper: '.spin-wrapper',
+    spinUp: '.spin.up',
+    spinDown: '.spin.down',
   },
 
   factoryImpl(value: number): void {
@@ -228,53 +228,53 @@ export default elementUtils.registerElement("ui-num-input", {
   },
 
   ready(): void {
-    if (this.getAttribute("type") === "int") {
-      this._type = "int";
+    if (this.getAttribute('type') === 'int') {
+      this._type = 'int';
       this._parseFn = parseInt as ParseFn;
     } else {
-      this._type = "float";
+      this._type = 'float';
       this._parseFn = parseFloat as ParseFn;
     }
 
-    const precision = this.getAttribute("precision");
+    const precision = this.getAttribute('precision');
     this._precision = precision !== null ? parseInt(precision) : 7;
-    const min = this.getAttribute("min");
+    const min = this.getAttribute('min');
     this._min = min !== null ? this._parseFn(min) : null;
-    const max = this.getAttribute("max");
+    const max = this.getAttribute('max');
     this._max = max !== null ? this._parseFn(max) : null;
-    this.multiValues = this.getAttribute("multi-values") as any;
-    const value = this.getAttribute("value");
+    this.multiValues = this.getAttribute('multi-values') as any;
+    const value = this.getAttribute('value');
     this._value = value !== null ? this._parseFn(value) : 0;
     this._value = this._clampValue(this._value);
-    const step = this.getAttribute("step");
+    const step = this.getAttribute('step');
 
     this._step =
       step !== null
         ? this._parseFn(step)
-        : this._type === "int"
-        ? settings.stepInt
-        : settings.stepFloat;
+        : this._type === 'int'
+          ? settings.stepInt
+          : settings.stepFloat;
 
     this.$input.value = this._formatValue(this._value);
-    this.$input.placeholder = "-";
-    (this.$input as ExtendedInput)._initValue = "";
+    this.$input.placeholder = '-';
+    (this.$input as ExtendedInput)._initValue = '';
 
-    this.$spinWrapper.addEventListener("keydown", (event: KeyboardEvent) => {
+    this.$spinWrapper.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.keyCode === 27 && this._holdingID) {
         acceptEvent(event);
         this.cancel();
-        this._curSpin?.removeAttribute("pressed");
+        this._curSpin?.removeAttribute('pressed');
         this._stopHolding();
       }
     });
 
     installDownUpEvent(this.$spinUp);
 
-    this.$spinUp.addEventListener("down", (event: Event) => {
+    this.$spinUp.addEventListener('down', (event: Event) => {
       acceptEvent(event);
       focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
-      this.$spinUp.setAttribute("pressed", "");
+      this.$spinUp.setAttribute('pressed', '');
 
       if (!this.readonly) {
         this._stepUp();
@@ -282,9 +282,9 @@ export default elementUtils.registerElement("ui-num-input", {
       }
     });
 
-    this.$spinUp.addEventListener("up", (event: Event) => {
+    this.$spinUp.addEventListener('up', (event: Event) => {
       acceptEvent(event);
-      this.$spinUp.removeAttribute("pressed");
+      this.$spinUp.removeAttribute('pressed');
 
       if (this._holdingID) {
         this._stopHolding();
@@ -294,11 +294,11 @@ export default elementUtils.registerElement("ui-num-input", {
 
     installDownUpEvent(this.$spinDown);
 
-    this.$spinDown.addEventListener("down", (event: Event) => {
+    this.$spinDown.addEventListener('down', (event: Event) => {
       acceptEvent(event);
       focusMgr._setFocusElement(this);
       this.$spinWrapper.focus();
-      this.$spinDown.setAttribute("pressed", "");
+      this.$spinDown.setAttribute('pressed', '');
 
       if (!this.readonly) {
         this._stepDown();
@@ -306,9 +306,9 @@ export default elementUtils.registerElement("ui-num-input", {
       }
     });
 
-    this.$spinDown.addEventListener("up", (event: Event) => {
+    this.$spinDown.addEventListener('up', (event: Event) => {
       acceptEvent(event);
-      this.$spinDown.removeAttribute("pressed");
+      this.$spinDown.removeAttribute('pressed');
 
       if (this._holdingID) {
         this._stopHolding();
@@ -327,20 +327,20 @@ export default elementUtils.registerElement("ui-num-input", {
 
   _setIsReadonlyAttribute(isReadonly: boolean): void {
     if (isReadonly) {
-      this.setAttribute("is-readonly", "");
+      this.setAttribute('is-readonly', '');
     } else {
-      this.removeAttribute("is-readonly");
+      this.removeAttribute('is-readonly');
     }
 
     this.$input.readOnly = isReadonly;
   },
 
   _initEvents(): void {
-    this.addEventListener("mousedown", this._mouseDownHandler);
-    this.addEventListener("keydown", this._keyDownHandler);
-    this.addEventListener("focus-changed", this._focusChangedHandler);
+    this.addEventListener('mousedown', this._mouseDownHandler);
+    this.addEventListener('keydown', this._keyDownHandler);
+    this.addEventListener('focus-changed', this._focusChangedHandler);
 
-    this.$input.addEventListener("keydown", (event: KeyboardEvent) => {
+    this.$input.addEventListener('keydown', (event: KeyboardEvent) => {
       if (!this.readonly) {
         if (event.keyCode === 38) {
           acceptEvent(event);
@@ -353,7 +353,7 @@ export default elementUtils.registerElement("ui-num-input", {
     });
 
     this.$input.addEventListener(
-      "mousewheel",
+      'mousewheel',
       (event: Event) => {
         const wheelEvent = event as WheelEvent;
         if (this.focused) {
@@ -365,33 +365,33 @@ export default elementUtils.registerElement("ui-num-input", {
             } else {
               this._stepUp();
             }
-            fire(this, "confirm", {
+            fire(this, 'confirm', {
               bubbles: true,
               detail: { value: this._value, confirmByEnter: false },
             });
           }
         }
       },
-      { passive: true }
+      { passive: true },
     );
   },
 
   _formatValue(value: number): string {
-    if (value === null || String(value) === "") {
-      return "";
+    if (value === null || String(value) === '') {
+      return '';
     }
-    return this._type === "int"
+    return this._type === 'int'
       ? jsUtils.toFixed(value, 0)
       : this._precision === 0
-      ? jsUtils.toFixed(value, this._precision)
-      : jsUtils.toFixed(value, this._precision, this._precision);
+        ? jsUtils.toFixed(value, this._precision)
+        : jsUtils.toFixed(value, this._precision, this._precision);
   },
 
   _clampValue(value: number): number {
     if (this._min !== null && this._min !== undefined) {
       value = Math.max(this._min, value);
     }
-    
+
     if (this._max !== null && this._max !== undefined) {
       value = Math.min(this._max, value);
     }
@@ -400,13 +400,13 @@ export default elementUtils.registerElement("ui-num-input", {
   },
 
   _parseInput(): number {
-    if (this.$input.value === null || this.$input.value.trim() === "") {
+    if (this.$input.value === null || this.$input.value.trim() === '') {
       return 0;
     }
     let value = this._parseFn(this.$input.value);
 
     if (isNaN(value)) {
-      value = this._parseFn((this.$input as ExtendedInput)._initValue || "0");
+      value = this._parseFn((this.$input as ExtendedInput)._initValue || '0');
       value = this._parseFn(this._formatValue(value));
     } else {
       value = this._parseFn(this._formatValue(value));
@@ -460,7 +460,7 @@ export default elementUtils.registerElement("ui-num-input", {
   },
 
   clear(): void {
-    this.$input.value = "";
+    this.$input.value = '';
     this.confirm();
   },
 
@@ -484,13 +484,13 @@ export default elementUtils.registerElement("ui-num-input", {
       this._value = value;
 
       if (originalValue !== value) {
-        fire(this, "change", {
+        fire(this, 'change', {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      fire(this, "confirm", {
+      fire(this, 'confirm', {
         bubbles: true,
         detail: { value: this._value, confirmByEnter },
       });
@@ -506,20 +506,20 @@ export default elementUtils.registerElement("ui-num-input", {
       this._changed = false;
 
       if (input._initValue !== input.value) {
-        input.value = input._initValue || "";
+        input.value = input._initValue || '';
         const value = this._parseInput();
         const formatted = this._formatValue(value);
         input.value = formatted;
         input._initValue = formatted;
         this._value = value;
 
-        fire(this, "change", {
+        fire(this, 'change', {
           bubbles: true,
           detail: { value: this._value },
         });
       }
 
-      fire(this, "cancel", {
+      fire(this, 'cancel', {
         bubbles: true,
         detail: { value: this._value, cancelByEsc },
       });
@@ -535,7 +535,7 @@ export default elementUtils.registerElement("ui-num-input", {
     this._changed = true;
     this._value = this._parseInput();
     this.multiValues = false;
-    fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    fire(this, 'change', { bubbles: true, detail: { value: this._value } });
   },
 
   _mouseDownHandler(event: MouseEvent): void {
@@ -560,4 +560,3 @@ export default elementUtils.registerElement("ui-num-input", {
     }
   },
 });
-

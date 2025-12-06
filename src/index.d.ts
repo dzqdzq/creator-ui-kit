@@ -16,7 +16,11 @@ export declare const utils: {
 };
 
 export declare const domUtils: {
-  fire: (element: HTMLElement, eventName: string, opts?: { bubbles?: boolean; composed?: boolean; detail?: any }) => void;
+  fire: (
+    element: HTMLElement,
+    eventName: string,
+    opts?: { bubbles?: boolean; composed?: boolean; detail?: any },
+  ) => void;
   acceptEvent: (event: Event) => void;
   installDownUpEvent: (element: HTMLElement) => void;
   inDocument: (element: HTMLElement) => boolean;
@@ -141,15 +145,14 @@ declare global {
     'ui-prop': UIProp;
     'ui-text-area': UITextArea;
   }
-  
+
   interface HTMLElementEventMap {
-    'confirm': CustomEvent;
-    'change': CustomEvent;
-    'cancel': CustomEvent;
+    confirm: CustomEvent;
+    change: CustomEvent;
+    cancel: CustomEvent;
   }
 }
 
 // ============ Vue 组件重导出 ============
 
 export * from './cc';
-

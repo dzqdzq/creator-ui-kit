@@ -2,15 +2,15 @@
  * UI VList 组件
  */
 
-import elementUtils from "../utils/utils";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
+import elementUtils from '../utils/utils';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
 
 const template = /*html*/ `
     <slot></slot>
   `;
 
-export default elementUtils.registerElement("ui-vlist", {
+export default elementUtils.registerElement('ui-vlist', {
   behaviors: [focusableBehavior, disableBehavior],
   template,
 
@@ -25,4 +25,3 @@ export default elementUtils.registerElement("ui-vlist", {
     this._initDisable(true);
   },
 });
-

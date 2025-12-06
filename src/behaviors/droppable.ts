@@ -2,7 +2,7 @@
  * 可放置行为
  */
 
-import domUtils from "../utils/dom-utils";
+import domUtils from '../utils/dom-utils';
 import type { DroppableBehavior } from '../types';
 
 // 简化的 dragDrop（原来是外部模块，这里提供基本实现）
@@ -23,26 +23,26 @@ const dragDrop = {
 
 const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBehavior> = {
   get droppable(): string | null {
-    return this.getAttribute("droppable");
+    return this.getAttribute('droppable');
   },
 
   set droppable(value: string | null) {
     if (value) {
-      this.setAttribute("droppable", value);
+      this.setAttribute('droppable', value);
     } else {
-      this.removeAttribute("droppable");
+      this.removeAttribute('droppable');
     }
   },
 
   get multi(): boolean {
-    return this.getAttribute("multi") !== null;
+    return this.getAttribute('multi') !== null;
   },
 
   set multi(value: boolean) {
     if (value) {
-      this.setAttribute("multi", "");
+      this.setAttribute('multi', '');
     } else {
-      this.removeAttribute("multi");
+      this.removeAttribute('multi');
     }
   },
 
@@ -55,7 +55,7 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
     this._dragenterCnt = 0;
     this._canDrop = false;
 
-    root.addEventListener("dragenter", (e: Event) => {
+    root.addEventListener('dragenter', (e: Event) => {
       const event = e as DragEvent;
       this._dragenterCnt!++;
 
@@ -64,7 +64,7 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
         let allowedTypes: string[] = [];
 
         if (this.droppable !== null) {
-          allowedTypes = this.droppable.split(",");
+          allowedTypes = this.droppable.split(',');
         }
 
         const dragType = dragDrop.type(event.dataTransfer);
@@ -83,7 +83,7 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
         }
 
         let itemCount = dragDrop.getLength();
-        if (dragType === "file" && itemCount === 0) {
+        if (dragType === 'file' && itemCount === 0) {
           itemCount = event.dataTransfer?.items.length || 0;
         }
 
@@ -94,9 +94,9 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
 
         event.stopPropagation();
         this._canDrop = true;
-        this.setAttribute("drag-hovering", "");
+        this.setAttribute('drag-hovering', '');
 
-        domUtils.fire(this, "drop-area-enter", {
+        domUtils.fire(this, 'drop-area-enter', {
           bubbles: true,
           detail: {
             target: event.target,
@@ -113,7 +113,7 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
       }
     });
 
-    root.addEventListener("dragleave", (e: Event) => {
+    root.addEventListener('dragleave', (e: Event) => {
       const event = e as DragEvent;
       this._dragenterCnt!--;
 
@@ -122,9 +122,9 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
           return;
         }
         event.stopPropagation();
-        this.removeAttribute("drag-hovering");
+        this.removeAttribute('drag-hovering');
 
-        domUtils.fire(this, "drop-area-leave", {
+        domUtils.fire(this, 'drop-area-leave', {
           bubbles: true,
           detail: {
             target: event.target,
@@ -134,16 +134,16 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
       }
     });
 
-    root.addEventListener("drop", (e: Event) => {
+    root.addEventListener('drop', (e: Event) => {
       const event = e as DragEvent;
       this._dragenterCnt = 0;
 
       if (this._canDrop) {
         event.preventDefault();
         event.stopPropagation();
-        this.removeAttribute("drag-hovering");
+        this.removeAttribute('drag-hovering');
 
-        domUtils.fire(this, "drop-area-accept", {
+        domUtils.fire(this, 'drop-area-accept', {
           bubbles: true,
           detail: {
             target: event.target,
@@ -160,13 +160,13 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
       }
     });
 
-    root.addEventListener("dragover", (e: Event) => {
+    root.addEventListener('dragover', (e: Event) => {
       const event = e as DragEvent;
       if (this._canDrop) {
         event.preventDefault();
         event.stopPropagation();
 
-        domUtils.fire(this, "drop-area-move", {
+        domUtils.fire(this, 'drop-area-move', {
           bubbles: true,
           detail: {
             target: event.target,
@@ -186,4 +186,3 @@ const droppableBehavior: DroppableBehavior & ThisType<HTMLElement & DroppableBeh
 };
 
 export default droppableBehavior;
-

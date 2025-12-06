@@ -54,7 +54,10 @@ export interface FocusableBehavior {
   focusable: boolean;
   focused: boolean;
   unnavigable: boolean;
-  _initFocusable(focusEls?: HTMLElement | HTMLElement[], navEls?: HTMLElement | HTMLElement[]): void;
+  _initFocusable(
+    focusEls?: HTMLElement | HTMLElement[],
+    navEls?: HTMLElement | HTMLElement[],
+  ): void;
   _getFirstFocusableElement(): HTMLElement | null;
   _setFocused(focused: boolean): void;
   _focusELs?: HTMLElement[];
@@ -141,12 +144,21 @@ export interface DroppableBehavior {
 
 // ============ 元素接口类型 ============
 
-export interface UIButtonElement extends HTMLElement, FocusableBehavior, DisableBehavior, ButtonStateBehavior {
+export interface UIButtonElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ButtonStateBehavior {
   ready(): void;
   _onButtonClick(element: HTMLElement, event: MouseEvent): void;
 }
 
-export interface UICheckboxElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior, ButtonStateBehavior {
+export interface UICheckboxElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior,
+    ButtonStateBehavior {
   checked: boolean;
   value: boolean;
   values: boolean[];
@@ -156,7 +168,12 @@ export interface UICheckboxElement extends HTMLElement, FocusableBehavior, Disab
   _updateMultiValue(): void;
 }
 
-export interface UIInputElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior, InputStateBehavior {
+export interface UIInputElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior,
+    InputStateBehavior {
   value: string;
   values: string[];
   placeholder: string;
@@ -170,7 +187,11 @@ export interface UIInputElement extends HTMLElement, FocusableBehavior, DisableB
   cancel(): void;
 }
 
-export interface UISelectElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior {
+export interface UISelectElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior {
   value: string;
   values: string[];
   selectedIndex: number;
@@ -186,7 +207,12 @@ export interface UISelectElement extends HTMLElement, FocusableBehavior, Disable
   valuesChanged?(oldValues: string[], newValues: string[]): void;
 }
 
-export interface UINumInputElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior, InputStateBehavior {
+export interface UINumInputElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior,
+    InputStateBehavior {
   type: 'int' | 'float';
   value: number;
   values: number[];
@@ -204,7 +230,12 @@ export interface UINumInputElement extends HTMLElement, FocusableBehavior, Disab
   cancel(): void;
 }
 
-export interface UISliderElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior, InputStateBehavior {
+export interface UISliderElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior,
+    InputStateBehavior {
   value: number;
   values: number[];
   min: number;
@@ -222,7 +253,11 @@ export interface UISliderElement extends HTMLElement, FocusableBehavior, Disable
   cancel(): void;
 }
 
-export interface UIColorElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior {
+export interface UIColorElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior {
   value: number[] | string;
   values: (number[] | string)[];
   multiValues: boolean;
@@ -240,7 +275,11 @@ export interface UISectionElement extends HTMLElement, FocusableBehavior, Disabl
   foldup(): void;
 }
 
-export interface UIPropElement extends HTMLElement, FocusableBehavior, DisableBehavior, ReadonlyBehavior {
+export interface UIPropElement
+  extends HTMLElement,
+    FocusableBehavior,
+    DisableBehavior,
+    ReadonlyBehavior {
   name: string;
   slidable: boolean;
   movable: boolean;
@@ -269,7 +308,12 @@ export interface UIPropElement extends HTMLElement, FocusableBehavior, DisableBe
   foldup(): void;
   regen(regenerate?: boolean): void;
   installStandardEvents(element: HTMLElement): void;
-  installSlideEvents(prop: UIPropElement, change?: Function, confirm?: Function, cancel?: Function): void;
+  installSlideEvents(
+    prop: UIPropElement,
+    change?: Function,
+    confirm?: Function,
+    cancel?: Function,
+  ): void;
 }
 
 export interface UIProgressElement extends HTMLElement {
@@ -300,4 +344,3 @@ declare global {
     'ui-hint': UIHintElement;
   }
 }
-

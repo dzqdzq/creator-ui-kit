@@ -2,12 +2,12 @@
  * UI Color Picker 组件
  */
 
-import chroma from "chroma-js";
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { fire, acceptEvent } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
+import chroma from 'chroma-js';
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { fire, acceptEvent } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
 
 // 浏览器兼容的设置存储系统（使用 localStorage）
 interface ColorPickerSettings {
@@ -15,8 +15,8 @@ interface ColorPickerSettings {
 }
 
 const SettingsStorage = {
-  STORAGE_KEY: "ui-color-picker-settings",
-  
+  STORAGE_KEY: 'ui-color-picker-settings',
+
   load(): ColorPickerSettings | null {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
@@ -24,45 +24,45 @@ const SettingsStorage = {
         return JSON.parse(stored);
       }
     } catch (e) {
-      console.warn("[color-picker] Failed to load settings:", e);
+      console.warn('[color-picker] Failed to load settings:', e);
     }
     return null;
   },
-  
+
   save(settings: ColorPickerSettings): void {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(settings));
     } catch (e) {
-      console.warn("[color-picker] Failed to save settings:", e);
+      console.warn('[color-picker] Failed to save settings:', e);
     }
   },
-  
+
   get(key: string): ColorPickerSettings | null {
     const settings = this.load();
     return settings ? (settings as any)[key] || settings : null;
   },
-  
+
   set(key: string, value: ColorPickerSettings): void {
     const settings = this.load() || { colors: [] };
     (settings as any)[key] = value;
     this.save(settings);
-  }
+  },
 };
 
 // 浏览器版本的右键菜单
 class ContextMenu {
   menu: HTMLElement | null = null;
   items: MenuItem[] = [];
-  
+
   append(item: MenuItem): void {
     this.items.push(item);
   }
-  
+
   popup(event: MouseEvent): void {
     this._removeMenu();
-    
-    this.menu = document.createElement("div");
-    this.menu.className = "ui-color-picker-context-menu";
+
+    this.menu = document.createElement('div');
+    this.menu.className = 'ui-color-picker-context-menu';
     this.menu.style.cssText = `
       position: fixed;
       z-index: 10000;
@@ -74,10 +74,10 @@ class ContextMenu {
       min-width: 120px;
       font-size: 12px;
     `;
-    
+
     this.items.forEach((item) => {
-      const menuItem = document.createElement("div");
-      menuItem.className = "ui-color-picker-menu-item";
+      const menuItem = document.createElement('div');
+      menuItem.className = 'ui-color-picker-menu-item';
       menuItem.textContent = item.options.label;
       menuItem.style.cssText = `
         padding: 6px 16px;
@@ -85,47 +85,47 @@ class ContextMenu {
         color: #e0e0e0;
         user-select: none;
       `;
-      
-      menuItem.addEventListener("mouseenter", () => {
-        menuItem.style.backgroundColor = "#3d3d3d";
+
+      menuItem.addEventListener('mouseenter', () => {
+        menuItem.style.backgroundColor = '#3d3d3d';
       });
-      
-      menuItem.addEventListener("mouseleave", () => {
-        menuItem.style.backgroundColor = "transparent";
+
+      menuItem.addEventListener('mouseleave', () => {
+        menuItem.style.backgroundColor = 'transparent';
       });
-      
-      menuItem.addEventListener("click", (e) => {
+
+      menuItem.addEventListener('click', (e) => {
         e.stopPropagation();
         if (item.options.click) {
           item.options.click();
         }
         this._removeMenu();
       });
-      
+
       this.menu!.appendChild(menuItem);
     });
-    
+
     const x = event.clientX;
     const y = event.clientY;
     this.menu.style.left = `${x}px`;
     this.menu.style.top = `${y}px`;
-    
+
     document.body.appendChild(this.menu);
-    
+
     const closeHandler = (e: MouseEvent) => {
       if (this.menu && !this.menu.contains(e.target as Node)) {
         this._removeMenu();
-        document.removeEventListener("click", closeHandler);
-        document.removeEventListener("contextmenu", closeHandler as any);
+        document.removeEventListener('click', closeHandler);
+        document.removeEventListener('contextmenu', closeHandler as any);
       }
     };
-    
+
     setTimeout(() => {
-      document.addEventListener("click", closeHandler);
-      document.addEventListener("contextmenu", closeHandler as any);
+      document.addEventListener('click', closeHandler);
+      document.addEventListener('contextmenu', closeHandler as any);
     }, 0);
   }
-  
+
   _removeMenu(): void {
     if (this.menu && this.menu.parentNode) {
       this.menu.parentNode.removeChild(this.menu);
@@ -141,7 +141,7 @@ interface MenuItemOptions {
 
 class MenuItem {
   options: MenuItemOptions;
-  
+
   constructor(options: MenuItemOptions) {
     this.options = options;
   }
@@ -205,7 +205,7 @@ const template = /*html*/ `
     </div>
   `;
 
-export default elementUtils.registerElement("ui-color-picker", {
+export default elementUtils.registerElement('ui-color-picker', {
   get value(): number[] {
     return this._value;
   },
@@ -227,24 +227,24 @@ export default elementUtils.registerElement("ui-color-picker", {
 
   behaviors: [focusableBehavior],
   template,
-  style: getElementStyleSync("color-picker"),
+  style: getElementStyleSync('color-picker'),
   $: {
-    hueHandle: ".hue-handle",
-    colorHandle: ".color-handle",
-    alphaHandle: ".alpha-handle",
-    hueCtrl: ".hue.ctrl",
-    colorCtrl: ".color.ctrl",
-    alphaCtrl: ".alpha.ctrl",
-    sliderR: "#r-slider",
-    sliderG: "#g-slider",
-    sliderB: "#b-slider",
-    sliderA: "#a-slider",
-    newColor: "#new-color",
-    oldColor: "#old-color",
-    hexInput: "#hex-input",
-    colorPresets: ".color-box",
-    btnAdd: "#btn-add",
-    palette: ".palette",
+    hueHandle: '.hue-handle',
+    colorHandle: '.color-handle',
+    alphaHandle: '.alpha-handle',
+    hueCtrl: '.hue.ctrl',
+    colorCtrl: '.color.ctrl',
+    alphaCtrl: '.alpha.ctrl',
+    sliderR: '#r-slider',
+    sliderG: '#g-slider',
+    sliderB: '#b-slider',
+    sliderA: '#a-slider',
+    newColor: '#new-color',
+    oldColor: '#old-color',
+    hexInput: '#hex-input',
+    colorPresets: '.color-box',
+    btnAdd: '#btn-add',
+    palette: '.palette',
   },
 
   factoryImpl(value: number[] | string): void {
@@ -254,10 +254,10 @@ export default elementUtils.registerElement("ui-color-picker", {
   },
 
   ready(): void {
-    const attrValue = this.getAttribute("value");
+    const attrValue = this.getAttribute('value');
     this._value = attrValue !== null ? chroma(attrValue).rgba() : [255, 255, 255, 1];
     this._lastAssigned = this._value.slice(0);
-    const settings = SettingsStorage.get("ui-color-picker");
+    const settings = SettingsStorage.get('ui-color-picker');
     this._settings = settings || { colors: [] };
     this._initPalette();
     this._updateColorDiff();
@@ -271,11 +271,11 @@ export default elementUtils.registerElement("ui-color-picker", {
   },
 
   hide(confirm: boolean): void {
-    fire(this, "hide", { bubbles: false, detail: { confirm } });
+    fire(this, 'hide', { bubbles: false, detail: { confirm } });
   },
 
   _initEvents(): void {
-    this.addEventListener("keydown", (event: Event) => {
+    this.addEventListener('keydown', (event: Event) => {
       const e = event as KeyboardEvent;
       if (e.keyCode === 13 || e.keyCode === 32) {
         acceptEvent(e);
@@ -286,7 +286,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       }
     });
 
-    this.$hueCtrl.addEventListener("mousedown", (event: Event) => {
+    this.$hueCtrl.addEventListener('mousedown', (event: Event) => {
       const e = event as MouseEvent;
       acceptEvent(e);
       focusMgr._setFocusElement(this);
@@ -298,7 +298,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this.$hueHandle.style.top = `${100 * ratio}%`;
       const hue = 360 * (1 - ratio);
       const hsv = chroma(this._value).hsv();
-      this._value = chroma(hue, hsv[1], hsv[2], "hsv").rgba();
+      this._value = chroma(hue, hsv[1], hsv[2], 'hsv').rgba();
       this._value[3] = alpha;
       this._updateColorDiff();
       this._updateColor(hue);
@@ -308,7 +308,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._emitChange();
     });
 
-    this.$hueCtrl.addEventListener("keydown", (event: Event) => {
+    this.$hueCtrl.addEventListener('keydown', (event: Event) => {
       const e = event as KeyboardEvent;
       if (e.keyCode === 27) {
         acceptEvent(e);
@@ -324,7 +324,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       }
     });
 
-    this.$alphaCtrl.addEventListener("mousedown", (event: Event) => {
+    this.$alphaCtrl.addEventListener('mousedown', (event: Event) => {
       const e = event as MouseEvent;
       acceptEvent(e);
       focusMgr._setFocusElement(this);
@@ -339,7 +339,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._emitChange();
     });
 
-    this.$alphaCtrl.addEventListener("keydown", (event: Event) => {
+    this.$alphaCtrl.addEventListener('keydown', (event: Event) => {
       const e = event as KeyboardEvent;
       if (e.keyCode === 27) {
         acceptEvent(e);
@@ -352,7 +352,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       }
     });
 
-    this.$colorCtrl.addEventListener("mousedown", (event: Event) => {
+    this.$colorCtrl.addEventListener('mousedown', (event: Event) => {
       const e = event as MouseEvent;
       acceptEvent(e);
       focusMgr._setFocusElement(this);
@@ -368,7 +368,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this.$colorHandle.style.left = `${100 * saturation}%`;
       this.$colorHandle.style.top = `${100 * brightness}%`;
       this.$colorHandle.style.color = chroma(gray, gray, gray).hex();
-      this._value = chroma(hue, saturation, 1 - brightness, "hsv").rgba();
+      this._value = chroma(hue, saturation, 1 - brightness, 'hsv').rgba();
       this._value[3] = alpha;
       this._updateColorDiff();
       this._updateAlpha();
@@ -377,7 +377,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._emitChange();
     });
 
-    this.$colorCtrl.addEventListener("keydown", (event: Event) => {
+    this.$colorCtrl.addEventListener('keydown', (event: Event) => {
       const e = event as KeyboardEvent;
       if (e.keyCode === 27) {
         acceptEvent(e);
@@ -393,25 +393,27 @@ export default elementUtils.registerElement("ui-color-picker", {
     });
 
     // Slider events
-    const sliderChangeHandler = (index: number, isAlpha = false) => (event: Event) => {
-      const e = event as CustomEvent;
-      e.stopPropagation();
-      if (isAlpha) {
-        this._value[index] = parseFloat(String(e.detail.value)) / 255;
-      } else {
-        this._value[index] = parseInt(e.detail.value);
-      }
-      this._updateColorDiff();
-      if (!isAlpha) {
-        this._updateHue();
-        this._updateColor();
-      }
-      this._updateAlpha();
-      if (!isAlpha) {
-        this._updateHexInput();
-      }
-      this._emitChange();
-    };
+    const sliderChangeHandler =
+      (index: number, isAlpha = false) =>
+      (event: Event) => {
+        const e = event as CustomEvent;
+        e.stopPropagation();
+        if (isAlpha) {
+          this._value[index] = parseFloat(String(e.detail.value)) / 255;
+        } else {
+          this._value[index] = parseInt(e.detail.value);
+        }
+        this._updateColorDiff();
+        if (!isAlpha) {
+          this._updateHue();
+          this._updateColor();
+        }
+        this._updateAlpha();
+        if (!isAlpha) {
+          this._updateHexInput();
+        }
+        this._emitChange();
+      };
 
     const sliderConfirmHandler = (event: Event) => {
       event.stopPropagation();
@@ -423,31 +425,31 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._emitCancel();
     };
 
-    this.$sliderR.addEventListener("change", sliderChangeHandler(0));
-    this.$sliderR.addEventListener("confirm", sliderConfirmHandler);
-    this.$sliderR.addEventListener("cancel", sliderCancelHandler);
+    this.$sliderR.addEventListener('change', sliderChangeHandler(0));
+    this.$sliderR.addEventListener('confirm', sliderConfirmHandler);
+    this.$sliderR.addEventListener('cancel', sliderCancelHandler);
 
-    this.$sliderG.addEventListener("change", sliderChangeHandler(1));
-    this.$sliderG.addEventListener("confirm", sliderConfirmHandler);
-    this.$sliderG.addEventListener("cancel", sliderCancelHandler);
+    this.$sliderG.addEventListener('change', sliderChangeHandler(1));
+    this.$sliderG.addEventListener('confirm', sliderConfirmHandler);
+    this.$sliderG.addEventListener('cancel', sliderCancelHandler);
 
-    this.$sliderB.addEventListener("change", sliderChangeHandler(2));
-    this.$sliderB.addEventListener("confirm", sliderConfirmHandler);
-    this.$sliderB.addEventListener("cancel", sliderCancelHandler);
+    this.$sliderB.addEventListener('change', sliderChangeHandler(2));
+    this.$sliderB.addEventListener('confirm', sliderConfirmHandler);
+    this.$sliderB.addEventListener('cancel', sliderCancelHandler);
 
-    this.$sliderA.addEventListener("change", sliderChangeHandler(3, true));
-    this.$sliderA.addEventListener("confirm", sliderConfirmHandler);
-    this.$sliderA.addEventListener("cancel", sliderCancelHandler);
+    this.$sliderA.addEventListener('change', sliderChangeHandler(3, true));
+    this.$sliderA.addEventListener('confirm', sliderConfirmHandler);
+    this.$sliderA.addEventListener('cancel', sliderCancelHandler);
 
-    this.$hexInput.addEventListener("change", (e: Event) => {
+    this.$hexInput.addEventListener('change', (e: Event) => {
       e.stopPropagation();
     });
 
-    this.$hexInput.addEventListener("cancel", (e: Event) => {
+    this.$hexInput.addEventListener('cancel', (e: Event) => {
       e.stopPropagation();
     });
 
-    this.$hexInput.addEventListener("confirm", (event: Event) => {
+    this.$hexInput.addEventListener('confirm', (event: Event) => {
       const e = event as CustomEvent;
       e.stopPropagation();
       const alpha = this._value[3];
@@ -463,7 +465,7 @@ export default elementUtils.registerElement("ui-color-picker", {
       this._emitConfirm();
     });
 
-    this.$btnAdd.addEventListener("confirm", (event: Event) => {
+    this.$btnAdd.addEventListener('confirm', (event: Event) => {
       event.stopPropagation();
       const css = chroma(this._value).css();
       const colorBox = this._newColorBox(css);
@@ -481,21 +483,21 @@ export default elementUtils.registerElement("ui-color-picker", {
   },
 
   _newColorBox(color: string): HTMLElement {
-    const box = document.createElement("div");
-    box.classList.add("color-box");
-    const inner = document.createElement("div");
-    inner.classList.add("inner");
+    const box = document.createElement('div');
+    box.classList.add('color-box');
+    const inner = document.createElement('div');
+    inner.classList.add('inner');
     inner.style.backgroundColor = color;
     box.appendChild(inner);
 
-    box.addEventListener("contextmenu", (event: Event) => {
+    box.addEventListener('contextmenu', (event: Event) => {
       const e = event as MouseEvent;
       e.preventDefault();
       const menu = new ContextMenu();
 
       menu.append(
         new MenuItem({
-          label: "Replace",
+          label: 'Replace',
           click: () => {
             const index = Array.from(box.parentElement!.children).indexOf(box);
             const css = chroma(this._value).css();
@@ -503,25 +505,25 @@ export default elementUtils.registerElement("ui-color-picker", {
             this._settings.colors[index] = css;
             this._saveSettings();
           },
-        })
+        }),
       );
 
       menu.append(
         new MenuItem({
-          label: "Delete",
+          label: 'Delete',
           click: () => {
             const index = Array.from(box.parentElement!.children).indexOf(box);
             box.remove();
             this._settings.colors.splice(index, 1);
             this._saveSettings();
           },
-        })
+        }),
       );
 
       menu.popup(e);
     });
 
-    box.addEventListener("mousedown", (event: Event) => {
+    box.addEventListener('mousedown', (event: Event) => {
       const e = event as MouseEvent;
       e.stopPropagation();
 
@@ -542,7 +544,7 @@ export default elementUtils.registerElement("ui-color-picker", {
   },
 
   _saveSettings(): void {
-    SettingsStorage.set("ui-color-picker", this._settings);
+    SettingsStorage.set('ui-color-picker', this._settings);
   },
 
   _updateColorDiff(): void {
@@ -572,7 +574,7 @@ export default elementUtils.registerElement("ui-color-picker", {
     let gray = 1 - v;
     gray = gray * gray * (3 - 2 * gray);
     gray *= 255;
-    this.$colorCtrl.style.backgroundColor = chroma(h, 1, 1, "hsv").hex();
+    this.$colorCtrl.style.backgroundColor = chroma(h, 1, 1, 'hsv').hex();
     this.$colorHandle.style.left = `${100 * s}%`;
     this.$colorHandle.style.top = `${100 * (1 - v)}%`;
     this.$colorHandle.style.color = chroma(gray, gray, gray).hex();
@@ -582,7 +584,7 @@ export default elementUtils.registerElement("ui-color-picker", {
     this.$alphaCtrl.style.backgroundColor = chroma(
       this._value[0],
       this._value[1],
-      this._value[2]
+      this._value[2],
     ).hex();
 
     this.$alphaHandle.style.top = `${100 * (1 - this._value[3])}%`;
@@ -600,15 +602,14 @@ export default elementUtils.registerElement("ui-color-picker", {
   },
 
   _emitConfirm(): void {
-    fire(this, "confirm", { bubbles: true, detail: { value: this._value } });
+    fire(this, 'confirm', { bubbles: true, detail: { value: this._value } });
   },
 
   _emitCancel(): void {
-    fire(this, "cancel", { bubbles: true, detail: { value: this._value } });
+    fire(this, 'cancel', { bubbles: true, detail: { value: this._value } });
   },
 
   _emitChange(): void {
-    fire(this, "change", { bubbles: true, detail: { value: this._value } });
+    fire(this, 'change', { bubbles: true, detail: { value: this._value } });
   },
 });
-

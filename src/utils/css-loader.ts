@@ -9,7 +9,8 @@ import type { CSSMap } from '../types';
 // 如果替换失败，则使用 __COMPILED_STYLES__ 作为后备
 declare const __COMPILED_STYLES__: CSSMap | undefined;
 
-const compiledStyles: CSSMap = typeof __COMPILED_STYLES__ !== 'undefined' ? __COMPILED_STYLES__ : {};
+const compiledStyles: CSSMap =
+  typeof __COMPILED_STYLES__ !== 'undefined' ? __COMPILED_STYLES__ : {};
 
 const styleCache = new Map<string, string>();
 
@@ -25,19 +26,19 @@ export async function getElementStyle(elementName: string, themeName = 'default'
  */
 export function getElementStyleSync(elementName: string, themeName = 'default'): string {
   const cacheKey = `${themeName}/${elementName}`;
-  
+
   // 首先检查缓存
   if (styleCache.has(cacheKey)) {
     return styleCache.get(cacheKey)!;
   }
-  
+
   // 从编译时注入的样式中获取
   if (compiledStyles[elementName]) {
     const css = compiledStyles[elementName];
     styleCache.set(cacheKey, css);
     return css;
   }
-  
+
   // 如果找不到，返回空字符串
   console.warn(`[css-loader] 警告: ${elementName} 样式未找到！`);
   return '';
@@ -46,8 +47,11 @@ export function getElementStyleSync(elementName: string, themeName = 'default'):
 /**
  * 预加载元素样式到缓存
  */
-export async function preloadElementStyles(elementNames: string[], themeName = 'default'): Promise<void> {
-  elementNames.forEach(name => {
+export async function preloadElementStyles(
+  elementNames: string[],
+  themeName = 'default',
+): Promise<void> {
+  elementNames.forEach((name) => {
     if (compiledStyles[name]) {
       const cacheKey = `${themeName}/${name}`;
       styleCache.set(cacheKey, compiledStyles[name]);
@@ -58,6 +62,5 @@ export async function preloadElementStyles(elementNames: string[], themeName = '
 export default {
   getElementStyle,
   getElementStyleSync,
-  preloadElementStyles
+  preloadElementStyles,
 };
-

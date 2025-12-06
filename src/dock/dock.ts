@@ -1,19 +1,19 @@
-import jsUtils from "../utils/js-utils";
-import dockUtils from "../utils/dock-utils";
-import domUtils from "../utils/dom-utils";
-import dockableBehavior from "../behaviors/dockable";
+import jsUtils from '../utils/js-utils';
+import dockUtils from '../utils/dock-utils';
+import domUtils from '../utils/dom-utils';
+import dockableBehavior from '../behaviors/dockable';
 
 /**
  * 可停靠元素接口
  */
 interface DockableElement extends HTMLElement {
   _dockable?: boolean;
-  _preferredWidth?: number | "auto";
-  _preferredHeight?: number | "auto";
+  _preferredWidth?: number | 'auto';
+  _preferredHeight?: number | 'auto';
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _collapseRecursively?: () => void;
   _reflowRecursively?: () => void;
   _updatePreferredSizeRecursively?: () => void;
@@ -27,17 +27,17 @@ interface DockableElement extends HTMLElement {
  */
 class Dock extends HTMLElement {
   static get tagName(): string {
-    return "ui-dock";
+    return 'ui-dock';
   }
 
   // Dockable behavior properties
   _dockable?: boolean;
-  _preferredWidth?: number | "auto";
-  _preferredHeight?: number | "auto";
+  _preferredWidth?: number | 'auto';
+  _preferredHeight?: number | 'auto';
   _computedMinWidth?: number;
   _computedMinHeight?: number;
-  _computedMaxWidth?: number | "auto";
-  _computedMaxHeight?: number | "auto";
+  _computedMaxWidth?: number | 'auto';
+  _computedMaxHeight?: number | 'auto';
   _initDockable?: () => void;
   _collapse?: () => void;
   _reflow?: () => void;
@@ -46,20 +46,20 @@ class Dock extends HTMLElement {
   _finalizeStyle?: () => void;
 
   get row(): boolean {
-    return this.getAttribute("row") !== null;
+    return this.getAttribute('row') !== null;
   }
 
   set row(value: boolean) {
     if (value) {
-      this.setAttribute("row", "");
+      this.setAttribute('row', '');
     } else {
-      this.removeAttribute("row");
+      this.removeAttribute('row');
     }
   }
 
   constructor() {
     super();
-    const shadowRoot = this.attachShadow({ mode: "open" });
+    const shadowRoot = this.attachShadow({ mode: 'open' });
     shadowRoot.innerHTML = `
       <div class="content">
         <slot select="ui-dock,ui-dock-panel,ui-dock-resizer"></slot>
@@ -67,8 +67,8 @@ class Dock extends HTMLElement {
     `;
 
     shadowRoot.insertBefore(
-      domUtils.createStyleElement("theme://elements/dock.css"),
-      shadowRoot.firstChild
+      domUtils.createStyleElement('theme://elements/dock.css'),
+      shadowRoot.firstChild,
     );
 
     this._initDockable?.();
@@ -80,9 +80,9 @@ class Dock extends HTMLElement {
       for (let i = 0; i < this.children.length; ++i) {
         if (i !== this.children.length - 1) {
           const nextChild = this.children[i + 1];
-          const resizer = document.createElement(
-            "ui-dock-resizer"
-          ) as HTMLElement & { vertical: boolean };
+          const resizer = document.createElement('ui-dock-resizer') as HTMLElement & {
+            vertical: boolean;
+          };
           resizer.vertical = this.row;
           this.insertBefore(resizer, nextChild);
           i += 1;
@@ -169,18 +169,16 @@ class Dock extends HTMLElement {
       }
     }
 
-    if (this._preferredWidth === "auto") {
+    if (this._preferredWidth === 'auto') {
       let hasAuto = false;
       if (this.row) {
         this._preferredWidth =
-          dockableChildren.length > 0
-            ? resizerSpace * (dockableChildren.length - 1)
-            : 0;
+          dockableChildren.length > 0 ? resizerSpace * (dockableChildren.length - 1) : 0;
 
         for (const child of dockableChildren) {
-          if (hasAuto || child._preferredWidth === "auto") {
+          if (hasAuto || child._preferredWidth === 'auto') {
             hasAuto = true;
-            this._preferredWidth = "auto";
+            this._preferredWidth = 'auto';
           } else {
             (this._preferredWidth as number) += child._preferredWidth as number;
           }
@@ -189,48 +187,39 @@ class Dock extends HTMLElement {
         this._preferredWidth = 0;
 
         for (const child of dockableChildren) {
-          if (hasAuto || child._preferredWidth === "auto") {
+          if (hasAuto || child._preferredWidth === 'auto') {
             hasAuto = true;
-            this._preferredWidth = "auto";
-          } else if (
-            (child._preferredWidth as number) >
-            (this._preferredWidth as number)
-          ) {
+            this._preferredWidth = 'auto';
+          } else if ((child._preferredWidth as number) > (this._preferredWidth as number)) {
             this._preferredWidth = child._preferredWidth;
           }
         }
       }
     }
 
-    if (this._preferredHeight === "auto") {
+    if (this._preferredHeight === 'auto') {
       let hasAuto = false;
       if (this.row) {
         this._preferredHeight = 0;
 
         for (const child of dockableChildren) {
-          if (hasAuto || child._preferredHeight === "auto") {
+          if (hasAuto || child._preferredHeight === 'auto') {
             hasAuto = true;
-            this._preferredHeight = "auto";
-          } else if (
-            (child._preferredHeight as number) >
-            (this._preferredHeight as number)
-          ) {
+            this._preferredHeight = 'auto';
+          } else if ((child._preferredHeight as number) > (this._preferredHeight as number)) {
             this._preferredHeight = child._preferredHeight;
           }
         }
       } else {
         this._preferredHeight =
-          dockableChildren.length > 0
-            ? resizerSpace * (dockableChildren.length - 1)
-            : 0;
+          dockableChildren.length > 0 ? resizerSpace * (dockableChildren.length - 1) : 0;
 
         for (const child of dockableChildren) {
-          if (hasAuto || child._preferredHeight === "auto") {
+          if (hasAuto || child._preferredHeight === 'auto') {
             hasAuto = true;
-            this._preferredHeight = "auto";
+            this._preferredHeight = 'auto';
           } else {
-            (this._preferredHeight as number) +=
-              child._preferredHeight as number;
+            (this._preferredHeight as number) += child._preferredHeight as number;
           }
         }
       }
@@ -250,9 +239,7 @@ class Dock extends HTMLElement {
 
     if (this.row) {
       this._computedMinWidth =
-        dockableChildren.length > 0
-          ? resizerSpace * (dockableChildren.length - 1)
-          : 0;
+        dockableChildren.length > 0 ? resizerSpace * (dockableChildren.length - 1) : 0;
       this._computedMinHeight = 0;
 
       for (const child of dockableChildren) {
@@ -265,9 +252,7 @@ class Dock extends HTMLElement {
     } else {
       this._computedMinWidth = 0;
       this._computedMinHeight =
-        dockableChildren.length > 0
-          ? resizerSpace * (dockableChildren.length - 1)
-          : 0;
+        dockableChildren.length > 0 ? resizerSpace * (dockableChildren.length - 1) : 0;
 
       for (const child of dockableChildren) {
         if (this._computedMinWidth! < (child._computedMinWidth || 0)) {
@@ -284,15 +269,13 @@ class Dock extends HTMLElement {
     this.style.minHeight = `${this._computedMinHeight}px`;
 
     if (this.children.length === 1) {
-      (this.children[0] as HTMLElement).style.flex = "1 1 auto";
+      (this.children[0] as HTMLElement).style.flex = '1 1 auto';
     } else {
       for (let i = 0; i < this.children.length; ++i) {
         const child = this.children[i] as DockableElement;
         if (child._dockable) {
-          const size = this.row
-            ? child._preferredWidth
-            : child._preferredHeight;
-          child.style.flex = size === "auto" ? "1 1 auto" : `0 0 ${size}px`;
+          const size = this.row ? child._preferredWidth : child._preferredHeight;
+          child.style.flex = size === 'auto' ? '1 1 auto' : `0 0 ${size}px`;
         }
       }
     }
@@ -327,4 +310,3 @@ class Dock extends HTMLElement {
 jsUtils.addon(Dock.prototype, dockableBehavior);
 
 export default Dock;
-

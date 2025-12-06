@@ -2,14 +2,14 @@
  * UI Input 组件
  */
 
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
-import { fire, acceptEvent } from "../utils/dom-utils";
-import focusMgr from "../utils/focus-mgr";
-import focusableBehavior from "../behaviors/focusable";
-import disableBehavior from "../behaviors/disable";
-import readonlyBehavior from "../behaviors/readonly";
-import inputStateBehavior from "../behaviors/input-state";
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
+import { fire, acceptEvent } from '../utils/dom-utils';
+import focusMgr from '../utils/focus-mgr';
+import focusableBehavior from '../behaviors/focusable';
+import disableBehavior from '../behaviors/disable';
+import readonlyBehavior from '../behaviors/readonly';
+import inputStateBehavior from '../behaviors/input-state';
 
 const template = /*html*/ `
     <input></input>
@@ -19,17 +19,17 @@ interface ExtendedInput extends HTMLInputElement {
   _initValue?: string;
 }
 
-export default elementUtils.registerElement("ui-input", {
+export default elementUtils.registerElement('ui-input', {
   get value(): string {
     return this.$input.value;
   },
 
   set value(value: string | null | undefined) {
     if (value === null || value === undefined) {
-      value = "";
+      value = '';
     }
 
-    value += "";
+    value += '';
     this._value = value;
 
     if (!this.multiValues) {
@@ -62,11 +62,11 @@ export default elementUtils.registerElement("ui-input", {
   },
 
   get password(): boolean {
-    return this.$input.type === "password";
+    return this.$input.type === 'password';
   },
 
   set password(isPassword: boolean) {
-    this.$input.type = isPassword === true ? "password" : "";
+    this.$input.type = isPassword === true ? 'password' : '';
   },
 
   get maxLength(): number | null {
@@ -103,15 +103,13 @@ export default elementUtils.registerElement("ui-input", {
   },
 
   get observedAttributes(): string[] {
-    return ["placeholder", "password", "multi-values"];
+    return ['placeholder', 'password', 'multi-values'];
   },
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (
       oldValue !== newValue &&
-      (name === "placeholder" ||
-        name === "password" ||
-        name === "multi-values")
+      (name === 'placeholder' || name === 'password' || name === 'multi-values')
     ) {
       const propertyName = name.replace(/-(\w)/g, (_match, letter) => letter.toUpperCase());
       (this as any)[propertyName] = newValue;
@@ -120,8 +118,8 @@ export default elementUtils.registerElement("ui-input", {
 
   behaviors: [focusableBehavior, disableBehavior, readonlyBehavior, inputStateBehavior],
   template,
-  style: getElementStyleSync("input"),
-  $: { input: "input" },
+  style: getElementStyleSync('input'),
+  $: { input: 'input' },
 
   factoryImpl(value: string): void {
     if (value) {
@@ -130,13 +128,13 @@ export default elementUtils.registerElement("ui-input", {
   },
 
   ready(): void {
-    this._value = "";
-    this._values = [""];
-    this.$input.value = this.getAttribute("value") || "";
-    this.$input.placeholder = this.getAttribute("placeholder") || "";
-    this.$input.type = this.getAttribute("password") !== null ? "password" : "";
-    this.maxLength = this.getAttribute("max-length");
-    this.multiValues = this.getAttribute("multi-values") as any;
+    this._value = '';
+    this._values = [''];
+    this.$input.value = this.getAttribute('value') || '';
+    this.$input.placeholder = this.getAttribute('placeholder') || '';
+    this.$input.type = this.getAttribute('password') !== null ? 'password' : '';
+    this.maxLength = this.getAttribute('max-length');
+    this.multiValues = this.getAttribute('multi-values') as any;
     this._initFocusable(this, this.$input);
     this._initDisable(false);
     this._initReadonly(false);
@@ -146,7 +144,7 @@ export default elementUtils.registerElement("ui-input", {
   },
 
   clear(): void {
-    this.$input.value = "";
+    this.$input.value = '';
     this.confirm();
   },
 
@@ -160,18 +158,18 @@ export default elementUtils.registerElement("ui-input", {
 
   _setIsReadonlyAttribute(isReadonly: boolean): void {
     if (isReadonly) {
-      this.setAttribute("is-readonly", "");
+      this.setAttribute('is-readonly', '');
     } else {
-      this.removeAttribute("is-readonly");
+      this.removeAttribute('is-readonly');
     }
 
     this.$input.readOnly = isReadonly;
   },
 
   _initEvents(): void {
-    this.addEventListener("mousedown", this._mouseDownHandler);
-    this.addEventListener("keydown", this._keyDownHandler);
-    this.addEventListener("focus-changed", this._focusChangedHandler);
+    this.addEventListener('mousedown', this._mouseDownHandler);
+    this.addEventListener('keydown', this._keyDownHandler);
+    this.addEventListener('focus-changed', this._focusChangedHandler);
   },
 
   _onInputConfirm(input: ExtendedInput, confirmByEnter?: boolean): void {
@@ -182,7 +180,7 @@ export default elementUtils.registerElement("ui-input", {
         this._value = input.value;
         this.multiValues = false;
 
-        fire(this, "confirm", {
+        fire(this, 'confirm', {
           bubbles: true,
           detail: { value: input.value, confirmByEnter },
         });
@@ -200,15 +198,15 @@ export default elementUtils.registerElement("ui-input", {
         this._changed = false;
 
         if (input._initValue !== input.value) {
-          input.value = input._initValue || "";
-          this._value = input._initValue || "";
-          fire(this, "change", {
+          input.value = input._initValue || '';
+          this._value = input._initValue || '';
+          fire(this, 'change', {
             bubbles: true,
             detail: { value: input.value },
           });
         }
 
-        fire(this, "cancel", {
+        fire(this, 'cancel', {
           bubbles: true,
           detail: { value: input.value, cancelByEsc },
         });
@@ -228,7 +226,7 @@ export default elementUtils.registerElement("ui-input", {
       input.value = input.value.substr(0, this._maxLength);
     }
 
-    fire(this, "change", { bubbles: true, detail: { value: input.value } });
+    fire(this, 'change', { bubbles: true, detail: { value: input.value } });
   },
 
   _mouseDownHandler(event: MouseEvent): void {
@@ -254,21 +252,20 @@ export default elementUtils.registerElement("ui-input", {
   },
 
   _updateMultiValue(): void {
-    if (
-      !this.multiValues ||
-      !this._values ||
-      this.values.length <= 1
-    ) {
+    if (!this.multiValues || !this._values || this.values.length <= 1) {
       this.$input.value = this._value;
-      return this.$input.removeAttribute("multi-values");
+      return this.$input.removeAttribute('multi-values');
     }
 
-    if (this._values.every((value: string, index: number) => index === 0 || value === this._values[index - 1])) {
-      this.$input.removeAttribute("multi-values");
+    if (
+      this._values.every(
+        (value: string, index: number) => index === 0 || value === this._values[index - 1],
+      )
+    ) {
+      this.$input.removeAttribute('multi-values');
     } else {
-      this.$input.value = "-";
-      this.$input.setAttribute("multi-values", "");
+      this.$input.value = '-';
+      this.$input.setAttribute('multi-values', '');
     }
   },
 });
-

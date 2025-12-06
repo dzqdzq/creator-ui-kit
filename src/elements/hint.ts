@@ -2,8 +2,8 @@
  * UI Hint 组件
  */
 
-import elementUtils from "../utils/utils";
-import { getElementStyleSync } from "../utils/css-loader";
+import elementUtils from '../utils/utils';
+import { getElementStyleSync } from '../utils/css-loader';
 
 const template = /*html*/ `
     <div class="box">
@@ -12,7 +12,7 @@ const template = /*html*/ `
     </div>
   `;
 
-export default elementUtils.registerElement("ui-hint", {
+export default elementUtils.registerElement('ui-hint', {
   get position(): string {
     return this._position;
   },
@@ -21,14 +21,14 @@ export default elementUtils.registerElement("ui-hint", {
     if (this._position !== value) {
       this._position = value;
 
-      if (this.classList.contains("top") || this.classList.contains("bottom")) {
-        if (this._position[0] === "-") {
+      if (this.classList.contains('top') || this.classList.contains('bottom')) {
+        if (this._position[0] === '-') {
           this.$arrow.style.right = this._position.substr(1);
         } else {
           this.$arrow.style.left = this._position;
         }
-      } else if (this.classList.contains("left") || this.classList.contains("right")) {
-        if (this._position[0] === "-") {
+      } else if (this.classList.contains('left') || this.classList.contains('right')) {
+        if (this._position[0] === '-') {
           this.$arrow.style.bottom = this._position.substr(1);
         } else {
           this.$arrow.style.top = this._position;
@@ -38,8 +38,8 @@ export default elementUtils.registerElement("ui-hint", {
   },
 
   template,
-  $: { arrow: ".arrow" },
-  style: getElementStyleSync("hint"),
+  $: { arrow: '.arrow' },
+  style: getElementStyleSync('hint'),
 
   factoryImpl(text: string): void {
     if (text) {
@@ -48,13 +48,12 @@ export default elementUtils.registerElement("ui-hint", {
   },
 
   ready(): void {
-    let position = this.getAttribute("position");
+    let position = this.getAttribute('position');
 
     if (position === null) {
-      position = "50%";
+      position = '50%';
     }
 
     this.position = position;
   },
 });
-

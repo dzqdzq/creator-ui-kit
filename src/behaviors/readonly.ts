@@ -2,7 +2,7 @@
  * 只读行为
  */
 
-import domUtils from "../utils/dom-utils";
+import domUtils from '../utils/dom-utils';
 import type { ReadonlyBehavior } from '../types';
 
 interface ReadonlyElement extends HTMLElement {
@@ -18,7 +18,7 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
   },
 
   get readonly(): boolean {
-    return this.getAttribute("is-readonly") !== null;
+    return this.getAttribute('is-readonly') !== null;
   },
 
   set readonly(value: boolean) {
@@ -26,7 +26,7 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
       this._readonly = value;
 
       if (value) {
-        this.setAttribute("readonly", "");
+        this.setAttribute('readonly', '');
         this._setIsReadonlyAttribute(true);
 
         if (!this._readonlyNested) {
@@ -35,7 +35,7 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
 
         this._propgateReadonly();
       } else {
-        this.removeAttribute("readonly");
+        this.removeAttribute('readonly');
 
         if (!this._isReadonlyInHierarchy(true)) {
           this._setIsReadonlyAttribute(false);
@@ -51,7 +51,7 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
   },
 
   _initReadonly(nested: boolean): void {
-    this._readonly = this.getAttribute("readonly") !== null;
+    this._readonly = this.getAttribute('readonly') !== null;
 
     if (this._readonly) {
       this._setIsReadonlyAttribute(true);
@@ -61,18 +61,14 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
   },
 
   _propgateReadonly(): void {
-    domUtils.walk(
-      this,
-      { excludeSelf: true },
-      (el: HTMLElement) => {
-        const readonlyEl = el as ReadonlyElement;
-        return (
-          !!readonlyEl.canBeReadonly &&
-          (!!readonlyEl._readonly ||
-            (readonlyEl._setIsReadonlyAttribute?.(this._readonly!), !readonlyEl._readonlyNested))
-        );
-      }
-    );
+    domUtils.walk(this, { excludeSelf: true }, (el: HTMLElement) => {
+      const readonlyEl = el as ReadonlyElement;
+      return (
+        !!readonlyEl.canBeReadonly &&
+        (!!readonlyEl._readonly ||
+          (readonlyEl._setIsReadonlyAttribute?.(this._readonly!), !readonlyEl._readonlyNested))
+      );
+    });
   },
 
   _isReadonlyInHierarchy(excludeSelf?: boolean): boolean {
@@ -97,12 +93,11 @@ const readonlyBehavior: ReadonlyBehavior & ThisType<HTMLElement & ReadonlyBehavi
 
   _setIsReadonlyAttribute(readonly: boolean): void {
     if (readonly) {
-      this.setAttribute("is-readonly", "");
+      this.setAttribute('is-readonly', '');
     } else {
-      this.removeAttribute("is-readonly");
+      this.removeAttribute('is-readonly');
     }
   },
 };
 
 export default readonlyBehavior;
-

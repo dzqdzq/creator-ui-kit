@@ -2,9 +2,9 @@
  * UI Progress 组件
  */
 
-import elementUtils from "../utils/utils";
-import mathUtils from "../utils/math";
-import { getElementStyleSync } from "../utils/css-loader";
+import elementUtils from '../utils/utils';
+import mathUtils from '../utils/math';
+import { getElementStyleSync } from '../utils/css-loader';
 
 const template = /*html*/ `
     <div class="bar">
@@ -12,7 +12,7 @@ const template = /*html*/ `
     </div>
   `;
 
-export default elementUtils.registerElement("ui-progress", {
+export default elementUtils.registerElement('ui-progress', {
   get value(): number {
     return this._value;
   },
@@ -31,8 +31,8 @@ export default elementUtils.registerElement("ui-progress", {
   },
 
   template,
-  style: getElementStyleSync("progress"),
-  $: { bar: ".bar", label: ".label" },
+  style: getElementStyleSync('progress'),
+  $: { bar: '.bar', label: '.label' },
 
   factoryImpl(value: number): void {
     if (value) {
@@ -41,13 +41,13 @@ export default elementUtils.registerElement("ui-progress", {
   },
 
   ready(): void {
-    this.$bar.addEventListener("transitionend", () => {
+    this.$bar.addEventListener('transitionend', () => {
       this._inTransition = false;
       this.$label.innerText = `${this._value}%`;
     });
 
     this._inTransition = false;
-    const value = parseFloat(this.getAttribute("value") || "0");
+    const value = parseFloat(this.getAttribute('value') || '0');
     this._value = isNaN(value) ? 0 : value;
     this.$bar.style.width = `${this._value}%`;
     this.$label.innerText = `${this._value}%`;
@@ -77,4 +77,3 @@ export default elementUtils.registerElement("ui-progress", {
     });
   },
 });
-

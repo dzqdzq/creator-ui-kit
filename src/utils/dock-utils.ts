@@ -9,7 +9,7 @@ export const resizerSpace = 4;
  * 检查元素是否是 resizer
  */
 export function isResizer(element: Element): boolean {
-  return element.tagName?.toLowerCase() === "ui-dock-resizer";
+  return element.tagName?.toLowerCase() === 'ui-dock-resizer';
 }
 
 /**
@@ -35,4 +35,3 @@ const dockUtils = {
 };
 
 export default dockUtils;
-

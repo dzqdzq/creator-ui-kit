@@ -28,35 +28,36 @@ interface DockableElement extends HTMLElement {
   _collapse?(): boolean;
 }
 
-const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavior & DockableElement> = {
+const dockableBehavior: DockableBehavior &
+  ThisType<HTMLElement & DockableBehavior & DockableElement> = {
   _dockable: true,
 
   get noCollapse(): boolean {
-    return this.getAttribute("no-collapse") !== null;
+    return this.getAttribute('no-collapse') !== null;
   },
 
   set noCollapse(value: boolean) {
     if (value) {
-      this.setAttribute("no-collapse", "");
+      this.setAttribute('no-collapse', '');
     } else {
-      this.removeAttribute("no-collapse");
+      this.removeAttribute('no-collapse');
     }
   },
 
   _initDockable(): void {
-    this._preferredWidth = "auto";
-    this._preferredHeight = "auto";
+    this._preferredWidth = 'auto';
+    this._preferredHeight = 'auto';
     this._computedMinWidth = 0;
     this._computedMinHeight = 0;
 
     requestAnimationFrame(() => {
-      this.style.minWidth = "auto";
-      this.style.minHeight = "auto";
-      this.style.maxWidth = "auto";
-      this.style.maxHeight = "auto";
+      this.style.minWidth = 'auto';
+      this.style.minHeight = 'auto';
+      this.style.maxWidth = 'auto';
+      this.style.maxHeight = 'auto';
     });
 
-    this.addEventListener("dragover", (e: Event) => {
+    this.addEventListener('dragover', (e: Event) => {
       e.preventDefault();
       dockUtils.dragoverDock(this);
     });
@@ -114,8 +115,9 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
 
   _makeRoomForNewComer(position: string, element: HTMLElement): void {
     const el = element as DockableElement;
-    if (position === "left" || position === "right") {
-      let space = (this._preferredWidth as number) - (el._preferredWidth as number) - dockUtils.resizerSpace;
+    if (position === 'left' || position === 'right') {
+      let space =
+        (this._preferredWidth as number) - (el._preferredWidth as number) - dockUtils.resizerSpace;
 
       if (space > 0) {
         this._preferredWidth = space;
@@ -125,7 +127,10 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
         el._preferredWidth = space;
       }
     } else {
-      let space = (this._preferredHeight as number) - (el._preferredHeight as number) - dockUtils.resizerSpace;
+      let space =
+        (this._preferredHeight as number) -
+        (el._preferredHeight as number) -
+        dockUtils.resizerSpace;
 
       if (space > 0) {
         this._preferredHeight = space;
@@ -151,18 +156,18 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
     const parent = this.parentNode as DockableElement;
 
     if (parent._dockable) {
-      if (position === "left" || position === "right") {
+      if (position === 'left' || position === 'right') {
         needWrap = !parent.row;
       } else {
         needWrap = !!parent.row;
       }
 
       if (needWrap) {
-        newDock = document.createElement("ui-dock") as HTMLElement & DockableElement;
-        newDock.row = position === "left" || position === "right";
+        newDock = document.createElement('ui-dock') as HTMLElement & DockableElement;
+        newDock.row = position === 'left' || position === 'right';
         parent.insertBefore(newDock, this);
 
-        if (position === "left" || position === "top") {
+        if (position === 'left' || position === 'top') {
           newDock.appendChild(element);
           newDock.appendChild(this);
         } else {
@@ -177,10 +182,10 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
         newDock._preferredHeight = this._preferredHeight;
         this._makeRoomForNewComer(position, element);
       } else {
-        resizer = document.createElement("ui-dock-resizer") as HTMLElement & { vertical?: boolean };
+        resizer = document.createElement('ui-dock-resizer') as HTMLElement & { vertical?: boolean };
         resizer.vertical = parent.row;
 
-        if (position === "left" || position === "top") {
+        if (position === 'left' || position === 'top') {
           parent.insertBefore(element, this);
           parent.insertBefore(resizer, this);
         } else {
@@ -199,22 +204,22 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
         }
       }
     } else {
-      if (position === "left" || position === "right") {
+      if (position === 'left' || position === 'right') {
         needWrap = !(this as any).row;
       } else {
         needWrap = !!(this as any).row;
       }
 
       if (needWrap) {
-        newDock = document.createElement("ui-dock") as HTMLElement & DockableElement;
+        newDock = document.createElement('ui-dock') as HTMLElement & DockableElement;
         newDock.row = (this as any).row;
 
-        (this as any).row = position === "left" || position === "right";
+        (this as any).row = position === 'left' || position === 'right';
         while (this.children.length > 0) {
           newDock.appendChild(this.children[0]);
         }
 
-        if (position === "left" || position === "top") {
+        if (position === 'left' || position === 'top') {
           this.appendChild(element);
           this.appendChild(newDock);
         } else {
@@ -229,10 +234,10 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
         newDock._preferredHeight = this._preferredHeight;
         this._makeRoomForNewComer(position, element);
       } else {
-        resizer = document.createElement("ui-dock-resizer") as HTMLElement & { vertical?: boolean };
+        resizer = document.createElement('ui-dock-resizer') as HTMLElement & { vertical?: boolean };
         resizer.vertical = (this as any).row;
 
-        if (position === "left" || position === "top") {
+        if (position === 'left' || position === 'top') {
           this.insertBefore(element, this.firstElementChild);
           this.insertBefore(resizer, this.firstElementChild);
         } else {
@@ -282,4 +287,3 @@ const dockableBehavior: DockableBehavior & ThisType<HTMLElement & DockableBehavi
 };
 
 export default dockableBehavior;
-

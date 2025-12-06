@@ -1,5 +1,5 @@
-import jsUtils from "../utils/js-utils";
-import { clear } from "../utils/dom-utils";
+import jsUtils from '../utils/js-utils';
+import { clear } from '../utils/dom-utils';
 
 /**
  * 面板配置接口
@@ -20,13 +20,13 @@ interface PanelConfig {
  */
 interface PanelInfo {
   title?: string;
-  "shadow-dom"?: boolean;
+  'shadow-dom'?: boolean;
   width?: number | string;
   height?: number | string;
-  "min-width"?: number | string;
-  "max-width"?: number | string;
-  "min-height"?: number | string;
-  "max-height"?: number | string;
+  'min-width'?: number | string;
+  'max-width'?: number | string;
+  'min-height'?: number | string;
+  'max-height'?: number | string;
   popable?: boolean;
   [key: string]: unknown;
 }
@@ -71,7 +71,7 @@ declare global {
  */
 export default class Panel extends HTMLElement {
   static get tagName(): string {
-    return "ui-panel";
+    return 'ui-panel';
   }
 
   private _info: PanelInfo | null = null;
@@ -108,18 +108,18 @@ export default class Panel extends HTMLElement {
    * 获取面板名称
    */
   get name(): string {
-    return this._info?.title || this.id || "Panel";
+    return this._info?.title || this.id || 'Panel';
   }
 
   /**
    * 获取面板宽度
    */
-  get width(): number | "auto" {
+  get width(): number | 'auto' {
     if (!this._info) {
-      return "auto";
+      return 'auto';
     }
     const width = parseInt(String(this._info.width));
-    return isNaN(width) ? "auto" : width;
+    return isNaN(width) ? 'auto' : width;
   }
 
   /**
@@ -129,30 +129,30 @@ export default class Panel extends HTMLElement {
     if (!this._info) {
       return 100;
     }
-    const width = parseInt(String(this._info["min-width"]));
+    const width = parseInt(String(this._info['min-width']));
     return isNaN(width) ? 100 : width;
   }
 
   /**
    * 获取最大宽度
    */
-  get maxWidth(): number | "auto" {
+  get maxWidth(): number | 'auto' {
     if (!this._info) {
-      return "auto";
+      return 'auto';
     }
-    const width = parseInt(String(this._info["max-width"]));
-    return isNaN(width) ? "auto" : width;
+    const width = parseInt(String(this._info['max-width']));
+    return isNaN(width) ? 'auto' : width;
   }
 
   /**
    * 获取面板高度
    */
-  get height(): number | "auto" {
+  get height(): number | 'auto' {
     if (!this._info) {
-      return "auto";
+      return 'auto';
     }
     const height = parseInt(String(this._info.height));
-    return isNaN(height) ? "auto" : height;
+    return isNaN(height) ? 'auto' : height;
   }
 
   /**
@@ -162,19 +162,19 @@ export default class Panel extends HTMLElement {
     if (!this._info) {
       return 100;
     }
-    const height = parseInt(String(this._info["min-height"]));
+    const height = parseInt(String(this._info['min-height']));
     return isNaN(height) ? 100 : height;
   }
 
   /**
    * 获取最大高度
    */
-  get maxHeight(): number | "auto" {
+  get maxHeight(): number | 'auto' {
     if (!this._info) {
-      return "auto";
+      return 'auto';
     }
-    const height = parseInt(String(this._info["max-height"]));
-    return isNaN(height) ? "auto" : height;
+    const height = parseInt(String(this._info['max-height']));
+    return isNaN(height) ? 'auto' : height;
   }
 
   /**
@@ -195,7 +195,7 @@ export default class Panel extends HTMLElement {
    * 当元素被插入到 DOM 时调用
    */
   connectedCallback(): void {
-    this.classList.add("fit");
+    this.classList.add('fit');
     this.tabIndex = -1;
   }
 
@@ -206,7 +206,7 @@ export default class Panel extends HTMLElement {
     // 清理资源
     if (this._mousetrapList) {
       this._mousetrapList.forEach((mousetrap) => {
-        if (mousetrap && typeof mousetrap.unbind === "function") {
+        if (mousetrap && typeof mousetrap.unbind === 'function') {
           mousetrap.unbind();
         }
       });
@@ -253,7 +253,7 @@ export default class Panel extends HTMLElement {
    */
   load(config: PanelConfig, callback?: (error: Error | null) => void): void {
     if (!config) {
-      const error = new Error("Panel config is required");
+      const error = new Error('Panel config is required');
       if (callback) {
         callback(error);
       }
@@ -305,19 +305,19 @@ export default class Panel extends HTMLElement {
    * @private
    */
   private _apply(config: PanelConfig): void {
-    const useShadowDOM = this._info?.["shadow-dom"] || config.shadowDOM;
+    const useShadowDOM = this._info?.['shadow-dom'] || config.shadowDOM;
 
     const { template, style, listeners, behaviors, $ } = config;
 
     // 将配置中的其他属性复制到实例上（除了特殊属性）
     jsUtils.assignExcept(this, config, [
-      "dependencies",
-      "template",
-      "style",
-      "listeners",
-      "behaviors",
-      "$",
-      "shadowDOM",
+      'dependencies',
+      'template',
+      'style',
+      'listeners',
+      'behaviors',
+      '$',
+      'shadowDOM',
     ]);
 
     // 应用 behaviors
@@ -329,7 +329,7 @@ export default class Panel extends HTMLElement {
 
     // 创建 Shadow DOM（如果需要）
     if (useShadowDOM && !this.shadowRoot) {
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
     }
 
     const root = this.root;
@@ -340,41 +340,32 @@ export default class Panel extends HTMLElement {
     // 应用模板
     if (template) {
       const templateType = typeof template;
-      if (templateType === "string") {
+      if (templateType === 'string') {
         (root as Element).innerHTML = template as string;
-      } else if (templateType === "function") {
-        (root as Element).innerHTML = (template as (info: PanelInfo) => string)(
-          this._info || {}
-        );
+      } else if (templateType === 'function') {
+        (root as Element).innerHTML = (template as (info: PanelInfo) => string)(this._info || {});
       }
     }
 
     // 应用样式
     if (style) {
-      const styleElement = document.createElement("style");
+      const styleElement = document.createElement('style');
       styleElement.textContent = style;
-      (root as Element).insertBefore(
-        styleElement,
-        (root as Element).firstChild
-      );
+      (root as Element).insertBefore(styleElement, (root as Element).firstChild);
     }
 
     // 应用 $ 选择器
     if ($) {
       for (const selectorName in $) {
         if (this[`$${selectorName}`]) {
-          console.warn(
-            `Failed to assign selector $${selectorName}, already used.`
-          );
+          console.warn(`Failed to assign selector $${selectorName}, already used.`);
           continue;
         }
         const element = root.querySelector($[selectorName]);
         if (element) {
           this[`$${selectorName}`] = element;
         } else {
-          console.warn(
-            `Failed to query selector ${$[selectorName]} to $${selectorName}.`
-          );
+          console.warn(`Failed to query selector ${$[selectorName]} to $${selectorName}.`);
         }
       }
     }
@@ -384,7 +375,7 @@ export default class Panel extends HTMLElement {
       for (const eventName in listeners) {
         const handler = listeners[eventName].bind(this);
         const options: AddEventListenerOptions =
-          eventName === "mousewheel" ? { passive: true } : {};
+          eventName === 'mousewheel' ? { passive: true } : {};
 
         // 在 root 上添加监听器
         if (root) {
@@ -397,7 +388,7 @@ export default class Panel extends HTMLElement {
     }
 
     // 调用 ready 方法（如果存在）
-    if (this.ready && typeof this.ready === "function") {
+    if (this.ready && typeof this.ready === 'function') {
       this.ready();
     }
   }
@@ -409,10 +400,8 @@ export default class Panel extends HTMLElement {
   registerShortcuts(shortcuts: Record<string, string | Record<string, string>>): void {
     // 这个方法需要 mousetrap 库支持
     // 如果项目中没有 mousetrap，可以跳过或使用其他快捷键库
-    if (typeof window === "undefined" || !window.Mousetrap) {
-      console.warn(
-        "Mousetrap is not available, shortcuts will not be registered"
-      );
+    if (typeof window === 'undefined' || !window.Mousetrap) {
+      console.warn('Mousetrap is not available, shortcuts will not be registered');
       return;
     }
 
@@ -420,13 +409,13 @@ export default class Panel extends HTMLElement {
     const root = this.root;
 
     for (const key in shortcuts) {
-      if (key[0] !== "#") {
+      if (key[0] !== '#') {
         // 全局快捷键
         const methodName = shortcuts[key] as string;
         const method = this[methodName];
-        if (!method || typeof method !== "function") {
+        if (!method || typeof method !== 'function') {
           console.warn(
-            `Failed to register shortcut, cannot find method ${methodName} in panel ${this.id}.`
+            `Failed to register shortcut, cannot find method ${methodName} in panel ${this.id}.`,
           );
           continue;
         }
@@ -437,9 +426,7 @@ export default class Panel extends HTMLElement {
         // 元素特定的快捷键
         const element = root.querySelector(key);
         if (!element) {
-          console.warn(
-            `Failed to register shortcut for element ${key}, cannot find it.`
-          );
+          console.warn(`Failed to register shortcut for element ${key}, cannot find it.`);
           continue;
         }
         const elementShortcuts = shortcuts[key] as Record<string, string>;
@@ -447,11 +434,11 @@ export default class Panel extends HTMLElement {
         for (const shortcutKey in elementShortcuts) {
           const methodName = elementShortcuts[shortcutKey];
           const method = this[methodName];
-          if (method && typeof method === "function") {
+          if (method && typeof method === 'function') {
             mousetrap.bind(shortcutKey, (method as () => void).bind(this));
           } else {
             console.warn(
-              `Failed to register shortcut, cannot find method ${methodName} in panel ${this.id}.`
+              `Failed to register shortcut, cannot find method ${methodName} in panel ${this.id}.`,
             );
           }
         }
@@ -464,10 +451,9 @@ export default class Panel extends HTMLElement {
 }
 
 // 注册自定义元素
-if (typeof window !== "undefined" && window.customElements) {
-  window.customElements.define("ui-panel", Panel);
+if (typeof window !== 'undefined' && window.customElements) {
+  window.customElements.define('ui-panel', Panel);
 }
 
 export { Panel };
 export type { PanelConfig, PanelInfo };
-
